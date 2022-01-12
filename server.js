@@ -1,6 +1,3 @@
-// https://vuex.vuejs.org/guide/
-// https://www.freecodecamp.org/news/rest-api-best-practices-rest-endpoint-design-examples/
-
 // Standard module import
 const express = require('express');
 const path = require('path');
