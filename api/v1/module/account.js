@@ -25,16 +25,26 @@ router.route('/account')
         const {username, email, password} = req.body;
 
         // Check that there is not already a request
-        let isThere; 
+        let isThere;
         suspendedUsers.forEach( (u, i) =>{ email === u['email']? isThere = true : isThere = false })
 
         if(!isThere){
-            let p = dbConnnect.isRegistred(email);
-            p.then( (result) => {
-
+            dbConnnect.genericCycleQuery(
+                {
+                    queryMethod: dbConnnect.isRegistred,
+                    par: [email]
+                },
+                {
+                    queryMethod: dbConnnect.isFreeUsername,
+                    par: [username]
+                }
+            )
+            .then((result) => {
+                
+                //console.log(result[0]?.value[0]['COUNT(*)']);
+           
                 // Result async query
-                if(result[0]['COUNT(*)'] > 0){
-
+                if(result[0]?.value[0]['COUNT(*)'] > 0 || result[1]?.value[0]['COUNT(*)']){
                     res.sendStatus(403); // Forbidden --> hai gia profilo
                 } else {
 
@@ -61,7 +71,7 @@ router.route('/account')
                     }) 
 
                     // Set expiration code
-                    s = setTimeout(() => {
+                    setTimeout(() => {
                         suspendedUsers.forEach( (suspendUser, index) => {
                             if(code === suspendUser['code']) 
                                 suspendedUsers.splice(index, 1);     //delete suspendUser with expired codes
@@ -75,21 +85,19 @@ router.route('/account')
                     console.log(code);
                 }
 
-            });
-        } else{
-            //gia registrato
-            res.sendStatus(200); //alredy requet code getsirsela con i json
+            })
+            .catch((err)=>{
+                console.log(err);
+                res.sendStatus(500); // Server error
+            })
+
+        } else {
+            // Sei gia sospeso coglione
+            res.sendStatus(200); //alredy requet code getsirsela con i json 
         }
   
     })
-
-    // Update sub info account
-    .put(authJWT.authenticateJWT, (req, res) =>{
-        console.log(suspendedUsers);
-        res.send('put')
-        //dipende da cosa deve cambiare sotto router
-    })
-    
+   
     // Delete account
     .delete(authJWT.authenticateJWT, (req, res) => {
         const token = req.headers.authorization.split(' ')[1];  // Extract token 
@@ -97,12 +105,16 @@ router.route('/account')
         const email = data.email;
 
         // Delete account and account relaction
-        const p = dbConnnect.delateAccount(email); //non necessario controllo tanto ce auth
-        p.then((result) => {
+        dbConnnect.genericCycleQuery(   //non necessario controllo tanto ce auth
+            {
+                queryMethod:  dbConnnect.delateAccount,
+                par: [email]
+            }
+        )
+        .then((result) => {
             console.log(result);
             res.sendStatus(200);
         })
-        //console.log(data);
     })
 
 // Route cofirm code
@@ -123,25 +135,21 @@ router.get('/account/:confirmCode', (req, res) => {
     if(isThere){
         const {username, email, password} = suspendedUsers[index];  // add role
 
-        let p = dbConnnect.isFreeUsername(username)
-        p.then((result) => {
-
-            // Check result and then will resolve promise
-            if(result[0]['COUNT(*)'] > 0){
-                return Promise.resolve(null);
-            } else {
-                return dbConnnect.createAccount(username, password, email, '01');  //da modificare in base al ruolo 01 02 ecc codice in registrazione compo in piu
+        dbConnnect.genericCycleQuery(
+            {
+                queryMethod: dbConnnect.createAccount,
+                par: [username, password, email, '01']  //da modificare in base al ruolo 01 02 ecc codice in registrazione compo in piu
             }
-        }).then( (result) => {
-            
-            // Check that the promise was resolved correctly
-            if(result !== null){
-                suspendedUsers.filter(value => value !== suspendedUsers[index]);    //Remove in the suspendedUsers 
-                res.sendStatus(200); //ok  --> grazie per aver completato la registrazione ora poi toranre all app  
-            } else{ 
-                res.sendStatus(403); // Forbidden --> username gia preso
-            }
+        )
+        .then((result) => {
+            suspendedUsers.filter(value => value !== suspendedUsers[index]);    //Remove in the suspendedUsers 
+            res.sendStatus(200) //ok  --> grazie per aver completato la registrazione ora poi toranre all app 
         })
+        .catch((err) =>{
+            console.log(err);
+        })
+
+        //console.log(suspendedUsers[index]);
     } else {
         res.sendStatus(401); // Unauthorized -->codice sbaglaito gestirsela con i json
     } 

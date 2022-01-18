@@ -6,13 +6,17 @@ const router = express.Router();    //Create router Object
 // Import servesis module 
 const login = require('./module/login');
 const account = require('./module/account');
-const class_resurce = require('./module/resurce/class');
-const course_resurce = require('./module/resurce/course');
+const user = require('./module/resurces/user');
+
+const class_resurce = require('./module/resurces/class');
+const course_resurce = require('./module/resurces/course');
 //...
 
 // Add mini-router
 router.use(login);
 router.use(account);
+router.use(user);
+
 router.use(class_resurce);
 //router.use(course_resurce);...
 
