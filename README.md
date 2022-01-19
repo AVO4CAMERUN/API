@@ -111,12 +111,12 @@ GET  {base_URL}/api/v1/courses/:name/lessons/:name
 
 ## Exercise
 
-------------------------------------
 GET     {base_URL}/api/v1/
 POST    {base_URL}/api/v1/  
 PUT 
 DELETE
-------------------------------------
+
+----------------
 filter e sorting    
 
 
