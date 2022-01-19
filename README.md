@@ -119,12 +119,6 @@ DELETE
 ----------------
 filter e sorting    
 
-
-```python
- from time import sleep
- print("Sono del codice Python")
-```
-
 ```javascript
    var informatico="ciao sono JavaScript";
    console.log(informatico);
