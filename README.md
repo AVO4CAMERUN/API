@@ -1,31 +1,138 @@
 # REST API
 
 ### Root api
+<!--
 GET     {base_URL}/api/v1/
 POST    {base_URL}/api/v1/  
 PUT 
 DELETE
+-->
 
-### Account
+### Account 
 
-POST    {base_URL}/api/v1/account  
-DELETE  {base_URL}/api/v1/account  (Non che bisogno di un codice perche che Auth  => forse fare conferma da email)
-GET     {base_URL}/api/v1/account/:confirmCode
+&#8594; {base_URL}/api/v1/**account**
 
-```json
-{
-  "firstName": "John",
-  "lastName": "Smith",
-  "age": 25
-}
-```
+POST
 
+> Request
+>```json
+>{
+>	"username": "....",
+>	"password": "....",
+>	"email": "example@example.com"
+>}
+>```
+>
+> Responce
+>
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: users gia preso
+>   - NNN &#8594; hai gia un account
+
+
+DELETE  
+
+> Request
+>```
+> Authorization: Bearer <token>
+>```
+> Responce
+>
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: token scaduto
+>   - NNN &#8594; hai gia eliminato un account
+
+Descrizione: (Non che bisogno di un codice perche che Auth  => forse fare conferma da email)
+
+
+&#8594; {base_URL}/api/v1/account/:confirmCode
+
+GET
+
+> Request
+>```
+> Confirm code: codice generato casualmete univoco temporizzato per confermare 
+>```
+> Responce
+>
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 401 &#8594; Unauthorized: codice sbagliato
+>   - 500 &#8594; Server error
+
+
+<mark>forse fare conferma anche per delete account</mark>
+
+***
 ### Login
 
-POST    {base_URL}/api/v1/login  
-DELETE  {base_URL}/api/v1/login
-PUT     {base_URL}/api/v1/login 
+&#8594; {base_URL}/api/v1/login
 
+POST 
+
+> Request
+>```json
+>{
+>	"username": "....",
+>	"password": "...."
+>}
+>```
+> Responce
+>```json
+>{
+>	"accessToken": "....",
+>	"refreshToken": "...."
+>}
+>```
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: Passwors or email err						
+
+
+
+PUT
+> Request
+>```json
+>{
+>	"refreshToken": "...."
+>}
+>```
+> Responce
+>```json
+>{
+>	"newAccessToken": "....",
+>}
+>```
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: token non valido 						
+
+{base_URL}/api/v1/login 
+
+DELETE
+
+> Request
+>```json
+>{
+>	"refreshToken": "...."
+>}
+>```
+> Responce
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 403 &#8594; Forbidden: fake token 						
+
+
+
+
+
+Continuare da qui
 ### Users
 POST    {base_URL}/api/v1/users     (Da vedere con account)
 
