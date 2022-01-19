@@ -1,13 +1,3 @@
-# API
-API :)
-
-devo scrivere le interfaccie
-
-requestSetAvo4cum.json => dati per test
-
-
-Forse unificare accunnti con post users
-
 # REST API
 
 ## Root api
@@ -123,10 +113,3 @@ filter e sorting
    var informatico="ciao sono JavaScript";
    console.log(informatico);
 ```
-<<<<<<< HEAD
-
-- [x] #739
-- [ ] https://github.com/octo-org/octo-repo/issues/740
-- [ ] Add delight to the experience when all tasks are complete :tada:
-=======
->>>>>>> e9a3a7b37f447925b26c80984764efa24bf32aea
