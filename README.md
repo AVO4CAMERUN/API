@@ -1,24 +1,24 @@
 # REST API
 
-## Root api
+### Root api
 GET     {base_URL}/api/v1/
 POST    {base_URL}/api/v1/  
 PUT 
 DELETE
 
-> Account
+### Account
 
 POST    {base_URL}/api/v1/account  
 DELETE  {base_URL}/api/v1/account  (Non che bisogno di un codice perche che Auth  => forse fare conferma da email)
 GET     {base_URL}/api/v1/account/:confirmCode
 
-## Login
+### Login
 
 POST    {base_URL}/api/v1/login  
 DELETE  {base_URL}/api/v1/login
 PUT     {base_URL}/api/v1/login 
 
-## Users
+### Users
 POST    {base_URL}/api/v1/users     (Da vedere con account)
 
 GET     {base_URL}/api/v1/users/:email
@@ -33,14 +33,14 @@ PUT     {base_URL}/api/v1/users/:email/new_users_data (cambia tutto tranne email
 
 DELETE  {base_URL}/api/v1/users
 
-### Student
+#### Student
 GET     {base_URL}/api/v1/users/students/:class_name
 
-### Prof
+#### Prof
 GET     {base_URL}/api/v1/users/profs/:class_name
 GET     {base_URL}/api/v1/users/profs/:class_name/:role
 
-## Classes
+### Classes
 
 POST    {base_URL}/api/v1/classes/:class_data  
 POST    {base_URL}/api/v1/classes/:email_creator 
@@ -53,7 +53,7 @@ PUT     {base_URL}/api/v1/classes
 GET  {base_URL}/api/v1/classes/:email_creator
 GET  {base_URL}/api/v1/classes/:email_creator/:(filter da decicere numero studenti regex ecc)
 
-## Courses
+### Courses
 
 POST    {base_URL}/api/v1/courses
 PUT     {base_URL}/api/v1/courses/:name
@@ -71,7 +71,7 @@ GET     {base_URL}/api/v1/courses/:email_creator/:suject
 GET     {base_URL}/api/v1/courses/:creation_date
 GET     {base_URL}/api/v1/courses/:suject
 
-## Units
+### Units
 
 POST    {base_URL}/api/v1/courses/:id/units
 POST    {base_URL}/api/v1/courses/:name/units
@@ -85,7 +85,7 @@ GET  {base_URL}/api/v1/courses/units/:name
 GET  {base_URL}/api/v1/courses/:id/units/:id 
 GET  {base_URL}/api/v1/courses/:name/units/:name
 
-## Lessons
+### Lessons
 
 POST    {base_URL}/api/v1/courses/:id/units/lessons
 POST    {base_URL}/api/v1/courses/:name/units/lessons
@@ -99,7 +99,7 @@ GET  {base_URL}/api/v1/courses/:name/lessons
 GET  {base_URL}/api/v1/courses/:id/lessons/:id 
 GET  {base_URL}/api/v1/courses/:name/lessons/:name
 
-## Exercise
+### Exercise
 
 GET     {base_URL}/api/v1/
 POST    {base_URL}/api/v1/  
