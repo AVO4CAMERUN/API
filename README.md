@@ -119,17 +119,14 @@ DELETE
 ----------------
 filter e sorting    
 
-
-```python
- from time import sleep
- print("Sono del codice Python")
-```
-
 ```javascript
    var informatico="ciao sono JavaScript";
    console.log(informatico);
 ```
+<<<<<<< HEAD
 
 - [x] #739
 - [ ] https://github.com/octo-org/octo-repo/issues/740
 - [ ] Add delight to the experience when all tasks are complete :tada:
+=======
+>>>>>>> e9a3a7b37f447925b26c80984764efa24bf32aea
