@@ -7,13 +7,16 @@ requestSetAvo4cum.json => dati per test
 
 
 Forse unificare accunnti con post users
----------------------------------------- Account --------------------------------------
+
+# REST API
+
+## Account
 
 POST    {base_URL}/api/v1/account  
 DELETE  {base_URL}/api/v1/account  (Non che bisogno di un codice perche che Auth  => forse fare conferma da email)
 GET     {base_URL}/api/v1/account/:confirmCode
 
----------------------------------------- Login ----------------------------------------
+## Login
 
 POST    {base_URL}/api/v1/login  
 DELETE  {base_URL}/api/v1/login
