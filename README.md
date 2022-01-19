@@ -6,7 +6,7 @@ POST    {base_URL}/api/v1/
 PUT 
 DELETE
 
-## Account
+> Account
 
 POST    {base_URL}/api/v1/account  
 DELETE  {base_URL}/api/v1/account  (Non che bisogno di un codice perche che Auth  => forse fare conferma da email)
