@@ -1,5 +1,7 @@
 # REST API
-
+@settings {
+  font-size: 100;
+}
 ### Root api
 GET     {base_URL}/api/v1/
 POST    {base_URL}/api/v1/  
