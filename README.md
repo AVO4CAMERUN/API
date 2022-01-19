@@ -1,7 +1,5 @@
 # REST API
-@settings {
-  font-size: 100;
-}
+
 ### Root api
 GET     {base_URL}/api/v1/
 POST    {base_URL}/api/v1/  
@@ -13,6 +11,14 @@ DELETE
 POST    {base_URL}/api/v1/account  
 DELETE  {base_URL}/api/v1/account  (Non che bisogno di un codice perche che Auth  => forse fare conferma da email)
 GET     {base_URL}/api/v1/account/:confirmCode
+
+```json
+{
+  "firstName": "John",
+  "lastName": "Smith",
+  "age": 25
+}
+```
 
 ### Login
 
@@ -106,12 +112,4 @@ GET  {base_URL}/api/v1/courses/:name/lessons/:name
 GET     {base_URL}/api/v1/
 POST    {base_URL}/api/v1/  
 PUT 
-DELETE
-
-----------------
-filter e sorting    
-
-```javascript
-   var informatico="ciao sono JavaScript";
-   console.log(informatico);
-```
+DELETE  
