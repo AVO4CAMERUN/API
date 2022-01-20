@@ -99,7 +99,7 @@ PUT
 > Responce
 >```json
 >{
->	"data":      "...",
+>	"data": "...",
 >}
 >```
 >	Status code:
@@ -166,7 +166,8 @@ GET
 >   - class_id
 >```json
 >{
->	"data": "...",
+>	"profData": "...",
+>	"classes": [...]
 >}
 >```
 
@@ -249,6 +250,9 @@ DELETE
 POST
 
 > Request
+>```
+> Authorization: Bearer <token>
+>```
 >```json
 >{
 >	"name": "....",
@@ -301,36 +305,145 @@ PUT
 >	- 200 &#8594; Ok
 >	- 500 &#8594; Server error
 >	- 403 &#8594; Forbidden: non sei tu il tutor professore
-> - 400 &#8594; Errore nei parametri (forse da specificare meglio)
+>   - 400 &#8594; Errore nei parametri (forse da specificare meglio)
 
+{base_URL}/api/v1/classes/**:email_profs**
 
-GET  {base_URL}/api/v1/classes/:email_creator
-GET  {base_URL}/api/v1/classes/:email_creator/:(filter da decicere numero
- studenti regex ecc)
-  
+GET
+
+> Request
+>```json
+>{
+>	"name": "....",
+>	"img_cover": "....",
+>	"startStudent": [],
+>	"startProf": []
+>}
+>```
+
+> Responce
+>
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: non sei un professore
+>   - 400 &#8594; Errore nei parametri (forse da specificare meglio)
+
+(filter da decicere numero studenti regex ecc)
+
 ***
 
 ### Courses
 
 POST    {base_URL}/api/v1/courses
+(usare le pccole post delle unita, lesson, exe..)
+
 PUT     {base_URL}/api/v1/courses/:name
 PUT     {base_URL}/api/v1/courses/:email_creator/:id
 
-DELETE  {base_URL}/api/v1/courses/:name
-DELETE  {base_URL}/api/v1/courses/:email_creator 
 
-GET     {base_URL}/api/v1/courses/
+{base_URL}/api/v1/courses/:name
 
-GET     {base_URL}/api/v1/courses/:id
-GET     {base_URL}/api/v1/courses/:name
-GET     {base_URL}/api/v1/courses/:email_creator
-GET     {base_URL}/api/v1/courses/:email_creator/:suject
-GET     {base_URL}/api/v1/courses/:creation_date
-GET     {base_URL}/api/v1/courses/:suject
+DELETE
+
+> Request
+>```
+> Authorization: Bearer <token>
+>```
+>Non che bisogno di un codice perche l'autenticazione avviene tramite jwt
+
+> Responce
+>
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: token scaduto
+>   - 404 &#8594; Not found: il corso non esiste
 
 
+{base_URL}/api/v1/courses/
+
+GET
+> Request
+>```
+>Free request
+>```
+>
+> Responce
+>```json
+>{
+>	coursesSimpleData: {
+>		"name": "...", 
+>		"description": "...",
+>		"creation_date": "...",
+>		"subject": "...",
+>		"img_cover": "..."		
+>	},
+>	units:[
+>		{
+>			"name": "...",
+>			"description": "...",
+>			"lessons": [
+>						{
+>						   "name": "....",
+>						   "creation_date": "....",
+>						   "link_video": "...",
+>						   "quiz":{...}	
+>						},								
+>						...
+>						],
+>			"exercises": [
+>							{
+>							   "name": "....",							
+>							   "creation_date": "....",
+>							   "exercise":{...}
+>							},								
+>							...
+>						]
+>		},
+>		....
+>	   ]
+>}
+>```
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 404 &#8594; Not found:
+
+
+>	- 403 &#8594; Forbidden:
+
+
+{base_URL}/api/v1/courses/:parameter
+
+GET
+> Request
+>	Parameter type:
+>	- id
+>	- name
+>	- email_creator
+>	- creation_date
+>	- suject
+
+> Responce
+>```json
+>[
+>	{
+>		"courseData": "..."
+>	},
+>	{
+>		"courseData2": "..."
+>	},
+>	...
+>]
+>```
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 404 &#8594; Not found
 ***
-### Units
+
+#### Units
 
 POST    {base_URL}/api/v1/courses/:id/units
 POST    {base_URL}/api/v1/courses/:name/units
@@ -344,7 +457,14 @@ GET  {base_URL}/api/v1/courses/units/:name
 GET  {base_URL}/api/v1/courses/:id/units/:id 
 GET  {base_URL}/api/v1/courses/:name/units/:name
 
-### Lessons
+
+
+
+
+
+
+
+#### Lessons
 
 POST    {base_URL}/api/v1/courses/:id/units/lessons
 POST    {base_URL}/api/v1/courses/:name/units/lessons
@@ -358,7 +478,7 @@ GET  {base_URL}/api/v1/courses/:name/lessons
 GET  {base_URL}/api/v1/courses/:id/lessons/:id 
 GET  {base_URL}/api/v1/courses/:name/lessons/:name
 
-### Exercise
+#### Exercise
 
 GET     {base_URL}/api/v1/
 POST    {base_URL}/api/v1/  
