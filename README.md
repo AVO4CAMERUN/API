@@ -6,11 +6,13 @@ GET     {base_URL}/api/v1/
 POST    {base_URL}/api/v1/  
 PUT 
 DELETE
+<mark>forse fare conferma anche per delete account</mark>
 -->
+***
 
 ### Account 
 
-&#8594; {base_URL}/api/v1/**account**
+{base_URL}/api/v1/**account**
 
 POST
 
@@ -22,7 +24,7 @@ POST
 >	"email": "example@example.com"
 >}
 >```
->
+
 > Responce
 >
 >	Status code:
@@ -38,6 +40,8 @@ DELETE
 >```
 > Authorization: Bearer <token>
 >```
+>Non che bisogno di un codice perche l'autenticazione avviene tramite jwt
+
 > Responce
 >
 >	Status code:
@@ -46,10 +50,65 @@ DELETE
 >	- 403 &#8594; Forbidden: token scaduto
 >   - NNN &#8594; hai gia eliminato un account
 
-Descrizione: (Non che bisogno di un codice perche che Auth  => forse fare conferma da email)
+
+{base_URL}/api/v1/account/**:parameter**
+
+qui aggingere si dei filtri
+
+GET
+> Request
+>	Parameter type:
+>	- email
+>	- username
+>	- role
+>	- firstname
+>	- lastname
+>	- registration_date
+
+> Responce
+>```json
+>[
+>	{
+>		"oneUserData": "..."
+>	},
+>	{
+>		"TwoUserData": "..."
+>	},
+>	...
+>]
+>```
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 404 &#8594; Not found
 
 
-&#8594; {base_URL}/api/v1/account/:confirmCode
+{base_URL}/api/v1/account/**:email/new_users_data**
+
+PUT
+> Request
+>```json
+>{
+>	"newDataUser":"..." 
+>}
+>
+>```
+>L'account viene identificato tarmite l'email, che non verra mai cambiata.
+>i campi non esistenti o impostati a undefined vengono ignorati
+
+> Responce
+>```json
+>{
+>	"data":      "...",
+>}
+>```
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: non è il tuo account
+***
+
+{base_URL}/api/v1/account/**:confirmCode**
 
 GET
 
@@ -57,20 +116,75 @@ GET
 >```
 > Confirm code: codice generato casualmete univoco temporizzato per confermare 
 >```
+
 > Responce
 >
 >	Status code:
 >	- 200 &#8594; Ok
 >	- 401 &#8594; Unauthorized: codice sbagliato
 >   - 500 &#8594; Server error
-
-
-<mark>forse fare conferma anche per delete account</mark>
-
+(forse unificare le richieste per creare e delete account distringerle tramite programma)
 ***
+
+
+##### Student
+
+{base_URL}/api/v1/account/students/**:parameter**
+
+GET
+> Request
+>	Parameter type:
+>	- class_name
+>   - class_id
+>```json
+>{
+>	"data": "...",
+>}
+>```
+
+> Responce
+>```json
+>{
+>	"data": "...",
+>}
+>```
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 404 &#8594; Not found
+
+
+##### Prof
+
+{base_URL}/api/v1/account/profs/**:parameter**
+
+GET 
+
+> Request
+>	Parameter type:
+>	- class_name
+>   - class_id
+>```json
+>{
+>	"data": "...",
+>}
+>```
+
+> Responce
+>```json
+>{
+>	"data": "...",
+>}
+>```
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 404 &#8594; Not found
+***
+
 ### Login
 
-&#8594; {base_URL}/api/v1/login
+{base_URL}/api/v1/**login**
 
 POST 
 
@@ -81,6 +195,7 @@ POST
 >	"password": "...."
 >}
 >```
+
 > Responce
 >```json
 >{
@@ -93,8 +208,6 @@ POST
 >	- 500 &#8594; Server error
 >	- 403 &#8594; Forbidden: Passwors or email err						
 
-
-
 PUT
 > Request
 >```json
@@ -102,6 +215,7 @@ PUT
 >	"refreshToken": "...."
 >}
 >```
+
 > Responce
 >```json
 >{
@@ -113,8 +227,6 @@ PUT
 >	- 500 &#8594; Server error
 >	- 403 &#8594; Forbidden: token non valido 						
 
-{base_URL}/api/v1/login 
-
 DELETE
 
 > Request
@@ -123,50 +235,80 @@ DELETE
 >	"refreshToken": "...."
 >}
 >```
+
 > Responce
 >	Status code:
 >	- 200 &#8594; Ok
 >	- 403 &#8594; Forbidden: fake token 						
-
-
-
-
-
-Continuare da qui
-### Users
-POST    {base_URL}/api/v1/users     (Da vedere con account)
-
-GET     {base_URL}/api/v1/users/:email
-GET     {base_URL}/api/v1/users/:username
-GET     {base_URL}/api/v1/users/:role
-GET     {base_URL}/api/v1/users/:firstname
-GET     {base_URL}/api/v1/users/:lastname
-GET     {base_URL}/api/v1/users/:registration_date
-GET     // magari farli misti o unirli
-
-PUT     {base_URL}/api/v1/users/:email/new_users_data (cambia tutto tranne email)
-
-DELETE  {base_URL}/api/v1/users
-
-#### Student
-GET     {base_URL}/api/v1/users/students/:class_name
-
-#### Prof
-GET     {base_URL}/api/v1/users/profs/:class_name
-GET     {base_URL}/api/v1/users/profs/:class_name/:role
+***
 
 ### Classes
 
-POST    {base_URL}/api/v1/classes/:class_data  
-POST    {base_URL}/api/v1/classes/:email_creator 
+{base_URL}/api/v1/classes/:class_data
 
-DELETE  {base_URL}/api/v1/classes/:class_name 
-DELETE  {base_URL}/api/v1/classes/:email_creator  
+POST
 
-PUT     {base_URL}/api/v1/classes
+> Request
+>```json
+>{
+>	"name": "....",
+>	"img_cover": "....",
+>	"startStudent": [],
+>	"startProf": []
+>}
+>```
+
+> Responce
+>
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: non sei un professore
+>   - 400 &#8594; Errore nei parametri (forse da specificare meglio)
+
+{base_URL}/api/v1/classes/:class_name 
+
+DELETE
+
+> Request
+>```
+> Authorization: Bearer <token>
+>```
+
+> Responce
+>
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: non sei un professore
+>   - 400 &#8594; Errore nei parametri (forse da specificare meglio)
+
+
+{base_URL}/api/v1/classes
+
+PUT 
+
+> Request
+>```json
+>{
+>	"newDataUser":"..." 	
+>}
+>```
+
+> Responce
+>
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: non sei tu il tutor professore
+> - 400 &#8594; Errore nei parametri (forse da specificare meglio)
+
 
 GET  {base_URL}/api/v1/classes/:email_creator
-GET  {base_URL}/api/v1/classes/:email_creator/:(filter da decicere numero studenti regex ecc)
+GET  {base_URL}/api/v1/classes/:email_creator/:(filter da decicere numero
+ studenti regex ecc)
+  
+***
 
 ### Courses
 
@@ -186,6 +328,8 @@ GET     {base_URL}/api/v1/courses/:email_creator/:suject
 GET     {base_URL}/api/v1/courses/:creation_date
 GET     {base_URL}/api/v1/courses/:suject
 
+
+***
 ### Units
 
 POST    {base_URL}/api/v1/courses/:id/units
