@@ -270,7 +270,7 @@ POST
 >	- 403 &#8594; Forbidden: non sei un professore
 >   - 400 &#8594; Errore nei parametri (forse da specificare meglio)
 
-{base_URL}/api/v1/classes/:class_name 
+{base_URL}/api/v1/classes/**:class_name**
 
 DELETE
 
@@ -288,7 +288,7 @@ DELETE
 >   - 400 &#8594; Errore nei parametri (forse da specificare meglio)
 
 
-{base_URL}/api/v1/classes
+{base_URL}/api/v1/**classes**
 
 PUT 
 
@@ -335,14 +335,35 @@ GET
 
 ### Courses
 
-POST    {base_URL}/api/v1/courses
+POST    {base_URL}/api/v1/**courses**
 (usare le pccole post delle unita, lesson, exe..)
 
-PUT     {base_URL}/api/v1/courses/:name
-PUT     {base_URL}/api/v1/courses/:email_creator/:id
+PUT     {base_URL}/api/v1/courses/**:parameter**
 
+PUT
+> Request
+>	Parameter type:
+>	- id
+>	- name
+>```
+> Authorization: Bearer <token>
+>```
+>```json
+>{
+>	"newCoursesData": "...."
+>}
+>```
 
-{base_URL}/api/v1/courses/:name
+> Responce
+>
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden 	
+>	- 404 &#8594; Not Found 			
+***
+
+{base_URL}/api/v1/courses/**:name**
 
 DELETE
 
@@ -361,14 +382,18 @@ DELETE
 >   - 404 &#8594; Not found: il corso non esiste
 
 
-{base_URL}/api/v1/courses/
+{base_URL}/api/v1/courses/**:parameter**
 
 GET
 > Request
+>	Parameter type:
+>	- id
+>	- name
+>
 >```
 >Free request
 >```
->
+
 > Responce
 >```json
 >{
@@ -411,10 +436,7 @@ GET
 >	- 404 &#8594; Not found:
 
 
->	- 403 &#8594; Forbidden:
-
-
-{base_URL}/api/v1/courses/:parameter
+{base_URL}/api/v1/courses/**:parameter**
 
 GET
 > Request
@@ -445,42 +467,272 @@ GET
 
 #### Units
 
-POST    {base_URL}/api/v1/courses/:id/units
-POST    {base_URL}/api/v1/courses/:name/units
+{base_URL}/api/v1/courses/:courses_parameter/**units**
 
-DELETE  {base_URL}/api/v1/courses/:id/units/:id 
-DELETE  {base_URL}/api/v1/courses/:name/units/:name
+GET
+> Request
+>	Courses parameter type:
+>	- id
+>	- name
+
+> Responce
+>```json
+>
+>[
+>	{
+>		"name": "...",
+>		"description": "...",
+>		"lessonsAndExercise": [
+>			"{base_URL}/api/v1/courses/:id/units/lessons/{id}",
+>			"{base_URL}/api/v1/courses/:id/units/lessons/{id..}",
+>			"{base_URL}/api/v1/courses/:id/units/exercise/{id..}",
+>			...
+>		]
+>	},
+>	...
+>]
+>```
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden:
+>	- 404 &#8594; Not found
 
 
-GET  {base_URL}/api/v1/courses/units/:id
-GET  {base_URL}/api/v1/courses/units/:name
-GET  {base_URL}/api/v1/courses/:id/units/:id 
-GET  {base_URL}/api/v1/courses/:name/units/:name
+DELETE
+> Request
+>```
+> Authorization: Bearer <token>
+>```
+>DELETE di tutte le unita di un corso
+>
+>	Courses parameter type:
+>	- id
+>	- name
+>```
+
+>Responce
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 404 &#8594; Not found
+>	- 403 &#8594; Forbidden:
 
 
+{base_URL}/api/v1/courses/:course_parameter/units/**:unit_parameter**
 
+DELETE 
+> Request
+>	Courses parameter type:
+>	- id
+>	- name
+>
+>	Units parameter type:
+>	- id
+>	- name
 
-
-
+> Responce
+>```
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden:
+>	- 404 &#8594; Not found
+***
 
 
 #### Lessons
 
-POST    {base_URL}/api/v1/courses/:id/units/lessons
-POST    {base_URL}/api/v1/courses/:name/units/lessons
+{base_URL}/api/v1/courses/:courses_parameter/units/units_parameter/**lessons**
 
-DELETE  {base_URL}/api/v1/courses/:id/lessons/:id
-DELETE  {base_URL}/api/v1/courses/:id/lessons/:name
+POST
+> Request
+>```
+> Authorization: Bearer <token>
+>```
+>	Courses parameter type:
+>	- id
+>	- name
+>
+>	Units parameter type:
+>	- id
+>	- name
+>
+>```json
+>{
+>	"name": "....",
+>	"link_video": "....",
+>	"quiz": {....},
+>}
+>```
+
+> Responce
+>
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: non sei un professore
+>   - 400 &#8594; Errore nei parametri (forse da specificare meglio)
 
 
-GET  {base_URL}/api/v1/courses/:id/lessons
-GET  {base_URL}/api/v1/courses/:name/lessons
-GET  {base_URL}/api/v1/courses/:id/lessons/:id 
-GET  {base_URL}/api/v1/courses/:name/lessons/:name
+{base_URL}/api/v1/courses/:courses_parameter/units/units_parameter/lessons/**:lesson_parameter**
+
+GET
+> Request
+>	Courses parameter type:
+>	- id
+>	- name
+>
+>	Lessons parameter type:
+>	- id
+>	- name
+
+> Responce
+>```json
+>{
+>	"name": "....",
+>	"link_video": "....",
+>	"quiz": {....},
+>}
+>```
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 404 &#8594; Not found
+
+
+DELETE
+> Request
+>```
+> Authorization: Bearer <token>
+>```
+>	Courses parameter type:
+>	- id
+>	- name
+>
+>	Units parameter type:
+>	- id
+>	- name
+
+> Responce
+>
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: non sei un professore
+>   - 400 &#8594; Errore nei parametri (forse da specificare meglio)
+
+PUT
+> Request
+>```json
+>{
+>	"newLessonData": "...."
+>}
+>```
+
+> Responce
+>
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden 	
+>	- 404 &#8594; Not Found 			
+***
 
 #### Exercise
 
-GET     {base_URL}/api/v1/
-POST    {base_URL}/api/v1/  
-PUT 
-DELETE  
+{base_URL}/api/v1/courses/:courses_parameter/units/units_parameter/**exercise**
+
+POST
+> Request
+>```
+> Authorization: Bearer <token>
+>```
+>	Courses parameter type:
+>	- id
+>	- name
+>
+>	Units parameter type:
+>	- id
+>	- name
+>
+>```json
+>{
+>	"name": "....",
+>	"description": "....",
+>	"filemd": {....},
+>}
+>```
+
+> Responce
+>
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: non sei un professore
+>   - 400 &#8594; Errore nei parametri (forse da specificare meglio)
+
+		
+{base_URL}/api/v1/courses/:courses_parameter/units/units_parameter/exercise/**:exercise_parameter**
+
+GET
+> Request
+>	Courses parameter type:
+>	- id
+>	- name
+>
+>	Exercise parameter type:
+>	- id
+>	- name
+
+> Responce
+>```json
+>{
+>	"name": "....",
+>	"description": "....",
+>	"filemd": {....},
+>}
+>```
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 404 &#8594; Not found
+
+
+DELETE
+> Request
+>```
+> Authorization: Bearer <token>
+>```
+>	Courses parameter type:
+>	- id
+>	- name
+>
+>	Units parameter type:
+>	- id
+>	- name
+
+> Responce
+>
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: non sei un professore
+> - 400 &#8594; Errore nei parametri (forse da specificare meglio)
+
+PUT
+> Request
+>```json
+>{
+>	"newExerciseData": "...."
+>}
+>```
+
+> Responce
+>
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden 	
+>	- 404 &#8594; Not Found 			
+***
