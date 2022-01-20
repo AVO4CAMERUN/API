@@ -127,7 +127,7 @@ GET
 ***
 
 
-##### Student
+#### Student
 
 {base_URL}/api/v1/account/students/**:parameter**
 
@@ -154,7 +154,7 @@ GET
 >	- 404 &#8594; Not found
 
 
-##### Prof
+#### Prof
 
 {base_URL}/api/v1/account/profs/**:parameter**
 
