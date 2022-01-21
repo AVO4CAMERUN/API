@@ -12,9 +12,9 @@ DELETE
 
 ### Account 
 
-{base_URL}/api/v1/**account**
+POST {base_URL}/api/v1/**account**
 
-POST
+
 
 > Request
 >```json
@@ -34,7 +34,7 @@ POST
 >   - NNN &#8594; hai gia un account
 
 
-DELETE  
+DELETE {base_URL}/api/v1/**account**
 
 > Request
 >```
@@ -50,20 +50,17 @@ DELETE
 >	- 403 &#8594; Forbidden: token scaduto
 >   - NNN &#8594; hai gia eliminato un account
 
+GET {base_URL}/api/v1/account
+GET {base_URL}/api/v1/account/:email
 
-{base_URL}/api/v1/account/**:parameter**
+GET {base_URL}/api/v1/account **?firstname='[name1, nameN]'&lastname='[name1, nameN]'&role='[role1, roleN]'&classid='[id1, id2]'**
 
-qui aggingere si dei filtri
-
-GET
 > Request
 >	Parameter type:
->	- email
->	- username
 >	- role
 >	- firstname
 >	- lastname
->	- registration_date
+>i parametri non specificati sarranno undefined è quindi non verranodo considerati
 
 > Responce
 >```json
@@ -83,9 +80,8 @@ GET
 >	- 404 &#8594; Not found
 
 
-{base_URL}/api/v1/account/**:email/new_users_data**
+PUT {base_URL}/api/v1/account/**:email**
 
-PUT
 > Request
 >```json
 >{
@@ -108,9 +104,7 @@ PUT
 >	- 403 &#8594; Forbidden: non è il tuo account
 ***
 
-{base_URL}/api/v1/account/**:confirmCode**
-
-GET
+GET {base_URL}/api/v1/account/**:confirmCode**
 
 > Request
 >```
@@ -126,68 +120,9 @@ GET
 (forse unificare le richieste per creare e delete account distringerle tramite programma)
 ***
 
-
-#### Student
-
-{base_URL}/api/v1/account/students/**:parameter**
-
-GET
-> Request
->	Parameter type:
->	- class_name
->   - class_id
->```json
->{
->	"data": "...",
->}
->```
-
-> Responce
->```json
->{
->	"data": "...",
->}
->```
->	Status code:
->	- 200 &#8594; Ok
->	- 500 &#8594; Server error
->	- 404 &#8594; Not found
-
-
-#### Prof
-
-{base_URL}/api/v1/account/profs/**:parameter**
-
-GET 
-
-> Request
->	Parameter type:
->	- class_name
->   - class_id
->```json
->{
->	"profData": "...",
->	"classes": [...]
->}
->```
-
-> Responce
->```json
->{
->	"data": "...",
->}
->```
->	Status code:
->	- 200 &#8594; Ok
->	- 500 &#8594; Server error
->	- 404 &#8594; Not found
-***
-
 ### Login
 
-{base_URL}/api/v1/**login**
-
-POST 
+POST {base_URL}/api/v1/**login**
 
 > Request
 >```json
@@ -209,7 +144,8 @@ POST
 >	- 500 &#8594; Server error
 >	- 403 &#8594; Forbidden: Passwors or email err						
 
-PUT
+PUT {base_URL}/api/v1/**login**
+
 > Request
 >```json
 >{
@@ -228,7 +164,7 @@ PUT
 >	- 500 &#8594; Server error
 >	- 403 &#8594; Forbidden: token non valido 						
 
-DELETE
+DELETE {base_URL}/api/v1/**login**
 
 > Request
 >```json
@@ -245,9 +181,7 @@ DELETE
 
 ### Classes
 
-{base_URL}/api/v1/classes/:class_data
-
-POST
+POST {base_URL}/api/v1/classes
 
 > Request
 >```
@@ -257,8 +191,8 @@ POST
 >{
 >	"name": "....",
 >	"img_cover": "....",
->	"startStudent": [],
->	"startProf": []
+>	"student": [...], (email)
+>	"profs": [...]	(email cambiare in id)
 >}
 >```
 
@@ -270,9 +204,8 @@ POST
 >	- 403 &#8594; Forbidden: non sei un professore
 >   - 400 &#8594; Errore nei parametri (forse da specificare meglio)
 
-{base_URL}/api/v1/classes/**:class_name**
 
-DELETE
+DELETE {base_URL}/api/v1/classes/**:class_id**
 
 > Request
 >```
@@ -288,14 +221,15 @@ DELETE
 >   - 400 &#8594; Errore nei parametri (forse da specificare meglio)
 
 
-{base_URL}/api/v1/**classes**
-
-PUT 
+PUT {base_URL}/api/v1/classes/**:class_id**
 
 > Request
+>```
+> Authorization: Bearer <token>
+>```
 >```json
 >{
->	"newDataUser":"..." 	
+>	"newDataUser":"..." (inviare solo cose da cambiare e restituire dati nuovi)
 >}
 >```
 
@@ -307,9 +241,11 @@ PUT
 >	- 403 &#8594; Forbidden: non sei tu il tutor professore
 >   - 400 &#8594; Errore nei parametri (forse da specificare meglio)
 
-{base_URL}/api/v1/classes/**:email_profs**
 
-GET
+GET {base_URL}/api/v1/classes/**:class_id**
+(nome non unique)
+
+GET {base_URL}/api/v1/classes **?name='[name1, nameN]'&email_profs='[email1, emailN]&email_student='[email1, emailN]'**
 
 > Request
 >```json
@@ -328,9 +264,6 @@ GET
 >	- 500 &#8594; Server error
 >	- 403 &#8594; Forbidden: non sei un professore
 >   - 400 &#8594; Errore nei parametri (forse da specificare meglio)
-
-(filter da decicere numero studenti regex ecc)
-
 ***
 
 ### Courses
@@ -363,9 +296,9 @@ PUT
 >	- 404 &#8594; Not Found 			
 ***
 
-{base_URL}/api/v1/courses/**:name**
+DELETE {base_URL}/api/v1/courses/**:name**
 
-DELETE
+
 
 > Request
 >```
@@ -467,26 +400,33 @@ GET
 
 #### Units
 
-{base_URL}/api/v1/courses/:courses_parameter/**units**
+GET {base_URL}/api/v1/courses/:course_id/**units**
 
-GET
 > Request
->	Courses parameter type:
->	- id
->	- name
+>
+>
 
 > Responce
 >```json
->
 >[
 >	{
 >		"name": "...",
 >		"description": "...",
->		"lessonsAndExercise": [
->			"{base_URL}/api/v1/courses/:id/units/lessons/{id}",
->			"{base_URL}/api/v1/courses/:id/units/lessons/{id..}",
->			"{base_URL}/api/v1/courses/:id/units/exercise/{id..}",
+>		"lessons": [
+>			{
+>				"name": "....",
+>				"link_video": "....",
+>				"quiz": {....},
+>			},
 >			...
+>		],
+>		"exercise":[
+>			{
+>				"name": "....",
+>				"description": "....",
+>				"filemd": {....}
+>			},
+>			...			
 >		]
 >	},
 >	...
@@ -498,17 +438,14 @@ GET
 >	- 403 &#8594; Forbidden:
 >	- 404 &#8594; Not found
 
+DELETE {base_URL}/api/v1/courses/:course_id/units/**:unit_id**
 
-DELETE
 > Request
 >```
 > Authorization: Bearer <token>
 >```
->DELETE di tutte le unita di un corso
+>DELETE di una delle unita di un corso
 >
->	Courses parameter type:
->	- id
->	- name
 >```
 
 >Responce
@@ -517,49 +454,21 @@ DELETE
 >	- 500 &#8594; Server error
 >	- 404 &#8594; Not found
 >	- 403 &#8594; Forbidden:
-
-
-{base_URL}/api/v1/courses/:course_parameter/units/**:unit_parameter**
-
-DELETE 
-> Request
->	Courses parameter type:
->	- id
->	- name
->
->	Units parameter type:
->	- id
->	- name
-
-> Responce
->```
->	Status code:
->	- 200 &#8594; Ok
->	- 500 &#8594; Server error
->	- 403 &#8594; Forbidden:
->	- 404 &#8594; Not found
 ***
-
 
 #### Lessons
 
-{base_URL}/api/v1/courses/:courses_parameter/units/units_parameter/**lessons**
+POST {base_URL}/api/v1/lessons
 
-POST
 > Request
 >```
 > Authorization: Bearer <token>
 >```
->	Courses parameter type:
->	- id
->	- name
->
->	Units parameter type:
->	- id
->	- name
->
+
 >```json
 >{
+>	"course_id": "...",
+>	"unit_id": "...",
 >	"name": "....",
 >	"link_video": "....",
 >	"quiz": {....},
@@ -575,44 +484,19 @@ POST
 >   - 400 &#8594; Errore nei parametri (forse da specificare meglio)
 
 
-{base_URL}/api/v1/courses/:courses_parameter/units/units_parameter/lessons/**:lesson_parameter**
 
-GET
-> Request
->	Courses parameter type:
->	- id
->	- name
->
->	Lessons parameter type:
->	- id
->	- name
+DELETE {base_URL}/api/v1/lessons/:lesson_id
 
-> Responce
->```json
->{
->	"name": "....",
->	"link_video": "....",
->	"quiz": {....},
->}
->```
->	Status code:
->	- 200 &#8594; Ok
->	- 500 &#8594; Server error
->	- 404 &#8594; Not found
-
-
-DELETE
 > Request
 >```
 > Authorization: Bearer <token>
 >```
->	Courses parameter type:
->	- id
->	- name
->
->	Units parameter type:
->	- id
->	- name
+>```json
+>{
+>	"course_id": "...",
+>	"unit_id": "..."
+>}
+>```
 
 > Responce
 >
@@ -622,10 +506,14 @@ DELETE
 >	- 403 &#8594; Forbidden: non sei un professore
 >   - 400 &#8594; Errore nei parametri (forse da specificare meglio)
 
-PUT
+
+PUT {base_URL}/api/v1/lessons/:lesson_id
+
 > Request
 >```json
 >{
+>	"course_id": "...",
+>	"unit_id": "...",
 >	"newLessonData": "...."
 >}
 >```
@@ -641,23 +529,17 @@ PUT
 
 #### Exercise
 
-{base_URL}/api/v1/courses/:courses_parameter/units/units_parameter/**exercise**
+POST {base_URL}/api/v1/exercises
 
-POST
 > Request
 >```
 > Authorization: Bearer <token>
 >```
->	Courses parameter type:
->	- id
->	- name
->
->	Units parameter type:
->	- id
->	- name
->
+
 >```json
 >{
+>	"course_id": "...",
+>	"unit_id": "...",
 >	"name": "....",
 >	"description": "....",
 >	"filemd": {....},
@@ -672,45 +554,18 @@ POST
 >	- 403 &#8594; Forbidden: non sei un professore
 >   - 400 &#8594; Errore nei parametri (forse da specificare meglio)
 
-		
-{base_URL}/api/v1/courses/:courses_parameter/units/units_parameter/exercise/**:exercise_parameter**
+DELETE {base_URL}/api/v1/exercises/:exercise_id
 
-GET
-> Request
->	Courses parameter type:
->	- id
->	- name
->
->	Exercise parameter type:
->	- id
->	- name
-
-> Responce
->```json
->{
->	"name": "....",
->	"description": "....",
->	"filemd": {....},
->}
->```
->	Status code:
->	- 200 &#8594; Ok
->	- 500 &#8594; Server error
->	- 404 &#8594; Not found
-
-
-DELETE
 > Request
 >```
 > Authorization: Bearer <token>
 >```
->	Courses parameter type:
->	- id
->	- name
->
->	Units parameter type:
->	- id
->	- name
+>```json
+>{
+>	"course_id": "...",
+>	"unit_id": "..."
+>}
+>```
 
 > Responce
 >
@@ -718,13 +573,16 @@ DELETE
 >	- 200 &#8594; Ok
 >	- 500 &#8594; Server error
 >	- 403 &#8594; Forbidden: non sei un professore
-> - 400 &#8594; Errore nei parametri (forse da specificare meglio)
+>   - 400 &#8594; Errore nei parametri (forse da specificare meglio)
 
-PUT
+PUT {base_URL}/api/v1/exercises/:exercise_id
+
 > Request
 >```json
 >{
->	"newExerciseData": "...."
+>	"course_id": "...",
+>	"unit_id": "...",
+>	"newExercisesData": "...."
 >}
 >```
 
