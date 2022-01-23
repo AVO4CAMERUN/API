@@ -57,15 +57,9 @@ GET {base_URL}/api/v1/account/:email
 
 > Responce
 >```json
->[
->	{
->		"oneUserData": "..."
->	},
->	{
->		"TwoUserData": "..."
->	},
->	...
->]
+>{
+>		"userData": "..."
+>}	
 >```
 >	Status code:
 >	- 200 &#8594; Ok
@@ -142,7 +136,7 @@ DELETE {base_URL}/api/v1/**account**
 >   - NNN &#8594; hai gia eliminato un account
 ***
 
-GET {base_URL}/api/v1/account/**:confirmAccountCode**
+GET {base_URL}/api/v1/account/confirm/**:confirmAccountCode**
 
 > Request
 >```
