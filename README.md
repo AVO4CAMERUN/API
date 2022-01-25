@@ -1,115 +1,587 @@
 # REST API
 
 ### Root api
+<!--
 GET     {base_URL}/api/v1/
 POST    {base_URL}/api/v1/  
 PUT 
 DELETE
+<mark>forse fare conferma anche per delete account</mark>
+-->
+***
 
-### Account
+### Account 
 
-POST    {base_URL}/api/v1/account  
-DELETE  {base_URL}/api/v1/account  (Non che bisogno di un codice perche che Auth  => forse fare conferma da email)
-GET     {base_URL}/api/v1/account/:confirmCode
+POST {base_URL}/api/v1/**account**
+> Request
+>```json
+>{
+>	"username": "....",
+>	"password": "....",
+>	"email": "example@example.com"
+>}
+>```
 
-```json
-{
-  "firstName": "John",
-  "lastName": "Smith",
-  "age": 25
-}
-```
+> Responce
+>
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: users gia preso
+>   - NNN &#8594; hai gia un account
+
+
+GET {base_URL}/api/v1/account
+> Request
+> Restituisce tutti gli account con tutte le loro informazioni
+
+> Responce
+>```json
+>[
+>	{
+>		"oneUserData": "..."
+>	},
+>	{
+>		"TwoUserData": "..."
+>	},
+>	...
+>]
+>```
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+
+GET {base_URL}/api/v1/account/:email
+> Request
+> Restituisce l'account corrispondenet all'email
+
+> Responce
+>```json
+>{
+>		"userData": "..."
+>}	
+>```
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 404 &#8594; Not found
+
+GET {base_URL}/api/v1/account **?firstname='[name1, nameN]'&lastname='[name1, nameN]'&role='[role1, roleN]'&class_id='[id1, id2]'**
+> Request
+>	Parameter type:
+>	- role
+>	- firstname
+>	- lastname
+>i parametri non specificati sarranno undefined è quindi non verranodo considerati
+
+> Responce
+>```json
+>[
+>	{
+>		"oneUserData": "..."
+>	},
+>	{
+>		"TwoUserData": "..."
+>	},
+>	...
+>]
+>```
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+
+PUT {base_URL}/api/v1/account/**:email**
+> Request
+>	Parameter type for json request:
+>	- role
+>	- firstname
+>	- lastname
+>	- password
+>	- profile_img
+>```json
+>{
+>	"newDataUser":"..." 
+>}
+>
+>```
+>L'account viene identificato tarmite l'email, che non verra mai cambiata.
+>i campi non esistenti o impostati a undefined vengono ignorati
+
+> Responce
+>```json
+>{
+>	"newAllDataUser": "...",
+>}
+>```
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: non è il tuo account
+
+
+DELETE {base_URL}/api/v1/**account**
+> Request
+>```
+> Authorization: Bearer <token>
+>```
+>Non che bisogno di un codice perche l'autenticazione avviene tramite jwt
+>Solo un propritario di account puo eliminarlo
+
+> Responce
+>
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: token scaduto
+>   - NNN &#8594; hai gia eliminato un account
+***
+
+GET {base_URL}/api/v1/account/confirm/**:confirmAccountCode**
+
+> Request
+>```
+> Confirm code: codice generato casualmete univoco temporizzato per confermare 
+>```
+
+> Responce
+>
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 401 &#8594; Unauthorized: codice sbagliato
+>   - 500 &#8594; Server error
+(forse unificare le richieste per creare e delete account distringerle tramite programma)
+
+GET {base_URL}/api/v1/account/**:confirmDeleteCode** 	//aggiungere la conferma per l'elimina
+***
 
 ### Login
 
-POST    {base_URL}/api/v1/login  
-DELETE  {base_URL}/api/v1/login
-PUT     {base_URL}/api/v1/login 
+POST {base_URL}/api/v1/**login**
+> Request
+>```json
+>{
+>	"username": "....",
+>	"password": "...."
+>}
+>```
 
-### Users
-POST    {base_URL}/api/v1/users     (Da vedere con account)
+> Responce
+>```json
+>{
+>	"accessToken": "....",
+>	"refreshToken": "...."
+>}
+>```
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: Passwors or email err						
 
-GET     {base_URL}/api/v1/users/:email
-GET     {base_URL}/api/v1/users/:username
-GET     {base_URL}/api/v1/users/:role
-GET     {base_URL}/api/v1/users/:firstname
-GET     {base_URL}/api/v1/users/:lastname
-GET     {base_URL}/api/v1/users/:registration_date
-GET     // magari farli misti o unirli
+PUT {base_URL}/api/v1/**login**
+> Request
+>```json
+>{
+>	"refreshToken": "...."
+>}
+>```
 
-PUT     {base_URL}/api/v1/users/:email/new_users_data (cambia tutto tranne email)
+> Responce
+>```json
+>{
+>	"newAccessToken": "....",
+>}
+>```
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: token non valido 						
 
-DELETE  {base_URL}/api/v1/users
+DELETE {base_URL}/api/v1/**login**
+> Request
+>```json
+>{
+>	"refreshToken": "...."
+>}
+>```
 
-#### Student
-GET     {base_URL}/api/v1/users/students/:class_name
-
-#### Prof
-GET     {base_URL}/api/v1/users/profs/:class_name
-GET     {base_URL}/api/v1/users/profs/:class_name/:role
+> Responce
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 403 &#8594; Forbidden: fake token 						
+***
 
 ### Classes
 
-POST    {base_URL}/api/v1/classes/:class_data  
-POST    {base_URL}/api/v1/classes/:email_creator 
+POST {base_URL}/api/v1/classes
+> Request
+>```
+> Authorization: Bearer <token>
+>```
+>```json
+>{
+>	"name": "....",
+>	"img_cover": "....",
+>	"student": [...], (email)
+>	"profs": [...]	(email forse da cambiare in id, piu performante)
+>}
+>```
 
-DELETE  {base_URL}/api/v1/classes/:class_name 
-DELETE  {base_URL}/api/v1/classes/:email_creator  
+> Responce
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: non sei un professore
+>   - 400 &#8594; Errore nei parametri (forse da specificare meglio)
 
-PUT     {base_URL}/api/v1/classes
 
-GET  {base_URL}/api/v1/classes/:email_creator
-GET  {base_URL}/api/v1/classes/:email_creator/:(filter da decicere numero studenti regex ecc)
+GET {base_URL}/api/v1/classes/**:class_id** (nome non unique)
+> Request
+>
+
+> Responce
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 404 &#8594; Forbidden: non sei un professore
+
+
+GET {base_URL}/api/v1/classes **?name='[name1, nameN]'&email_profs='[email1, emailN]&email_student='[email1, emailN]'**
+
+> Request
+>
+
+> Responce
+>
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+
+
+PUT {base_URL}/api/v1/classes/**:class_id**
+> Request
+>```
+> Authorization: Bearer <token>
+>```
+>```json
+>{
+>	"newDataUser":"..."
+>}
+>```
+
+> Responce
+>```json
+>{
+>	"newAllDataUser":"..."
+>}
+>```
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: non sei tu il tutor professore
+>   - 400 &#8594; Errore nei parametri (forse da specificare meglio)
+
+
+DELETE {base_URL}/api/v1/classes/**:class_id**
+> Request
+>```
+> Authorization: Bearer <token>
+>```
+
+> Responce
+>
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: non sei un professore
+>   - 400 &#8594; Errore nei parametri (forse da specificare meglio)
+***
+
 
 ### Courses
+POST    {base_URL}/api/v1/**courses**
+(usare le piccole post delle unita, lesson, exe..)
 
-POST    {base_URL}/api/v1/courses
-PUT     {base_URL}/api/v1/courses/:name
-PUT     {base_URL}/api/v1/courses/:email_creator/:id
+GET {base_URL}/api/v1/**courses** 
+(Non so se utile, restituisce un vettore di tutti i corsi)
 
-DELETE  {base_URL}/api/v1/courses/:name
-DELETE  {base_URL}/api/v1/courses/:email_creator 
+GET {base_URL}/api/v1/courses/**:course_id**
+> Request
+>```
+>Free request
+>```
 
-GET     {base_URL}/api/v1/courses/
+> Responce
+>```json
+>{
+>	coursesSimpleData: {
+>		"name": "...", 
+>		"description": "...",
+>		"creation_date": "...",
+>		"subject": "...",
+>		"img_cover": "..."		
+>	},
+>	units:[
+>		{
+>			"name": "...",
+>			"description": "...",
+>			"lessons": [
+>						{
+>						   "name": "....",
+>						   "creation_date": "....",
+>						   "link_video": "...",
+>						   "quiz":{...}	
+>						},								
+>						...
+>						],
+>			"exercises": [
+>							{
+>							   "name": "....",							
+>							   "creation_date": "....",
+>							   "exercise":{...}
+>							},								
+>							...
+>						]
+>		},
+>		....
+>	   ]
+>}
+>```
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
 
-GET     {base_URL}/api/v1/courses/:id
-GET     {base_URL}/api/v1/courses/:name
-GET     {base_URL}/api/v1/courses/:email_creator
-GET     {base_URL}/api/v1/courses/:email_creator/:suject
-GET     {base_URL}/api/v1/courses/:creation_date
-GET     {base_URL}/api/v1/courses/:suject
 
-### Units
-
-POST    {base_URL}/api/v1/courses/:id/units
-POST    {base_URL}/api/v1/courses/:name/units
-
-DELETE  {base_URL}/api/v1/courses/:id/units/:id 
-DELETE  {base_URL}/api/v1/courses/:name/units/:name
+GET {base_URL}/api/v1/classes **?name='[name1, nameN]'&email_profs='[email1, emailN]&email_student='[email1, emailN]'**
 
 
-GET  {base_URL}/api/v1/courses/units/:id
-GET  {base_URL}/api/v1/courses/units/:name
-GET  {base_URL}/api/v1/courses/:id/units/:id 
-GET  {base_URL}/api/v1/courses/:name/units/:name
+PUT     {base_URL}/api/v1/courses/**:parameter**
 
-### Lessons
+PUT
+> Request
+>	Parameter type:
+>	- id
+>	- name
+>```
+> Authorization: Bearer <token>
+>```
+>```json
+>{
+>	"newCoursesData": "...."
+>}
+>```
 
-POST    {base_URL}/api/v1/courses/:id/units/lessons
-POST    {base_URL}/api/v1/courses/:name/units/lessons
+> Responce
+>
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden 	
+>	- 404 &#8594; Not Found 			
 
-DELETE  {base_URL}/api/v1/courses/:id/lessons/:id
-DELETE  {base_URL}/api/v1/courses/:id/lessons/:name
+
+DELETE {base_URL}/api/v1/courses/**:course_id**
+
+> Request
+>```
+> Authorization: Bearer <token>
+>```
+>Non che bisogno di un codice perche l'autenticazione avviene tramite jwt
+
+> Responce
+>
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: token scaduto
+>   - 404 &#8594; Not found: il corso non esiste
+***
+
+#### Units
+
+GET {base_URL}/api/v1/courses/:course_id/**units**
+> Request
+>
+
+> Responce
+>```json
+>[
+>	{
+>		"name": "...",
+>		"description": "...",
+>		"lessons": [
+>			{
+>				"name": "....",
+>				"link_video": "....",
+>				"quiz": {....},
+>			},
+>			...
+>		],
+>		"exercise":[
+>			{
+>				"name": "....",
+>				"description": "....",
+>				"filemd": {....}
+>			},
+>			...			
+>		]
+>	},
+>	...
+>]
+>```
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden:
+>	- 404 &#8594; Not found
+
+DELETE {base_URL}/api/v1/courses/:course_id/units/**:unit_id**
+> Request
+>```
+> Authorization: Bearer <token>
+>```
+>DELETE di una delle unita di un corso
+>```
+
+>Responce
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 404 &#8594; Not found
+>	- 403 &#8594; Forbidden:
+***
+
+#### Lessons
+
+POST {base_URL}/api/v1/**lessons**
+> Request
+>```
+> Authorization: Bearer <token>
+>```
+
+>```json
+>{
+>	"course_id": "...",
+>	"unit_id": "...",
+>	"name": "....",
+>	"link_video": "....",
+>	"quiz": {....},
+>}
+>```
+
+> Responce
+>
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: non sei un professore
+>   - 400 &#8594; Errore nei parametri
+
+PUT {base_URL}/api/v1/lessons/**:lesson_id**
+> Request
+>```json
+>{
+>	"course_id": "...",
+>	"unit_id": "...",
+>	"newLessonData": "..."
+>}
+>```
+
+> Responce
+>```json
+>{
+>	"newAllDataLesson": "..."
+>}
+>```
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden 	
+>	- 404 &#8594; Not Found 	
+
+DELETE {base_URL}/api/v1/lessons/**:lesson_id**
+> Request
+>```
+> Authorization: Bearer <token>
+>```
+>```json
+>{
+>	"course_id": "...",
+>	"unit_id": "..."
+>}
+>```
+
+> Responce
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: non sei un professore
+>   - 404 &#8594; Not Found
+***
+
+#### Exercise
+
+POST {base_URL}/api/v1/**exercises**
+> Request
+>```
+> Authorization: Bearer <token>
+>```
+
+>```json
+>{
+>	"course_id": "...",
+>	"unit_id": "...",
+>	"name": "....",
+>	"description": "....",
+>	"filemd": {....},
+>}
+>```
+
+> Responce
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: non sei un professore
+>   - 400 &#8594; Errore nei parametri 
 
 
-GET  {base_URL}/api/v1/courses/:id/lessons
-GET  {base_URL}/api/v1/courses/:name/lessons
-GET  {base_URL}/api/v1/courses/:id/lessons/:id 
-GET  {base_URL}/api/v1/courses/:name/lessons/:name
+PUT {base_URL}/api/v1/exercises/**:exercise_id**
+> Request
+>```json
+>{
+>	"course_id": "...",
+>	"unit_id": "...",
+>	"newExerciseData": "...."
+>}
+>```
 
-### Exercise
+> Responce
+>```json
+>{
+>	"newAllDataExercise": "..."
+>}
+>```
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden 	
+>	- 404 &#8594; Not Found 
 
-GET     {base_URL}/api/v1/
-POST    {base_URL}/api/v1/  
-PUT 
-DELETE  
+DELETE {base_URL}/api/v1/exercises/**:exercise_id**
+> Request
+>```
+> Authorization: Bearer <token>
+>```
+>```json
+>{
+>	"course_id": "...",
+>	"unit_id": "..."
+>}
+>```
+
+> Responce
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: non sei un professore
+>   - 400 &#8594; Errore nei parametri
+***
