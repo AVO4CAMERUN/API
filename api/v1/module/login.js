@@ -11,23 +11,23 @@ const router = express.Router();   //Create router Object
 router.use(bodyParser.json());     //Middleware for parse http req
 
 // Util Object
-const dbConnnect = new DBservices('localhost', 'root', '', 'avo4cum');
+const dbc = new DBservices('localhost', 'root', '', 'avo4cum');
 
 // Login
 router.route('/login')
 
     //Login / Create session
-    .post( (req, res) => {
+    .post((req, res) => {
         const { username, password } = req.body;
 
         // Query check account
-        dbConnnect.genericCycleQuery(
+        dbc.genericCycleQuery(
             {
-                queryMethod: dbConnnect.checkUsernamePassword,
+                queryMethod: dbc.checkUsernamePassword,
                 par: [username, password]
             },
             {
-                queryMethod: dbConnnect.getUserInfo,
+                queryMethod: dbc.getUserInfoByUsername,
                 par: [username]
             }
         )
@@ -56,12 +56,12 @@ router.route('/login')
         })  
         .catch((err) =>{
             console.log(err);
-            res.sendStatus(); // Send Status server error
+            res.sendStatus(500); // Send Status server error
         })
     })
 
     //Update session 
-    .put( (req, res) => {
+    .put((req, res) => {
         const { token } = req.body;
 
         if (!token) { return res.sendStatus(401); }
@@ -70,14 +70,14 @@ router.route('/login')
         jwt.verify(token, authJWT.refreshTokenSecret, (err) => {
             if (err) { return res.sendStatus(403); }
 
-            let user = authJWT.parseJwt(token);  //Extract js obj
+            let user = authJWT.jwtToObj(token);  //Extract js obj
             const accessToken = jwt.sign({ username: user.username, role: user.role }, authJWT.accessTokenSecret, { expiresIn: '20m' });
             res.json({accessToken});
         });
     })
 
     //Logout / Delete session
-    .delete( (req, res) => {
+    .delete((req, res) => {
         const { token } = req.body;
         //da rivedere
         if(authJWT.refreshTokens.includes(token)){

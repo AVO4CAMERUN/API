@@ -6,22 +6,25 @@ const jwt = require('jsonwebtoken');
 const DBservices = require('./utils/mysqlConn');
 const MailSender = require('./utils/MailSender');
 const authJWT = require('./utils/auth');
+const BlobConvert = require('./utils/blobConvert');
 
 const router = express.Router();    //Create router Object
 router.use(bodyParser.json());      //Middleware for parse http req
 
 // Util Obj
 const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';                // Set for confirm token
-const dbConnnect = new DBservices('localhost', 'root', '', 'avo4cum');                              // Obj for db connect
+const dbc = new DBservices('localhost', 'root', '', 'avo4cum');                                     // Obj for db connect
 const mailSender = new MailSender('Gmail','avogadro4camerun@gmail.com','AmaraPriscoTommasi123');    // OBj for mails send
-let suspendedUsers = []; //{code: value, usermane: vaule, password:value role: value}               // List for suspendedUsers 
 
 
-// Register
+// List for suspendedUsers
+let suspendedUsers = []; //{code: value, usermane: vaule, password:value role: value}                
+
+// Register and get all account
 router.route('/account')
 
     // Create new account
-    .post((req, res) => {
+    .post(authJWT.authenticateJWT, (req, res) => {
         const {username, email, password} = req.body;
 
         // Check that there is not already a request
@@ -29,13 +32,13 @@ router.route('/account')
         suspendedUsers.forEach( (u, i) =>{ email === u['email']? isThere = true : isThere = false })
 
         if(!isThere){
-            dbConnnect.genericCycleQuery(
+            dbc.genericCycleQuery(
                 {
-                    queryMethod: dbConnnect.isRegistred,
+                    queryMethod: dbc.isRegistred,
                     par: [email]
                 },
                 {
-                    queryMethod: dbConnnect.isFreeUsername,
+                    queryMethod: dbc.isFreeUsername,
                     par: [username]
                 }
             )
@@ -97,17 +100,78 @@ router.route('/account')
         }
   
     })
-   
+    
+    // Update user data 
+    .put(authJWT.authenticateJWT, (req, res) =>{
+        const user = authJWT.parseAuthorization(req.headers.authorization)
+        let {email} = user;
+
+        console.log(user);
+        //console.log(req.body);
+
+        //controlli cose come non poter cambiare role e altre cose
+        if(user.role){ res.sendStatus(403); }
+        //if(user.password){ user.password = "SHA2('user.password', 256)"}    //se si riesce sistemare qua e non da generic cosa
+        //rifattorizzare codice
+        
+        dbc.genericCycleQuery(
+            {
+                queryMethod: dbc.updateUserInfo,
+                par: [{email}, req.body]
+            },
+        )
+        .then((result) => {
+            //console.log(result);
+            res.sendStatus(200);
+        })
+        .catch((err)=>{
+            console.log(err);
+            res.sendStatus(500); // Server error
+        })
+
+    })
+
+    // Get user data 
+    .get((req, res) =>{ 
+
+        // Cast data for query
+        for (const key of Object.keys(req.query)) 
+            req.query[key] = dbc.strToArray(req.query[key])
+        
+        // Indirect call 
+        dbc.genericCycleQuery(
+            {
+                queryMethod: dbc.getUserDataByFilter,
+                par: [req.query]
+            }
+        )
+        .then((result) => {
+            // Take the DB answer 
+            let usersData = result[0].value;
+      
+            // Convert img in base64
+            for (const user of usersData) {
+                user['img_profile'] = BlobConvert.blobToBase64(user['img_profile']);
+            }
+
+            // Responce 
+            res.send(usersData)
+        })
+        .catch((err)=>{
+            console.log(err);
+            res.sendStatus(500); // Server error
+        })
+    })  
+
     // Delete account
     .delete(authJWT.authenticateJWT, (req, res) => {
-        const token = req.headers.authorization.split(' ')[1];  // Extract token 
-        const data = authJWT.parseJwt(token);     //Extract js obj
-        const email = data.email;
+        const user = authJWT.parseAuthorization(req.headers.authorization)
+        let {email} = user;
 
         // Delete account and account relaction
-        dbConnnect.genericCycleQuery(   //non necessario controllo tanto ce auth
+        dbc.genericCycleQuery(   //non necessario controllo tanto ce auth
             {
-                queryMethod:  dbConnnect.delateAccount,
+                queryMethod:  dbc.delateAccount,
                 par: [email]
             }
         )
@@ -115,10 +179,14 @@ router.route('/account')
             console.log(result);
             res.sendStatus(200);
         })
+        .catch((err)=>{
+            console.log(err);
+            res.sendStatus(500); // Server error
+        })
     })
 
 // Route cofirm code
-router.get('/account/:confirmCode', (req, res) => {
+router.get('/account/confirm/:confirmCode', (req, res) => {
     
     // Check that suspendedUsers includes confirmCode
     let isThere, index; 
@@ -135,9 +203,9 @@ router.get('/account/:confirmCode', (req, res) => {
     if(isThere){
         const {username, email, password} = suspendedUsers[index];  // add role
 
-        dbConnnect.genericCycleQuery(
+        dbc.genericCycleQuery(
             {
-                queryMethod: dbConnnect.createAccount,
+                queryMethod: dbc.createAccount,
                 par: [username, password, email, '01']  //da modificare in base al ruolo 01 02 ecc codice in registrazione compo in piu
             }
         )
@@ -145,8 +213,9 @@ router.get('/account/:confirmCode', (req, res) => {
             suspendedUsers.filter(value => value !== suspendedUsers[index]);    //Remove in the suspendedUsers 
             res.sendStatus(200) //ok  --> grazie per aver completato la registrazione ora poi toranre all app 
         })
-        .catch((err) =>{
+        .catch((err)=>{
             console.log(err);
+            res.sendStatus(500); // Server error
         })
 
         //console.log(suspendedUsers[index]);
@@ -154,5 +223,7 @@ router.get('/account/:confirmCode', (req, res) => {
         res.sendStatus(401); // Unauthorized -->codice sbaglaito gestirsela con i json
     } 
 })
+
+//forse fare email per il delate
 
 module.exports = router;

@@ -1,4 +1,3 @@
-const fs = require('fs');
 const jwt = require('jsonwebtoken');
 
 // Static class for auth
@@ -27,8 +26,15 @@ class Auth {
         }
     }  
 
+    // Methods for take token from authorization 
+    static parseAuthorization(authorization){
+        //fare try e catch per undefinded value
+        const token = req.headers.authorization.split(' ')[1];  // Extract token
+        return jwtToObj(token)
+    }
+    
     // Methods for decode token Base64
-    static parseJwt(token) {
+    static jwtToObj(token) {
         let payload = token.split('.')[1];
         let buff = Buffer.from(payload, 'base64'); 
         let obj = JSON.parse(buff.toString());
@@ -38,3 +44,4 @@ class Auth {
 }
 
 module.exports = Auth;
+//semplificare con un solo token
