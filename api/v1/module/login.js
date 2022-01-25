@@ -19,7 +19,7 @@ router.route('/login')
     //Login / Create session
     .post((req, res) => {
         const { username, password } = req.body;
-
+        console.log("sss");
         // Query check account
         dbc.genericCycleQuery(
             {

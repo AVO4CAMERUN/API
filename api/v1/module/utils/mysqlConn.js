@@ -194,6 +194,11 @@ class DBservices {
         return contex.genericQuery(`INSERT INTO classes (id, name, archived) VALUES (NULL, '${name}', '0');`)
     }
 
+    // Query for delete class
+    async delateClass(contex, id){
+        return contex.genericQuery(`DELETE FROM classes WHERE id='${id}';`)   
+    }
+    
     // Query for get data class for id
     async getClassDataByID(contex, id){
         console.log(`SELECT id, name, img_cover, archived FROM classes WHERE id = '${id}'`);

@@ -24,7 +24,7 @@ let suspendedUsers = []; //{code: value, usermane: vaule, password:value role: v
 router.route('/account')
 
     // Create new account
-    .post(authJWT.authenticateJWT, (req, res) => {
+    .post((req, res) => {
         const {username, email, password} = req.body;
 
         // Check that there is not already a request

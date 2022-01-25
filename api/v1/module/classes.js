@@ -39,7 +39,7 @@ router.route('/classes')
             }
 
             // Responce 
-            res.send(classesData)
+            res.send(classesData);
         })
         .catch((err)=>{
             console.log(err);

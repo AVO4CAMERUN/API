@@ -2,10 +2,14 @@
 
 // Standard module import
 const express = require('express');
+var cors = require('cors')
 const path = require('path');
 
 // Create requets rooter
 const app = express();
+
+// 
+app.use(cors())
 
 // Personal module import
 const v1 = require('./api/v1/v1');
