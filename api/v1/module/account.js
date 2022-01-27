@@ -25,7 +25,7 @@ router.route('/account')
 
     // Create new account
     .post((req, res) => {
-        const {username, email, password} = req.body;
+        const {username, email, password, name, surname} = req.body;
 
         // Check that there is not already a request
         let isThere;
@@ -44,8 +44,6 @@ router.route('/account')
             )
             .then((result) => {
                 
-                //console.log(result[0]?.value[0]['COUNT(*)']);
-           
                 // Result async query
                 if(result[0]?.value[0]['COUNT(*)'] > 0 || result[1]?.value[0]['COUNT(*)']){
                     res.sendStatus(403); // Forbidden --> hai gia profilo
@@ -68,9 +66,11 @@ router.route('/account')
                     // Save code and user info
                     suspendedUsers.push({
                         code, 
-                        email: email, 
-                        username: username, 
-                        password: password
+                        name,
+                        surname,
+                        email, 
+                        username, 
+                        password
                     }) 
 
                     // Set expiration code
@@ -95,7 +95,6 @@ router.route('/account')
             })
 
         } else {
-            // Sei gia sospeso coglione
             res.sendStatus(200); //alredy requet code getsirsela con i json 
         }
   
@@ -186,7 +185,7 @@ router.route('/account')
     })
 
 // Route cofirm code
-router.get('/account/confirm/:confirmCode', (req, res) => {
+router.get('/account/:confirmCode', (req, res) => {
     
     // Check that suspendedUsers includes confirmCode
     let isThere, index; 
@@ -201,13 +200,13 @@ router.get('/account/confirm/:confirmCode', (req, res) => {
 
     // Confirmed code
     if(isThere){
-        const {username, email, password} = suspendedUsers[index];  // add role
+        const {name, surname, username, email, password} = suspendedUsers[index];  // add role
 
         dbc.genericCycleQuery(
             {
                 queryMethod: dbc.createAccount,
-                par: [username, password, email, '01']  //da modificare in base al ruolo 01 02 ecc codice in registrazione compo in piu
-            }
+                par: [name, surname, username, password, email, '01']  //da modificare in base al ruolo 01 02 ecc codice in registrazione compo in piu
+            } //
         )
         .then((result) => {
             suspendedUsers.filter(value => value !== suspendedUsers[index]);    //Remove in the suspendedUsers 

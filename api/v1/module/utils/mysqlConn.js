@@ -155,13 +155,13 @@ class DBservices {
     // --------------------------- Account ---------------------------
     
     // Query for create user
-    async createAccount(contex, username, password, email, role){
+    async createAccount(contex, name, surname, username, password, email, role){
         let date = contex.getDateString();
         /*console.log(`INSERT INTO users (email, role, username, first_name, last_name, password, registration_date, img_profile, id_class) 
         VALUES ('${email}', '${role}', '${username}', NULL, NULL, SHA2('${password}', 256), '${date}', NULL, NULL);`);*/
 
         return contex.genericQuery(`INSERT INTO users (email, role, username, firstname, lastname, password, registration_date, img_profile, id_class) 
-        VALUES ('${email}', '${role}', '${username}', NULL, NULL, SHA2('${password}', 256), '${date}', NULL, NULL);`)
+        VALUES ('${email}', '${role}', '${username}', '${name}', '${surname}', SHA2('${password}', 256), '${date}', NULL, NULL);`)
     }
 
     // Query for delete user and all relaction
