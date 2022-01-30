@@ -108,16 +108,17 @@ router.route('/account')
         console.log(user);
         //console.log(req.body);
 
-        //controlli cose come non poter cambiare role e altre cose
+        // Da controllare se si vouole cambiare il role e negare, aggistare cambiare update password con sha2 ...
         if(user.role){ res.sendStatus(403); }
         //if(user.password){ user.password = "SHA2('user.password', 256)"}    //se si riesce sistemare qua e non da generic cosa
         //rifattorizzare codice
         
+        // Indirect call 
         dbc.genericCycleQuery(
             {
                 queryMethod: dbc.updateUserInfo,
                 par: [{email}, req.body]
-            },
+            }
         )
         .then((result) => {
             //console.log(result);
@@ -127,7 +128,6 @@ router.route('/account')
             console.log(err);
             res.sendStatus(500); // Server error
         })
-
     })
 
     // Get user data 
@@ -205,7 +205,7 @@ router.get('/account/:confirmCode', (req, res) => {
         dbc.genericCycleQuery(
             {
                 queryMethod: dbc.createAccount,
-                par: [name, surname, username, password, email, '01']  //da modificare in base al ruolo 01 02 ecc codice in registrazione compo in piu
+                par: [name, surname, username, password, email, '01'] // In first time all users are student = 01
             } //
         )
         .then((result) => {
@@ -222,7 +222,5 @@ router.get('/account/:confirmCode', (req, res) => {
         res.sendStatus(401); // Unauthorized -->codice sbaglaito gestirsela con i json
     } 
 })
-
-//forse fare email per il delate
 
 module.exports = router;

@@ -15,11 +15,10 @@ const dbc = new DBservices('localhost', 'root', '', 'avo4cum');
 
 // Login
 router.route('/login')
-
     //Login / Create session
     .post((req, res) => {
         const { username, password } = req.body;
-        console.log("sss");
+        
         // Query check account
         dbc.genericCycleQuery(
             {
@@ -32,13 +31,11 @@ router.route('/login')
             }
         )
         .then((result) => {
-
-            //console.log(result[0].value[0]['COUNT(*)']);
+            
             if(result[0].value[0]['COUNT(*)'] > 0){
                 // Util Data
                 let extendData = result[1].value[0];
                 let {email, username, role} = extendData;
-                //console.log(email, username, role);
                 
                 // generate an access token
                 const userDataToken = {email, username, role}
@@ -51,7 +48,7 @@ router.route('/login')
                 // Send json with tokens
                 res.json({accessToken, refreshToken});
             } else {
-                res.send('Username or password incorrect'); // Send json responce --> da modificare
+                res.sendStatus(403); // Send json responce --> da modificare
             }
         })  
         .catch((err) =>{
@@ -84,7 +81,7 @@ router.route('/login')
             authJWT.refreshTokens = authJWT.refreshTokens.filter(value => value !== token); //Delete token for logout
             res.sendStatus(200);  //ok Logout successful"
         } else{
-            res.sendStatus(403); //Fake tokens
+            res.send(403); //Fake tokens
         }
         //console.log(refreshTokens)
     })

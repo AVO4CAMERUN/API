@@ -29,8 +29,8 @@ class Auth {
     // Methods for take token from authorization 
     static parseAuthorization(authorization){
         //fare try e catch per undefinded value
-        const token = req.headers.authorization.split(' ')[1];  // Extract token
-        return jwtToObj(token)
+        const token = authorization.split(' ')[1];  // Extract token
+        return this.jwtToObj(token)
     }
     
     // Methods for decode token Base64

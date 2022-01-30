@@ -2,15 +2,12 @@
 
 // Standard module import
 const express = require('express');
-var cors = require('cors')
+const cors = require('cors')
 const path = require('path');
 
 // Create requets rooter
-const app = express();
-
-// 
+const app = express(); 
 app.use(cors())
-
 // Personal module import
 const v1 = require('./api/v1/v1');
 
@@ -29,6 +26,7 @@ app.get('/rules/:v', (req, res) => {
 
 // Rest-api interface v1 (Versioni non necessiarissime anche se potrebbero essere fornite alcune per inntegrazione su altri siti)
 app.use('/api/v1', v1);
+
 
 // Start http-server port 80
 app.listen(80); 

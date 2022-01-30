@@ -42,7 +42,7 @@ class DBservices {
     // Generic Query -->  gestire gli errori da then e catch
     genericQuery(query){
         let c = this.connect;
-    
+        // console.log(query);
         return new Promise( (res, rej) => {
             c.query(query, (err, result) => {
                     if(err) rej(err)  
@@ -54,7 +54,7 @@ class DBservices {
 
     // Cycle Generic request
     async genericCycleQuery(...queryObjs){
-        const contex = this;                            //fare for of di query o poi fare close
+        const contex = this;
         const {host, user, password, database} = this;
 
         // Start connect
@@ -67,7 +67,7 @@ class DBservices {
     
         // Query execute
         let promises = []
-        for (let i = 0; i < queryObjs.length; i++) {    // non funziaona for of forse per async 
+        for (let i = 0; i < queryObjs.length; i++) {
             
             //console.log(queryObjs[i])
             let qm = queryObjs[i]?.queryMethod;
@@ -77,7 +77,7 @@ class DBservices {
 
             // Promise  //Spread array par
             promises.push(await qm(contex, ...par))
-            //console.log(await qm(contex, par))
+            // console.log(await qm(contex, par))
         }
 
         this.connect.end()                    // Close connect
@@ -130,12 +130,14 @@ class DBservices {
         return query;  
     }
 
+    // Cerare delete generic 
+    // fare generic post
     // --------------------------- Login --------------------------------
 
     // Check username and password (Auth) 
     async checkUsernamePassword(contex, username, password){
             return contex.genericQuery(`SELECT COUNT(*) FROM users WHERE username = '${username}' and password = SHA2('${password}', 256)`)
-    }   //
+    }
 
     // Get info for tokens --// omologare a filtro by username
     async getUserInfoByUsername(contex, username){
@@ -153,7 +155,7 @@ class DBservices {
     }
 
     // --------------------------- Account ---------------------------
-    
+
     // Query for create user
     async createAccount(contex, name, surname, username, password, email, role){
         let date = contex.getDateString();
@@ -175,14 +177,11 @@ class DBservices {
     }
 
     // Query for get user data by filter
-    async getUserDataByFilter(contex, filterObj){ //fieldsDataRequest
-        //console.log(contex.createGetQuery('users', ["email", "role"], filterObj));
-        //console.log(filterObj);
-
+    async getUserDataByFilter(contex, filterObj){
         return contex.genericQuery(contex.createGetQuery('users', ["email", "role", "username", "lastname", "img_profile", "id_class"], filterObj))
     }
 
-    // 
+    // Query for update user by filter and option
     async updateUserInfo(contex, whereObj, putDataObj){
         return contex.genericQuery(contex.createUpdateQuery('users', whereObj, putDataObj))
     }
@@ -190,30 +189,35 @@ class DBservices {
     // --------------------------- Classes ------------------------------
     
     // Query for create class
-    async createClass(contex, name){
+    async createClass(contex, name){ // 
         return contex.genericQuery(`INSERT INTO classes (id, name, archived) VALUES (NULL, '${name}', '0');`)
     }
 
-    // Query for delete class
-    async delateClass(contex, id){
-        return contex.genericQuery(`DELETE FROM classes WHERE id='${id}';`)   
-    }
-    
     // Query for get data class for id
     async getClassDataByID(contex, id){
-        console.log(`SELECT id, name, img_cover, archived FROM classes WHERE id = '${id}'`);
         return contex.genericQuery(`SELECT id, name, img_cover, archived FROM classes WHERE id = '${id}'`)
     }
 
     // Query for get user data by filter
-    async getClassDataByFilter(contex, filterObj){
+    async getClassDataByFilter(contex, filterObj){ // modificare createGetQuery con joinObj
         return contex.genericQuery(contex.createGetQuery('classes', ["id", "name", "img_cover", "archived"], filterObj))
     }
-
     
+    // Check if the prof is tutor in the class 
+    async isTutor(contex, email, id_class){
+        return contex.genericQuery(`SELECT COUNT(*) FROM prof_classes WHERE email = '${email}' AND id_class = '${id_class}' AND role = 'tutor'`)   
+    }
 
+    // Query for update class by filter and option
+    async updateClass(contex, whereObj, putDataObj){
+        return contex.genericQuery(contex.createUpdateQuery('classes', whereObj, putDataObj))
+    }
 
-    
+    // Query for delete class
+    async delateClass(contex, id){
+        return contex.genericQuery(`DELETE FROM classes WHERE id = '${id}';`)   
+    }
+
     // --------------------------- Resource ---------------------------
 }
 

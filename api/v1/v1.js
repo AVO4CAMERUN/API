@@ -10,6 +10,8 @@ const class_resurce = require('./module/classes');
 const course_resurce = require('./module/course');
 //...
 
+
+
 // Add mini-router
 router.use(login);
 router.use(account);
