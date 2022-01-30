@@ -17,6 +17,8 @@ POST {base_URL}/api/v1/**account**
 >```json
 >{
 >	"username": "....",
+>	"name": "....",
+>	"surname": "....",
 >	"password": "....",
 >	"email": "example@example.com"
 >}
@@ -66,7 +68,7 @@ GET {base_URL}/api/v1/account/:email
 >	- 500 &#8594; Server error
 >	- 404 &#8594; Not found
 
-GET {base_URL}/api/v1/account **?firstname='[name1, nameN]'&lastname='[name1, nameN]'&role='[role1, roleN]'&class_id='[id1, id2]'**
+GET {base_URL}/api/v1/account **?firstname=[name1, nameN]&lastname=[name1, nameN]&role=[role1, roleN]&id_class=[id1, id2]**
 > Request
 >	Parameter type:
 >	- role
@@ -136,7 +138,7 @@ DELETE {base_URL}/api/v1/**account**
 >   - NNN &#8594; hai gia eliminato un account
 ***
 
-GET {base_URL}/api/v1/account/confirm/**:confirmAccountCode**
+GET {base_URL}/api/v1/account/**:confirmAccountCode**
 
 > Request
 >```
@@ -221,7 +223,7 @@ POST {base_URL}/api/v1/classes
 >{
 >	"name": "....",
 >	"img_cover": "....",
->	"student": [...], (email)
+>	"students": [...], (email)
 >	"profs": [...]	(email forse da cambiare in id, piu performante)
 >}
 >```
@@ -233,6 +235,16 @@ POST {base_URL}/api/v1/classes
 >	- 403 &#8594; Forbidden: non sei un professore
 >   - 400 &#8594; Errore nei parametri (forse da specificare meglio)
 
+GET {base_URL}/api/v1/classes **?name='[name1, nameN]'&email_profs='[email1, emailN]&email_student='[email1, emailN]'**
+	
+> Request
+>
+
+> Responce
+>
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
 
 GET {base_URL}/api/v1/classes/**:class_id** (nome non unique)
 > Request
@@ -242,20 +254,6 @@ GET {base_URL}/api/v1/classes/**:class_id** (nome non unique)
 >	Status code:
 >	- 200 &#8594; Ok
 >	- 500 &#8594; Server error
->	- 404 &#8594; Forbidden: non sei un professore
-
-
-GET {base_URL}/api/v1/classes **?name='[name1, nameN]'&email_profs='[email1, emailN]&email_student='[email1, emailN]'**
-
-> Request
->
-
-> Responce
->
->	Status code:
->	- 200 &#8594; Ok
->	- 500 &#8594; Server error
-
 
 PUT {base_URL}/api/v1/classes/**:class_id**
 > Request
@@ -278,7 +276,7 @@ PUT {base_URL}/api/v1/classes/**:class_id**
 >	- 200 &#8594; Ok
 >	- 500 &#8594; Server error
 >	- 403 &#8594; Forbidden: non sei tu il tutor professore
->   - 400 &#8594; Errore nei parametri (forse da specificare meglio)
+>   - 404 &#8594; Not Found
 
 
 DELETE {base_URL}/api/v1/classes/**:class_id**
@@ -351,7 +349,7 @@ GET {base_URL}/api/v1/courses/**:course_id**
 >	- 500 &#8594; Server error
 
 
-GET {base_URL}/api/v1/classes **?name='[name1, nameN]'&email_profs='[email1, emailN]&email_student='[email1, emailN]'**
+GET {base_URL}/api/v1/classes **?firstname=[name1,nameN]&lastname=[name1,nameN]&role=[role1,roleN]&class_id=[id1,id2]**
 
 
 PUT     {base_URL}/api/v1/courses/**:parameter**
