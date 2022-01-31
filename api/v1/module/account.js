@@ -3,10 +3,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
-const DBservices = require('./utils/mysqlConn');
+const DBservices = require('./utils/MysqlConn');
 const MailSender = require('./utils/MailSender');
-const authJWT = require('./utils/auth');
-const BlobConvert = require('./utils/blobConvert');
+const authJWT = require('./utils/Auth');
+const BlobConvert = require('./utils/BlobConvert');
 
 const router = express.Router();    //Create router Object
 router.use(bodyParser.json());      //Middleware for parse http req

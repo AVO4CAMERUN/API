@@ -24,17 +24,6 @@ class DBservices {
         return str.split(',')
     }
 
-    //
-    /*iteratorObjOperation(obj, operation){
-        let result = []
-        let keys = Object.keys(obj);
-        for (const key of keys) {
-            operation(obj[key])
-            result.push()
-        }
-        return result
-    }*/
-    
     // --------------------------- Query methods ----------------------------
 
     // --------------------------- Utils query methods ----------------------
@@ -112,7 +101,7 @@ class DBservices {
         query = query.substring(0, query.length -1) // Troncate last comma
         query += ` FROM ${tableName}`               // Add table target
 
-        // Checks if the filter obj exists and
+        // Checks if the filter obj exists
         if(typeof filterObj === 'object' && Object.keys(filterObj).length > 0){ 
             let fKeys = Object.keys(filterObj)  //
 
@@ -130,6 +119,29 @@ class DBservices {
         return query;  
     }
 
+    // Generic methods generate one insert of n record (use in relaction tab)
+    createMultiInsertQuery(tableName, identifier, fieldsData, fieldsValue){ //------------------------------------------------ Creare una query di n insert
+        // INSERT INTO classes (name, img_cover, archived) VALUES ('${name}','${img}', '0');
+        // Generete selected fields
+        let query = `INSERT INTO ${tableName} (` 
+        for (const key of fieldsData) {
+            query += ` ${key},`
+        }
+        //query = query.substring(0, query.length -1) // Troncate last comma
+        query += `) VALUES`                       // 
+
+        // (value_list_1),
+        // (value_list_2)
+
+        // Build Cycle of n insert 
+        for (const field of fieldsValue) { 
+            query += `(${identifier}, '${value}'),`
+        }
+        query = query.substring(0, query.length -2)
+        query += ';';
+        return query;  
+    }
+
     // Cerare delete generic 
     // fare generic post
     // --------------------------- Login --------------------------------
@@ -144,7 +156,7 @@ class DBservices {
         return contex.genericQuery(`SELECT * FROM users WHERE username = '${username}'`)
     }
 
-        // Check registerd method  
+    // Check registerd method  
     async isRegistred(contex, email){
         return contex.genericQuery(`SELECT COUNT(*) FROM users WHERE email = '${email}'`)
     }
@@ -189,8 +201,13 @@ class DBservices {
     // --------------------------- Classes ------------------------------
     
     // Query for create class
-    async createClass(contex, name){ // 
-        return contex.genericQuery(`INSERT INTO classes (id, name, archived) VALUES (NULL, '${name}', '0');`)
+    async createClass(contex, name, img){
+        return contex.genericQuery(`INSERT INTO classes (name, img_cover, archived) VALUES ('${name}','${img}', '0');`)
+    }
+
+    //
+    async addProfsClass(contex, ){ //fare un sacco di update ai studenti e add prof in tab di relazione
+        return contex.genericQuery(`INSERT INTO classes (name, img_cover, archived) VALUES ('${name}','${img}', '0');`)
     }
 
     // Query for get data class for id

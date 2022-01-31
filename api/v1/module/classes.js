@@ -5,9 +5,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 
-const DBservices = require('./utils/mysqlConn');
-const BlobConvert = require('./utils/blobConvert');
-const authJWT = require('./utils/auth');
+const DBservices = require('./utils/MysqlConn');
+const BlobConvert = require('./utils/BlobConvert');
+const authJWT = require('./utils/Auth');
 
 const router = express.Router();    //Create router Object
 const dbc = new DBservices('localhost', 'root', '', 'avo4cum');      
@@ -18,31 +18,44 @@ router.route('/classes')
     .post(authJWT.authenticateJWT, (req, res) => {
         const user = authJWT.parseAuthorization(req.headers.authorization)
         const {email, role} = user;
-        
-        /*{
-            "name": "....",
-            "img_cover": "....",
-            "students": [...], (email)
-            "profs": [...]	(email forse da cambiare in id, piu performante)
-        }*/
+        const {name, img_cover, students, profs} = req.body;
+
+        // console.log(dbc.createMultiInsertQuery('prof_classes', '1', ['campo1'], ['sss', 'eee']));
+        console.log(role);
         if (role === "02") {
             dbc.genericCycleQuery( 
                 {
-                    queryMethod: dbc.createClass,
-                    par: [email, id]
+                    queryMethod: dbc.createClass,  // Create class and save id
+                    par: [name, img_cover]
                 }
             )
             .then((result) => {
-                // console.log(result[0]?.value);
-                res.sendStatus(200);    // You create a your class data
+                const id = result[0].value.insertId; // id class
+
+                console.log(result[0].value.insertId);
+
+                // Add relation in the class (start up student and profs) if there are
+                if (students.length || profs.length) {
+                    return dbc.genericCycleQuery( 
+                        {
+                            queryMethod: dbc.addProfsClass,   
+                            par: [id, profs]
+                        },
+                        {
+                            queryMethod: dbc., //update n student   
+                            par: [id, profs]
+                        }
+                    )
+                }
+                res.sendStatus(200);    // You create a your new class
             })
             .catch((err) => {
                 console.log(err);
                 res.sendStatus(500); // Server error
             })
-        }
-        res.sendStatus(403);    // You aren't a prof (conviene cosi non si fanno richieste al db)
- 
+        } else {
+            res.sendStatus(403);    // You aren't a prof (conviene cosi non si fanno richieste al db)
+        }  
     })
 
     // Get class data by filter // => da fare join per filtro modificare 

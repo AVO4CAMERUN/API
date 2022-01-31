@@ -4,8 +4,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
-const authJWT = require('./utils/auth'); 
-const DBservices = require('./utils/mysqlConn');
+const authJWT = require('./utils/Auth'); 
+const DBservices = require('./utils/MysqlConn');
 
 const router = express.Router();   //Create router Object
 router.use(bodyParser.json());     //Middleware for parse http req
