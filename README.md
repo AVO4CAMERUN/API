@@ -297,10 +297,27 @@ DELETE {base_URL}/api/v1/classes/**:class_id**
 
 ### Courses
 POST    {base_URL}/api/v1/**courses**
-(usare le piccole post delle unita, lesson, exe..)
 
-GET {base_URL}/api/v1/**courses** 
-(Non so se utile, restituisce un vettore di tutti i corsi)
+> Request
+>```
+> Authorization: Bearer <token>
+>```
+>```json
+>{
+>	"name": "....",
+>	"description": "....",
+>	"subject": [...],
+>	"img_cover": [...]	
+>}
+>```
+
+> Responce
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: non sei un professore
+>   - 400 &#8594; Errore nei parametri (forse da specificare meglio)
+
 
 GET {base_URL}/api/v1/courses/**:course_id**
 > Request
@@ -348,6 +365,9 @@ GET {base_URL}/api/v1/courses/**:course_id**
 >	- 200 &#8594; Ok
 >	- 500 &#8594; Server error
 
+
+GET {base_URL}/api/v1/**courses** 
+(Non so se utile, restituisce un vettore di tutti i corsi)
 
 GET {base_URL}/api/v1/classes **?firstname=[name1,nameN]&lastname=[name1,nameN]&role=[role1,roleN]&class_id=[id1,id2]**
 
