@@ -3,7 +3,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
-const DBservices = require('./utils/MysqlConn');
+const DBS = require('./utils/DBservices');
 const MailSender = require('./utils/MailSender');
 const authJWT = require('./utils/Auth');
 const BlobConvert = require('./utils/BlobConvert');
@@ -13,9 +13,7 @@ router.use(bodyParser.json());      //Middleware for parse http req
 
 // Util Obj
 const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';                // Set for confirm token
-const dbc = new DBservices('localhost', 'root', '', 'avo4cum');                                     // Obj for db connect
 const mailSender = new MailSender('Gmail','avogadro4camerun@gmail.com','AmaraPriscoTommasi123');    // OBj for mails send
-
 
 // List for suspendedUsers
 let suspendedUsers = []; //{code: value, usermane: vaule, password:value role: value}                
@@ -114,9 +112,9 @@ router.route('/account')
         //rifattorizzare codice
         
         // Indirect call 
-        dbc.genericCycleQuery(
+        DBS.genericCycleQuery(
             {
-                queryMethod: dbc.updateUserInfo,
+                queryMethod: DBS.updateUserInfo,
                 par: [{email}, req.body]
             }
         )
@@ -135,12 +133,12 @@ router.route('/account')
 
         // Cast data for query
         for (const key of Object.keys(req.query)) 
-            req.query[key] = dbc.strToArray(req.query[key])
+            req.query[key] = DBS.strToArray(req.query[key])
         
         // Indirect call 
-        dbc.genericCycleQuery(
+        DBS.genericCycleQuery(
             {
-                queryMethod: dbc.getUserDataByFilter,
+                queryMethod: DBS.getUserDataByFilter,
                 par: [req.query]
             }
         )
@@ -168,9 +166,9 @@ router.route('/account')
         let {email} = user;
 
         // Delete account and account relaction
-        dbc.genericCycleQuery(   //non necessario controllo tanto ce auth
+        DBS.genericCycleQuery(   //non necessario controllo tanto ce auth
             {
-                queryMethod:  dbc.delateAccount,
+                queryMethod:  DBS.delateAccount,
                 par: [email]
             }
         )
@@ -202,9 +200,9 @@ router.get('/account/:confirmCode', (req, res) => {
     if(isThere){
         const {name, surname, username, email, password} = suspendedUsers[index];  // add role
 
-        dbc.genericCycleQuery(
+        DBS.genericCycleQuery(
             {
-                queryMethod: dbc.createAccount,
+                queryMethod: DBS.createAccount,
                 par: [name, surname, username, password, email, '01'] // In first time all users are student = 01
             } //
         )

@@ -2,51 +2,59 @@
 
 // Utils Module
 const express = require('express');
-const bodyParser = require('body-parser');
-const jwt = require('jsonwebtoken');
-
-const DBservices = require('./utils/MysqlConn');
+const DBS = require('./utils/DBservices');
 const BlobConvert = require('./utils/BlobConvert');
 const authJWT = require('./utils/Auth');
 
-const router = express.Router();    //Create router Object
-const dbc = new DBservices('localhost', 'root', '', 'avo4cum');      
+const router = express.Router();    //Create router Object    
 
 router.route('/classes')
 
-    // Create new class
+    // Create new class                             // da vedere ancora
     .post(authJWT.authenticateJWT, (req, res) => {
         const user = authJWT.parseAuthorization(req.headers.authorization)
         const {email, role} = user;
         const {name, img_cover, students, profs} = req.body;
 
+        // fare controlli corettezza iinputs
+        // fare controlli che i prof siano davvero prof (fecth di n role)
+
         // console.log(dbc.createMultiInsertQuery('prof_classes', '1', ['campo1'], ['sss', 'eee']));
         console.log(role);
         if (role === "02") {
-            dbc.genericCycleQuery( 
+            DBS.genericCycleQuery( 
                 {
-                    queryMethod: dbc.createClass,  // Create class and save id
+                    queryMethod: DBS.createClass,  // Create class and save id
                     par: [name, img_cover]
                 }
             )
             .then((result) => {
                 const id = result[0].value.insertId; // id class
-
                 console.log(result[0].value.insertId);
 
-                // Add relation in the class (start up student and profs) if there are
-                if (students.length || profs.length) {
-                    return dbc.genericCycleQuery( 
-                        {
-                            queryMethod: dbc.addProfsClass,   
-                            par: [id, profs]
-                        },
-                        {
-                            queryMethod: dbc., //update n student   
-                            par: [id, profs]
-                        }
-                    )
+                // Query array for add profs
+                const queryArray = [];
+                
+                // Push tutor
+                queryArray.push({
+                    queryMethod: DBS.addProfsClass,
+                    par: [email, id, 'tutor']
+                })
+
+                // Push others
+                for (const prof of profs) {
+                    queryArray.push({       // controllare se sono prof
+                        queryMethod: DBS.addProfsClass,
+                        par: [prof, id, 'normal']
+                    })
                 }
+                
+                // .. studente ecc
+                if (students.length) {} // aggiungere tabella di notifiche 
+
+                // Add relation in the class (start up student and profs) if there are    | students.length || 
+                DBS.genericCycleQuery(...queryArray) // Send dynamic querys 
+
                 res.sendStatus(200);    // You create a your new class
             })
             .catch((err) => {
@@ -54,11 +62,12 @@ router.route('/classes')
                 res.sendStatus(500); // Server error
             })
         } else {
+            console.log("sss");
             res.sendStatus(403);    // You aren't a prof (conviene cosi non si fanno richieste al db)
         }  
     })
 
-    // Get class data by filter // => da fare join per filtro modificare 
+    // Get class data by filter                    // => da fare join per filtro modificare 
     .get((req, res) => {
      
         // Cast data for query
@@ -99,9 +108,9 @@ router.route('/classes/:id')
         const id = req.params.id;
 
         // Indirect call 
-        dbc.genericCycleQuery(
+        DBS.genericCycleQuery(
             {
-                queryMethod: dbc.getClassDataByID,
+                queryMethod: DBS.getClassDataByID,
                 par: [id]
             }
         )
@@ -132,9 +141,9 @@ router.route('/classes/:id')
         const id = req.params.id;
         
         if (role === "02") {
-            dbc.genericCycleQuery(
+            DBS.genericCycleQuery(
                 {
-                    queryMethod: dbc.isTutor,
+                    queryMethod: DBS.isTutor,
                     par: [email, id]
                 }
             )
@@ -144,8 +153,8 @@ router.route('/classes/:id')
                     res.sendStatus(403);    // You aren't the tutor
                 } else {
                     // if you are a tutor commit query for change class data
-                    return dbc.genericCycleQuery({
-                        queryMethod: dbc.updateClass,
+                    return DBS.genericCycleQuery({
+                        queryMethod: DBS.updateClass,
                         par: [{id}, req.body]
                     })
                 } 
@@ -168,10 +177,10 @@ router.route('/classes/:id')
         const {email, role} = user;
         const id = req.params.id;
         
-        //if (role === "02") {
-            dbc.genericCycleQuery(
+        if (role === "02") {
+            DBS.genericCycleQuery(
                 {
-                    queryMethod: dbc.isTutor,
+                    queryMethod: DBS.isTutor,
                     par: [email, id]
                 }
             )
@@ -181,8 +190,8 @@ router.route('/classes/:id')
                     res.sendStatus(403);    // You aren't the tutor
                 } else {
                     // if you are a tutor commit query for delete class
-                    return dbc.genericCycleQuery({
-                        queryMethod: dbc.delateClass,
+                    return DBS.genericCycleQuery({
+                        queryMethod: DBS.delateClass,
                         par: [id]
                     })
                 } 
@@ -195,9 +204,9 @@ router.route('/classes/:id')
                 console.log(err);
                 res.sendStatus(500); // Server error
             })
-        //}
-        //res.sendStatus(403);    // You aren't a prof (conviene cosi non si fanno richieste al db)
+        } else {
+            res.sendStatus(403);    // You aren't a prof (conviene cosi non si fanno richieste al db)
+        }
     })
 
-//Scrivere risorse
 module.exports = router

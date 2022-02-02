@@ -5,28 +5,27 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const authJWT = require('./utils/Auth'); 
-const DBservices = require('./utils/MysqlConn');
+const DBS = require('./utils/DBservices');
 
 const router = express.Router();   //Create router Object
 router.use(bodyParser.json());     //Middleware for parse http req
 
-// Util Object
-const dbc = new DBservices('localhost', 'root', '', 'avo4cum');
 
 // Login
 router.route('/login')
+
     //Login / Create session
     .post((req, res) => {
         const { username, password } = req.body;
         
         // Query check account
-        dbc.genericCycleQuery(
+        DBS.genericCycleQuery(
             {
-                queryMethod: dbc.checkUsernamePassword,
+                queryMethod: DBS.checkUsernamePassword,
                 par: [username, password]
             },
             {
-                queryMethod: dbc.getUserInfoByUsername,
+                queryMethod: DBS.getUserInfoByUsername,
                 par: [username]
             }
         )

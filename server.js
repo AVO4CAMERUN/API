@@ -29,4 +29,6 @@ app.use('/api/v1', v1);
 
 
 // Start http-server port 80
-app.listen(80); 
+app.listen(80);
+
+// Cambiare Dbconnect in una classe statica :)

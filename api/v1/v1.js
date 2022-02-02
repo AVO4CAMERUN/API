@@ -7,7 +7,7 @@ const router = express.Router();    //Create router Object
 const login = require('./module/login');
 const account = require('./module/account');
 const class_resurce = require('./module/classes');
-const course_resurce = require('./module/course');
+const course_resurce = require('./module/courses');
 //...
 
 
