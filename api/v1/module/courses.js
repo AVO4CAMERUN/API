@@ -28,16 +28,16 @@ router.route('/courses')
         if (role === "02") {
             DBS.genericCycleQuery( 
                 {
-                    queryMethod: DBS.createClass,  // Create class and save id
+                    queryMethod: DBS.createClass,  // Create courses and save id
                     par: [name, img_cover]
                 }
             )
             .then((result) => {
-                const id = result[0].value.insertId; // id class
+                const id = result[0].value.insertId; // id courses
                 console.log(result[0].value.insertId);
 
-                // adre la posiibilita di fare insert di unota forse da vedere
-                res.sendStatus(200);    // You create a your new class
+                
+                res.sendStatus(200);    // You create a your new courses
             })
             .catch((err) => {
                 console.log(err);
@@ -45,9 +45,7 @@ router.route('/courses')
             })
         } else {
             res.sendStatus(403);    // You aren't a prof (conviene cosi non si fanno richieste al db)
-        }  
-
-
+        }
     })
 
     // Get courses data by filter

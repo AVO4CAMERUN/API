@@ -10,24 +10,58 @@ const router = express.Router();    //Create router Object
 
 router.route('/classes')
 
-    // Create new class                             // da vedere ancora
+    // Create new class
     .post(authJWT.authenticateJWT, (req, res) => {
         const user = authJWT.parseAuthorization(req.headers.authorization)
         const {email, role} = user;
         const {name, img_cover, students, profs} = req.body;
-
+        // convertire img in blob
         // fare controlli corettezza iinputs
         // fare controlli che i prof siano davvero prof (fecth di n role)
 
-        // console.log(dbc.createMultiInsertQuery('prof_classes', '1', ['campo1'], ['sss', 'eee']));
-        console.log(role);
         if (role === "02") {
-            DBS.genericCycleQuery( 
-                {
-                    queryMethod: DBS.createClass,  // Create class and save id
-                    par: [name, img_cover]
+
+            // Create query
+            let checkQuerys = [];
+            if(Array.isArray(profs)){
+                for (const prof of profs) {
+                    checkQuery.push({
+                        queryMethod: DBS.isParameterRole,  // Check is professor
+                        par: [prof, "02"]
+                    })
                 }
-            )
+            }
+
+            if(Array.isArray(students)){
+                for (const stud of students) {
+                    checkQuerys.push({
+                        queryMethod: DBS.isParameterRole,  // Check is student
+                        par: [stud, "01"]
+                    })
+                }
+            }
+
+            // Send dynamic querys
+            DBS.genericCycleQuery(...checkQuerys)
+            .then((result) => {
+                /*console.log(result[0].value[0]["COUNT(*)"]);*/
+
+                // Sum for check that only email is register users
+                let sum = 0; result.forEach(r => {sum += r.value[0]["COUNT(*)"] });
+
+                // somma di result
+                if(sum === checkQuerys.length){
+                     
+                    return DBS.genericCycleQuery( 
+                        {
+                            queryMethod: DBS.createClass,  // Create class and save id
+                            par: [name, img_cover]  // convertire img in byte
+                        }
+                    )
+                } else {
+                    return Promise.reject(400);
+                }
+            })
             .then((result) => {
                 const id = result[0].value.insertId; // id class
                 console.log(result[0].value.insertId);
@@ -41,28 +75,40 @@ router.route('/classes')
                     par: [email, id, 'tutor']
                 })
 
-                // Push others
-                for (const prof of profs) {
-                    queryArray.push({       // controllare se sono prof
-                        queryMethod: DBS.addProfsClass,
-                        par: [prof, id, 'normal']
-                    })
+                // Push others prof if there are
+                if(Array.isArray(profs)){
+                    for (const prof of profs) {
+                        queryArray.push({       // controllare se sono prof
+                            queryMethod: DBS.addProfsClass,
+                            par: [prof, id, 'normal']
+                        })
+                    }
                 }
                 
-                // .. studente ecc
-                if (students.length) {} // aggiungere tabella di notifiche 
+                // Push student invitations if there are
+                if (Array.isArray(students)) {
+                    for (const stud of students) {
+                        queryArray.push({
+                            queryMethod: DBS.addClassInvite,
+                            par: [stud, id]
+                        })
+                    }
+                }
 
-                // Add relation in the class (start up student and profs) if there are    | students.length || 
-                DBS.genericCycleQuery(...queryArray) // Send dynamic querys 
-
+                // Add relation in the class (start up student and profs) if there are
+                DBS.genericCycleQuery(...queryArray) // Send dynamic querys
                 res.sendStatus(200);    // You create a your new class
+               
             })
             .catch((err) => {
-                console.log(err);
-                res.sendStatus(500); // Server error
+                // console.log(err);
+                if(err === 400){
+                    res.sendStatus(400);    // Error in parameter
+                } else {
+                    res.sendStatus(500); // Server error
+                }
             })
         } else {
-            console.log("sss");
             res.sendStatus(403);    // You aren't a prof (conviene cosi non si fanno richieste al db)
         }  
     })
@@ -208,5 +254,10 @@ router.route('/classes/:id')
             res.sendStatus(403);    // You aren't a prof (conviene cosi non si fanno richieste al db)
         }
     })
+
+
+// fare router iniviti pe forza ----------------------------------------
+router.route('/invites/:id')
+    // fare get inviti by email    
 
 module.exports = router

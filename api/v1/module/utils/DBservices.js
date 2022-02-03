@@ -175,14 +175,14 @@ class DBservices {
         VALUES ('${email}', '${role}', '${username}', '${name}', '${surname}', SHA2('${password}', 256), '${date}', NULL, NULL);`)
     }
 
-    // Query for delete user and all relaction
-    static async delateAccount(contex, email){
-        return contex.genericQuery(`DELETE FROM users WHERE email='${email}';`)   
-    }
-
     // Query for get all data user for email
     static async getUserInfoByEmail(contex, email){
         return contex.genericQuery(`SELECT role, username, firstname, lastname, registration_date, img_profile, id_class FROM users WHERE email = '${email}'`)
+    }
+
+    // Check if the user is a prof
+    static async isParameterRole(contex, email, role){
+        return contex.genericQuery(`SELECT COUNT(*) FROM users WHERE email = '${email}' AND role = '${role}'`)
     }
 
     // Query for get user data by filter
@@ -195,6 +195,11 @@ class DBservices {
         return contex.genericQuery(contex.createUpdateQuery('users', whereObj, putDataObj))
     }
 
+    // Query for delete user and all relaction
+    static async delateAccount(contex, email){
+        return contex.genericQuery(`DELETE FROM users WHERE email='${email}';`)   
+    }
+
     // --------------------------- Classes ------------------------------
     
     // Query for create class
@@ -202,9 +207,14 @@ class DBservices {
         return contex.genericQuery(`INSERT INTO classes (name, img_cover, archived) VALUES ('${name}','${img}', '0');`)
     }
 
-    // Query for add relaction 
-    static async addProfsClass(contex, email, id_class, role){ //fare un sacco di update ai studenti e add prof in tab di relazione
+    // Query for add relaction prof and class
+    static async addProfsClass(contex, email, id_class, role){
         return contex.genericQuery(`INSERT INTO prof_classes (email, id_class, role) VALUES ('${email}','${id_class}', '${role}');`)
+    }
+
+    // Query for add invite for join class 
+    static async addClassInvite(contex, email, id_class){
+        return contex.genericQuery(`INSERT INTO invitations (email, id_class) VALUES ('${email}','${id_class}');`)
     }
 
     // Query for get data class for id
@@ -216,7 +226,7 @@ class DBservices {
     static async getClassDataByFilter(contex, filterObj){ // modificare createGetQuery con joinObj
         return contex.genericQuery(contex.createGetQuery('classes', ["id", "name", "img_cover", "archived"], filterObj))
     }
-    
+
     // Check if the prof is tutor in the class 
     static async isTutor(contex, email, id_class){
         return contex.genericQuery(`SELECT COUNT(*) FROM prof_classes WHERE email = '${email}' AND id_class = '${id_class}' AND role = 'tutor'`)   
