@@ -139,8 +139,8 @@ class DBservices {
         return query;  
     }
 
-    // Cerare delete generic 
-    // fare generic post
+    // FARE SELECT COUNT DIMANICA 
+    // 
     // --------------------------- Login --------------------------------
 
     // Check username and password (Auth) 
@@ -212,11 +212,6 @@ class DBservices {
         return contex.genericQuery(`INSERT INTO prof_classes (email, id_class, role) VALUES ('${email}','${id_class}', '${role}');`)
     }
 
-    // Query for add invite for join class 
-    static async addClassInvite(contex, email, id_class){
-        return contex.genericQuery(`INSERT INTO invitations (email, id_class) VALUES ('${email}','${id_class}');`)
-    }
-
     // Query for get data class for id
     static async getClassDataByID(contex, id){
         return contex.genericQuery(`SELECT id, name, img_cover, archived FROM classes WHERE id = '${id}'`)
@@ -227,9 +222,14 @@ class DBservices {
         return contex.genericQuery(contex.createGetQuery('classes', ["id", "name", "img_cover", "archived"], filterObj))
     }
 
+    // Check if the class is exist
+    static async isExistClassByid(contex, class_id){
+        return contex.genericQuery(`SELECT COUNT(*) FROM classes WHERE id = '${class_id}'`) 
+    }
+
     // Check if the prof is tutor in the class 
-    static async isTutor(contex, email, id_class){
-        return contex.genericQuery(`SELECT COUNT(*) FROM prof_classes WHERE email = '${email}' AND id_class = '${id_class}' AND role = 'tutor'`)   
+    static async isParameterRoleInClass(contex, email, id_class, role){
+        return contex.genericQuery(`SELECT COUNT(*) FROM prof_classes WHERE email = '${email}' AND id_class = '${id_class}' AND role = '${role}'`)   
     }
 
     // Query for update class by filter and option
@@ -241,6 +241,19 @@ class DBservices {
     static async delateClass(contex, id){
         return contex.genericQuery(`DELETE FROM classes WHERE id = '${id}';`)   
     }
+
+    // --------------------------- Invitatios -------------------------
+
+    // Query for add invite for join class 
+    static async addClassInvite(contex, email, id_class){
+        return contex.genericQuery(`INSERT INTO invitations (email, id_class) VALUES ('${email}','${id_class}');`)
+    }
+
+    // Query for get invite data by email
+    static async getInvitedDataByEmail(contex, email){
+        return contex.genericQuery(`SELECT * FROM invitations WHERE email = '${email}'`)
+    }
+
 
     // --------------------------- Courses ---------------------------
 

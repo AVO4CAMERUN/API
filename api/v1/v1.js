@@ -7,6 +7,7 @@ const router = express.Router();    //Create router Object
 const login = require('./module/login');
 const account = require('./module/account');
 const class_resurce = require('./module/classes');
+const invites = require('./module/invites');
 const course_resurce = require('./module/courses');
 //...
 
@@ -16,7 +17,7 @@ const course_resurce = require('./module/courses');
 router.use(login);
 router.use(account);
 router.use(class_resurce);
-//router.use();
+router.use(invites);
 //router.use(course_resurce);...
 
 // Export v1 router 

@@ -8,6 +8,7 @@ const authJWT = require('./utils/Auth');
 
 const router = express.Router();    //Create router Object    
 
+// Routers for classes
 router.route('/classes')
 
     // Create new class
@@ -96,9 +97,10 @@ router.route('/classes')
                 }
 
                 // Add relation in the class (start up student and profs) if there are
-                DBS.genericCycleQuery(...queryArray) // Send dynamic querys
-                res.sendStatus(200);    // You create a your new class
-               
+                DBS.genericCycleQuery(...queryArray) // Send dynamic querys               
+            })
+            .then(() => {
+                res.sendStatus(200);     // You create a your new class
             })
             .catch((err) => {
                 // console.log(err);
@@ -123,7 +125,7 @@ router.route('/classes')
         // console.log(req.query[key])      
 
         // Indirect call 
-        dbc.genericCycleQuery(
+        DBS.genericCycleQuery(
             {
                 queryMethod: dbc.getClassDataByFilter,
                 par: [req.query]
@@ -177,7 +179,6 @@ router.route('/classes/:id')
             console.log(err);
             res.sendStatus(500); // Server error
         })
-
     })
     
     // Update class data by id
@@ -189,8 +190,8 @@ router.route('/classes/:id')
         if (role === "02") {
             DBS.genericCycleQuery(
                 {
-                    queryMethod: DBS.isTutor,
-                    par: [email, id]
+                    queryMethod: DBS.isParameterRoleInClass,
+                    par: [email, id, "tutor"]
                 }
             )
             .then((result) => {
@@ -254,10 +255,5 @@ router.route('/classes/:id')
             res.sendStatus(403);    // You aren't a prof (conviene cosi non si fanno richieste al db)
         }
     })
-
-
-// fare router iniviti pe forza ----------------------------------------
-router.route('/invites/:id')
-    // fare get inviti by email    
 
 module.exports = router
