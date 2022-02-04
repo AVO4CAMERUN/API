@@ -88,7 +88,7 @@ class DBservices {
     }
 
     // Generic methods generate GET request
-    static createGetQuery(tableName, fieldsDataRequest, filterObj){
+    static createGetQuery(tableName, fieldsDataRequest, filterObj, opLogic = ''){
 
         // Generete selected fields
         let query = `SELECT` 
@@ -106,10 +106,10 @@ class DBservices {
             query +=` WHERE ` 
             for (const fKey of fKeys) {
                 for (const value of filterObj[fKey]) {
-                    query += ` ${fKey} = '${value}' OR`
+                    query += ` ${fKey} = '${value}' ${opLogic}`
                 }
             }
-            query = query.substring(0, query.length -2)
+            query = query.substring(0, query.length - opLogic.length)
         }
         //console.log(filterObj[fKey]);
         //console.log(value);
@@ -140,7 +140,8 @@ class DBservices {
     }
 
     // FARE SELECT COUNT DIMANICA 
-    // 
+    // e delete dimanica
+     
     // --------------------------- Login --------------------------------
 
     // Check username and password (Auth) 
@@ -187,7 +188,7 @@ class DBservices {
 
     // Query for get user data by filter
     static async getUserDataByFilter(contex, filterObj){
-        return contex.genericQuery(contex.createGetQuery('users', ["email", "role", "username", "lastname", "img_profile", "id_class"], filterObj))
+        return contex.genericQuery(contex.createGetQuery('users', ["email", "role", "username", "lastname", "img_profile", "id_class"], filterObj, 'OR'))
     }
 
     // Query for update user by filter and option
@@ -219,7 +220,7 @@ class DBservices {
 
     // Query for get user data by filter
     static async getClassDataByFilter(contex, filterObj){ // modificare createGetQuery con joinObj
-        return contex.genericQuery(contex.createGetQuery('classes', ["id", "name", "img_cover", "archived"], filterObj))
+        return contex.genericQuery(contex.createGetQuery('classes', ["id", "name", "img_cover", "archived"], filterObj, "OR"))
     }
 
     // Check if the class is exist
@@ -246,14 +247,23 @@ class DBservices {
 
     // Query for add invite for join class 
     static async addClassInvite(contex, email, id_class){
-        return contex.genericQuery(`INSERT INTO invitations (email, id_class) VALUES ('${email}','${id_class}');`)
+        return contex.genericQuery(`INSERT INTO invitations (email, id_class) VALUES ('${email}','${id_class}');`)    
+    }
+    
+    // Query for get invite data by filter
+    static async getInvitedDataByFilter(contex, filterObj){
+        return contex.genericQuery(contex.createGetQuery("invitations", ["*"], filterObj, "AND"))
     }
 
-    // Query for get invite data by email
-    static async getInvitedDataByEmail(contex, email){
-        return contex.genericQuery(`SELECT * FROM invitations WHERE email = '${email}'`)
+    // Accept invitations
+    static async acceptInvitation(contex, id, email){
+        return contex.genericQuery(`UPDATE users SET id_class = '${id}' WHERE email = '${email}'`)
     }
 
+    // Delete invitations by id
+    static async deleteInvitation(contex, id){
+        return contex.genericQuery(`DELETE FROM invitations WHERE id = '${id}'`)
+    }
 
     // --------------------------- Courses ---------------------------
 

@@ -41,7 +41,7 @@ router.route('/invites')
                         // Create query for check student profile and class exist
                         let checkQuerys = [];
                         checkQuerys.push({
-                            queryMethod: DBS.isExistClassByid,  // Check is student
+                            queryMethod: DBS.isExistClassByid,  // Check class
                             par: [class_id]
                         })
                         for (const stud of students) {
@@ -108,8 +108,8 @@ router.route('/invites')
         // Indirect call 
         DBS.genericCycleQuery(
             {
-                queryMethod: DBS.getInvitedDataByEmail,
-                par: [email]
+                queryMethod: DBS.getInvitedDataByFilter,
+                par: [{email: [email]}] // Array con un obj di filtri accompatiti per colonna
             }
         )
         .then((result) => {
@@ -119,16 +119,91 @@ router.route('/invites')
             console.log(err);
             res.sendStatus(500); // Server error
         })
-
     })
 
 
 router.route('/invites/:id')
 
     // Accept invites
-    .get(authJWT.authenticateJWT, (req, res) => {})
+    .get(authJWT.authenticateJWT, (req, res) => {
+        const id = req.params.id;
+        const user = authJWT.parseAuthorization(req.headers.authorization)
+        const {email} = user;
+
+        // Indirect call 
+        DBS.genericCycleQuery(
+            {
+                queryMethod: DBS.getInvitedDataByFilter,
+                par: [{
+                        id :[id], 
+                        email:[email]
+                    }]
+            }
+        )
+        .then((result) => {
+            const class_id = result[0].value[0]?.id_class;
+
+            // if invited exist 
+            if(class_id !== undefined){
+                return DBS.genericCycleQuery(
+                    {
+                        queryMethod: DBS.acceptInvitation,
+                        par: [class_id, email]
+                    },
+                    {
+                        queryMethod: DBS.deleteInvitation,
+                        par: [id]
+                    }
+                )
+            } else {
+                res.sendStatus(400); // Error in parameter
+            }
+        })
+        .then(() => {
+            res.sendStatus(200)   // Send ok
+        })
+        .catch(() => {
+            res.sendStatus(500); // Server error
+        })
+    })
     
     // Reject invites
-    .delete(authJWT.authenticateJWT, (req, res) => {})
+    .delete(authJWT.authenticateJWT, (req, res) => {
+        const id = req.params.id;
+        const user = authJWT.parseAuthorization(req.headers.authorization)
+        const {email} = user;
+        
+
+        // Indirect call 
+        DBS.genericCycleQuery(
+            {
+                queryMethod: DBS.getInvitedDataByFilter,
+                par: [{
+                        id : [id], 
+                        email: [email]
+                    }]
+            }
+        )
+        .then((result) => {
+            
+            // if invited exist 
+            if(result[0].value[0] !== undefined){
+                return DBS.genericCycleQuery(
+                    {
+                        queryMethod: DBS.deleteInvitation,
+                        par: [id]
+                    }
+                )
+            } else {
+                res.sendStatus(400); // Error in parameter
+            }
+        })
+        .then(() => {
+            res.sendStatus(200)   // Send ok
+        })
+        .catch(() => {
+            res.sendStatus(500); // Server error
+        })
+    })
 
 module.exports = router

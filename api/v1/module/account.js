@@ -139,7 +139,7 @@ router.route('/account')
         DBS.genericCycleQuery(
             {
                 queryMethod: DBS.getUserDataByFilter,
-                par: [req.query]
+                par: [req.query]    // Array con un obj di filtri accompatiti per colonna
             }
         )
         .then((result) => {
