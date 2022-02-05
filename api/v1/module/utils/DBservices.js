@@ -267,7 +267,16 @@ class DBservices {
 
     // --------------------------- Courses ---------------------------
 
-    
+    // Query for create course
+    static async createCourse(contex, name, email, description, img_cover, subject){
+        return contex.genericQuery(`INSERT INTO courses (name, description, img_cover, subject) 
+        VALUES ('${name}','${email}','${description}', '${img_cover}', '${subject}');`)
+    }
+
+    // Query for get courses data by filter
+    static async getCoursesDataByFilter(contex, filterObj){
+        return contex.genericQuery(contex.createGetQuery("courses", ["*"], filterObj, "OR"))
+    }
 }
 
 module.exports = DBservices;

@@ -8,7 +8,7 @@ const login = require('./module/login');
 const account = require('./module/account');
 const class_resurce = require('./module/classes');
 const invites = require('./module/invites');
-const course_resurce = require('./module/courses');
+const courses = require('./module/courses');
 //...
 
 
@@ -18,7 +18,7 @@ router.use(login);
 router.use(account);
 router.use(class_resurce);
 router.use(invites);
-//router.use(course_resurce);...
+router.use(courses);
 
 // Export v1 router 
 module.exports = router

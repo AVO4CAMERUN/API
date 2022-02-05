@@ -24,32 +24,51 @@ router.route('/courses')
         const {email, role} = user;
         const {name, description, img_cover, subject} = req.body;   // fare cosa che converte base64 in byte
 
-        console.log(role);
         if (role === "02") {
             DBS.genericCycleQuery( 
                 {
-                    queryMethod: DBS.createClass,  // Create courses and save id
-                    par: [name, img_cover]
+                    queryMethod: DBS.createCourse,  // Create courses and save id
+                    par: [name, email, description, img_cover, subject]
                 }
             )
-            .then((result) => {
-                const id = result[0].value.insertId; // id courses
-                console.log(result[0].value.insertId);
-
-                
+            .then(() => {
                 res.sendStatus(200);    // You create a your new courses
             })
             .catch((err) => {
-                console.log(err);
                 res.sendStatus(500); // Server error
             })
         } else {
-            res.sendStatus(403);    // You aren't a prof (conviene cosi non si fanno richieste al db)
+            res.sendStatus(403);    // You aren't a prof
         }
     })
 
     // Get courses data by filter
-    .get((req, res) => {})
+    .get((req, res) => {
+        
+        // Cast data for query
+        for (const key of Object.keys(req.query)) 
+            req.query[key] = DBS.strToArray(req.query[key])
+        
+        DBS.genericCycleQuery( 
+            {
+                queryMethod: DBS.getCoursesDataByFilter,
+                par: [req.query]
+            }
+        )
+        .then((response) => {
+            let courseData = response[0].value;
+
+            // Code img in base64 for send
+            for (const course of courseData) 
+                course['img_cover'] = BlobConvert.blobToBase64(course['img_cover']);
+            
+            // Send courses data
+            res.send(courseData);    
+        })
+        .catch((err) => {
+            res.sendStatus(500); // Server error
+        })
+    })
 
 router.route('/courses/:id')
 
