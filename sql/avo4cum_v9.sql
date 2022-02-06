@@ -147,6 +147,7 @@ CREATE TABLE `lessons` (
   `name` varchar(50) NOT NULL,
   `creation_date` datetime NOT NULL,
   `link_video` varchar(255) NOT NULL,
+  `id_unit` int(11) NOT NULL,
   `quiz` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
