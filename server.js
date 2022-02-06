@@ -27,6 +27,8 @@ app.get('/rules/:v', (req, res) => {
 // Rest-api interface v1 (Versioni non necessiarissime anche se potrebbero essere fornite alcune per inntegrazione su altri siti)
 app.use('/api/v1', v1);
 
+// 
+app.use(express.static('front_end'))
 
 // Start http-server port 80
 app.listen(80);

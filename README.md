@@ -330,37 +330,11 @@ GET {base_URL}/api/v1/courses/**:course_id**
 > Responce
 >```json
 >{
->	coursesSimpleData: {
 >		"name": "...", 
 >		"description": "...",
 >		"creation_date": "...",
 >		"subject": "...",
 >		"img_cover": "..."		
->	},
->	units:[
->		{
->			"name": "...",
->			"description": "...",
->			"lessons": [
->						{
->						   "name": "....",
->						   "creation_date": "....",
->						   "link_video": "...",
->						   "quiz":{...}	
->						},								
->						...
->						],
->			"exercises": [
->							{
->							   "name": "....",							
->							   "creation_date": "....",
->							   "exercise":{...}
->							},								
->							...
->						]
->		},
->		....
->	   ]
 >}
 >```
 >	Status code:
@@ -374,7 +348,7 @@ GET {base_URL}/api/v1/**courses**
 GET {base_URL}/api/v1/classes **?firstname=[name1,nameN]&lastname=[name1,nameN]&role=[role1,roleN]&class_id=[id1,id2]**
 
 
-PUT     {base_URL}/api/v1/courses/**:parameter**
+PUT {base_URL}/api/v1/courses/**:parameter**
 
 PUT
 > Request
@@ -417,6 +391,27 @@ DELETE {base_URL}/api/v1/courses/**:course_id**
 ***
 
 #### Units
+
+POST    {base_URL}/api/v1/**units**
+
+> Request
+>```
+> Authorization: Bearer <token>
+>```
+>```json
+>{
+>	"name": "....",
+>	"description": "....",
+>	"id_course": "....",
+>}
+>```
+
+> Responce
+>	Status code:
+>	- 200 &#8594; Ok
+>	- 500 &#8594; Server error
+>	- 403 &#8594; Forbidden: non sei un professore
+>   - 400 &#8594; Errore nei parametri
 
 GET {base_URL}/api/v1/courses/:course_id/**units**
 > Request

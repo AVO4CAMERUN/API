@@ -75,10 +75,14 @@ class DBservices {
         let query = `UPDATE ${tableName} SET`;
         let putDatakeys = Object.keys(putDataObj)
         let whereKey = Object.keys(whereObj)
-        
+        const regex = new RegExp('img_*');
+
         // 
         for (const key of putDatakeys) {
-            query += ` ${key} = '${putDataObj[key]}',`
+            if (regex.test(key)) 
+                query += ` ${key} = ${putDataObj[key]},`
+            else
+                query += ` ${key} = '${putDataObj[key]}',`
         }
         query = query.substring(0, query.length -1)
 
@@ -277,6 +281,31 @@ class DBservices {
     static async getCoursesDataByFilter(contex, filterObj){
         return contex.genericQuery(contex.createGetQuery("courses", ["*"], filterObj, "OR"))
     }
+
+    // Query for update course by id and option
+    static async updateCourses(contex, whereObj, putDataObj){
+        return contex.genericQuery(contex.createUpdateQuery('courses', whereObj, putDataObj))
+    }
+
+    // Check if the prof is a creator
+    static async isCourseCreator(contex, email, id_course){
+        return contex.genericQuery(`SELECT COUNT(*) FROM courses WHERE email_creator = '${email}' AND id_course = '${id_course}'`)   
+    }
+
+    // Query for delete course
+    static async delateCourse(contex, id){
+        return contex.genericQuery(`DELETE FROM courses WHERE id_course = '${id}';`)   
+    }
+
+    // --------------------------- Units ---------------------------
+
+    // Query for create unit
+    static async createUnit(contex, name, description, id_course){
+        return contex.genericQuery(`INSERT INTO units (id_course, name, description) 
+        VALUES ('${id_course}','${name}','${description}');`)
+    }
+    
+    // 
 }
 
 module.exports = DBservices;

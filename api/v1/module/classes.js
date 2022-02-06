@@ -120,14 +120,14 @@ router.route('/classes')
      
         // Cast data for query
         for (const key of Object.keys(req.query)) 
-            req.query[key] = dbc.strToArray(req.query[key])
+            req.query[key] = DBS.strToArray(req.query[key])
             
         // console.log(req.query[key])      
 
         // Indirect call 
         DBS.genericCycleQuery(
             {
-                queryMethod: dbc.getClassDataByFilter,
+                queryMethod: DBS.getClassDataByFilter,
                 par: [req.query]
             }
         )

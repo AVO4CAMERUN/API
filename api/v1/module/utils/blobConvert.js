@@ -21,6 +21,17 @@ class BlobConvert {
         }
         return null;
     }
+    
+    // Methods for decode Base64 to Blob 
+    static base64ToHex(base64) {
+
+        // Type check
+        if(typeof base64 === 'string'){
+            return this.base64ToBlob(base64).toString('hex');
+        }
+        return null;
+    }
+
 }
 
 module.exports = BlobConvert;

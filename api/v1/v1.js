@@ -9,6 +9,7 @@ const account = require('./module/account');
 const class_resurce = require('./module/classes');
 const invites = require('./module/invites');
 const courses = require('./module/courses');
+const units = require('./module/units');
 //...
 
 
@@ -19,6 +20,7 @@ router.use(account);
 router.use(class_resurce);
 router.use(invites);
 router.use(courses);
+router.use(units);
 
 // Export v1 router 
 module.exports = router
