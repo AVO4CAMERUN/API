@@ -305,6 +305,10 @@ class DBservices {
         VALUES ('${id_course}','${name}','${description}');`)
     }
     
+    // Query for delete unit
+    static async deleteUnit(contex, id){
+        return contex.genericQuery(`DELETE FROM units WHERE id_unit = '${id}';`)   
+    }
     // 
 }
 

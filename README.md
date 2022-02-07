@@ -449,12 +449,15 @@ GET {base_URL}/api/v1/courses/:course_id/**units**
 >	- 403 &#8594; Forbidden:
 >	- 404 &#8594; Not found
 
-DELETE {base_URL}/api/v1/courses/:course_id/units/**:unit_id**
+DELETE {base_URL}/api/v1/units/**:unit_id**
 > Request
 >```
 > Authorization: Bearer <token>
 >```
->DELETE di una delle unita di un corso
+>```json
+>{
+>	"course_id": "..."
+>}
 >```
 
 >Responce
@@ -518,13 +521,8 @@ DELETE {base_URL}/api/v1/lessons/**:lesson_id**
 >```
 > Authorization: Bearer <token>
 >```
->```json
->{
->	"course_id": "...",
->	"unit_id": "..."
->}
->```
-
+>
+>
 > Responce
 >	Status code:
 >	- 200 &#8594; Ok

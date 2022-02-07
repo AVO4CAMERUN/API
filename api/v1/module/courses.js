@@ -19,24 +19,23 @@ router.route('/courses')
 
         // 
         if (img_cover)
-            img_cover = BlobConvert.base64ToHex(img_cover)
+            img_cover = `x'${BlobConvert.base64ToHex(img_cover)}'`
           
-        if (role === "02") {
-            DBS.genericCycleQuery( 
-                {
-                    queryMethod: DBS.createCourse,  // Create courses and save id
-                    par: [name, email, description, img_cover, subject]
-                }
-            )
-            .then(() => {
-                res.sendStatus(200);    // You create a your new courses
-            })
-            .catch((err) => {
-                res.sendStatus(500); // Server error
-            })
-        } else {
-            res.sendStatus(403);    // You aren't a prof
-        }
+        if (role !== "02")
+            return res.sendStatus(403);    // You aren't a prof
+
+        DBS.genericCycleQuery( 
+            {
+                queryMethod: DBS.createCourse,  // Create courses and save id
+                par: [name, email, description, img_cover, subject]
+            }
+        )
+        .then(() => {
+            res.sendStatus(200);    // You create a your new courses
+        })
+        .catch((err) => {
+            res.sendStatus(500); // Server error
+        })
     })
 
     // Get courses data by filter
@@ -110,7 +109,7 @@ router.route('/courses/:id')
             return res.sendStatus(403);  
 
         if (req.body?.img_cover)
-            req.body.img_cover = `x'${ BlobConvert.base64ToHex(req.body.img_cover)}'`
+            req.body.img_cover = `x'${BlobConvert.base64ToHex(req.body.img_cover)}'`
           
         DBS.genericCycleQuery(
             {
@@ -122,7 +121,7 @@ router.route('/courses/:id')
 
             // Check if you are the creator of course
             if(result[0]?.value[0]['COUNT(*)'] == 0)
-                res.sendStatus(403);    // You aren't the creator
+                return Promise.reject(403);    // You aren't the tutor   
 
             // if you are a creator commit query for change course data
             return DBS.genericCycleQuery({
@@ -132,11 +131,13 @@ router.route('/courses/:id')
             
         })
         .then(() => {
-            res.sendStatus(200);    // You changed a class data
+            res.sendStatus(200);
         })
         .catch((err) => {
-            console.log(err);
-            res.sendStatus(500); // Server error
+            if(err === 400 || err === 403)
+                res.sendStatus(err)    // Error in parameter
+            else
+                res.sendStatus(500) // Server error
         })
     })
 
@@ -159,7 +160,7 @@ router.route('/courses/:id')
 
             // Check if you are the creator of course
             if(result[0]?.value[0]['COUNT(*)'] == 0)
-                return res.sendStatus(403);    // You aren't the creator
+                return Promise.reject(403);    // You aren't the tutor   
 
             // if you are a creator commit query for delete course
             return DBS.genericCycleQuery({
@@ -168,12 +169,14 @@ router.route('/courses/:id')
             })
         })
         .then(() => {
-            res.sendStatus(200);    // You delete a class data
+            res.sendStatus(200);
         })
         .catch((err) => {
-            console.log(err);
-            res.sendStatus(500); // Server error
-        })  
+            if(err === 400 || err === 403)
+                res.sendStatus(err);    // Error in parameter
+            else
+                res.sendStatus(500); // Server error
+        })
     })
 
 module.exports = router

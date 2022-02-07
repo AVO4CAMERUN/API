@@ -2,8 +2,7 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const jwt = require('jsonwebtoken');
-const DBS = require('./utils/DBservices');
+const DBS = require('./utils/DBServices');
 const MailSender = require('./utils/MailSender');
 const authJWT = require('./utils/Auth');
 const BlobConvert = require('./utils/BlobConvert');
@@ -30,13 +29,13 @@ router.route('/account')
         suspendedUsers.forEach( (u, i) =>{ email === u['email']? isThere = true : isThere = false })
 
         if(!isThere){
-            dbc.genericCycleQuery(
+            DBS.genericCycleQuery(
                 {
-                    queryMethod: dbc.isRegistred,
+                    queryMethod: DBS.isRegistred,
                     par: [email]
                 },
                 {
-                    queryMethod: dbc.isFreeUsername,
+                    queryMethod: DBS.isFreeUsername,
                     par: [username]
                 }
             )
@@ -107,12 +106,17 @@ router.route('/account')
         //console.log(req.body);
 
         // Da controllare se si vouole cambiare il role e negare, aggistare cambiare update password con sha2 ...
-        if(user.role){ res.sendStatus(403); }
+        if(req.body?.role) 
+            res.sendStatus(403)
         //if(user.password){ user.password = "SHA2('user.password', 256)"}    //se si riesce sistemare qua e non da generic cosa
         //rifattorizzare codice
         
+        if (req.body?.img_profile)
+            req.body.img_profile = `x'${BlobConvert.base64ToHex(req.body.img_profile)}'`
+
+        //console.log(req.body)
         // Indirect call 
-        DBS.genericCycleQuery(
+        return DBS.genericCycleQuery(
             {
                 queryMethod: DBS.updateUserInfo,
                 par: [{email}, req.body]

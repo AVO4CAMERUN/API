@@ -30,7 +30,7 @@ router.route('/units')
         
             // Check if you are the creator of course
             if(result[0]?.value[0]['COUNT(*)'] === 0)
-                return res.sendStatus(403);    // You aren't the creator
+                return Promise.reject(403);    // You aren't the creator
             
             // if you are a creator
             return DBS.genericCycleQuery({
@@ -38,11 +38,14 @@ router.route('/units')
                 par: [name, description, id_course]
             })
         })
-        .then((result) => {
-            res.sendStatus(200);    // You create a your new courses
+        .then(() => {
+            res.sendStatus(200);
         })
         .catch((err) => {
-            res.sendStatus(500); // Server error
+            if(err === 400 || err === 403)
+                res.sendStatus(err)    // Error in parameter
+            else
+                res.sendStatus(500) // Server error
         })
 
     })
@@ -55,7 +58,42 @@ router.route('/units/:id')
     // Update units data by id
     .put(authJWT.authenticateJWT, (req, res) => {})
 
-    // Delete courses by id
-    .delete(authJWT.authenticateJWT, (req, res) => {})
+    // Delete units by id
+    .delete(authJWT.authenticateJWT, (req, res) => {
+        const user = authJWT.parseAuthorization(req.headers.authorization)
+        const {email, role} = user;
+        const id_unit = req.params.id;
+        
+        if (role !== "02") 
+            return res.sendStatus(403);    // You aren't a prof   
+            
+        DBS.genericCycleQuery(
+            {
+                queryMethod: DBS.isCourseCreator,
+                par: [email, id_course]
+            }
+        )
+        .then((result) => {
+
+            // Check if you are the creator of course
+            if(result[0]?.value[0]['COUNT(*)'] == 0)
+                return Promise.reject(403);    // You aren't the tutor   
+
+            // if you are a creator commit query for delete course
+            return DBS.genericCycleQuery({
+                queryMethod: DBS.deleteUnit,
+                par: [id_unit]
+            })
+        })
+        .then(() => {
+            res.sendStatus(200);
+        })
+        .catch((err) => {
+            if(err === 400 || err === 403)
+                res.sendStatus(err);    // Error in parameter
+            else
+                res.sendStatus(500); // Server error
+        })
+    })
 
 module.exports = router
