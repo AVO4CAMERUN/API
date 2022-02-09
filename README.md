@@ -485,7 +485,7 @@ POST {base_URL}/api/v1/**lessons**
 >	"unit_id": "...",
 >	"name": "....",
 >	"link_video": "....",
->	"quiz": {....},
+>	"quiz": {....}
 >}
 >```
 

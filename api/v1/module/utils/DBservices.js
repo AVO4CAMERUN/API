@@ -77,9 +77,9 @@ class DBservices {
         let whereKey = Object.keys(whereObj)
         const regex = new RegExp('img_*');
 
-        // 
+        // Check special fields
         for (const key of putDatakeys) {
-            if (regex.test(key)) 
+            if (regex.test(key) || key === "password") 
                 query += ` ${key} = ${putDataObj[key]},`
             else
                 query += ` ${key} = '${putDataObj[key]}',`
@@ -87,7 +87,6 @@ class DBservices {
         query = query.substring(0, query.length -1)
 
         query += ` WHERE ${whereKey} = '${whereObj[whereKey]}'`
-        //console.log(whereKey);
         return query;
     }
 
@@ -115,8 +114,6 @@ class DBservices {
             }
             query = query.substring(0, query.length - opLogic.length)
         }
-        //console.log(filterObj[fKey]);
-        //console.log(value);
         return query;  
     }
 
@@ -328,10 +325,14 @@ class DBservices {
     // --------------------------- Lessons ---------------------------
 
     // Query for create lessons
-    static async createLesson(contex, name, link_video, quiz){
-        return contex.genericQuery(`INSERT INTO lessons (name, link_video, quiz) VALUES ('${name}','${link_video}','${quiz}');`)
+    static async createLesson(contex, id_unit, name, link_video, quiz){
+        return contex.genericQuery(`INSERT INTO lessons (id_unit, name, link_video, quiz) VALUES ('${id_unit}', '${name}','${link_video}','${quiz}');`)
     }
 
+    // Query for get lessons data by filter
+    static async getLessonsDataByFilter(contex, filterObj){
+        return contex.genericQuery(contex.createGetQuery("lessons", ["*"], filterObj, "OR"))
+    }
 }
 
 module.exports = DBservices;

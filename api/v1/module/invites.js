@@ -17,87 +17,81 @@ router.route('/invites')
         const {email, role} = user;
         const {class_id, students} = req.body;
 
-        if(role === "02"){
-            DBS.genericCycleQuery(
-                {
-                    queryMethod: DBS.isParameterRoleInClass,
-                    par: [email, class_id, "tutor"]
-                },
-                {
-                    queryMethod: DBS.isParameterRoleInClass,
-                    par: [email, class_id, "normal"]
-                }
-            )
-            .then((result) => {
-                const isProf = result[0].value[0]["COUNT(*)"] + result[1].value[0]["COUNT(*)"];
-                console.log(isProf);
+        if(role === "02")
+            return res.sendStatus(403);    // You aren't a prof
+        
+        DBS.genericCycleQuery(
+            {
+                queryMethod: DBS.isParameterRoleInClass,
+                par: [email, class_id, "tutor"]
+            },
+            {
+                queryMethod: DBS.isParameterRoleInClass,
+                par: [email, class_id, "normal"]
+            }
+        )
+        .then((result) => {
+            const isProf = result[0].value[0]["COUNT(*)"] + result[1].value[0]["COUNT(*)"];
+            console.log(isProf);
 
-                // Check is prof in class
-                if(isProf){
+            // Check is prof in class
+            if(!isProf)
+                return Promise.reject(403);    // You aren't a prof in class
 
-                    // Check students is iterable
-                    if(Array.isArray(students)){
+            // Check students is iterable
+            if(!Array.isArray(students))
+                return Promise.reject(400); // Error in parameter
 
-                        // Create query for check student profile and class exist
-                        let checkQuerys = [];
-                        checkQuerys.push({
-                            queryMethod: DBS.isExistClassByid,  // Check class
-                            par: [class_id]
-                        })
-                        for (const stud of students) {
-                            checkQuerys.push({
-                                queryMethod: DBS.isParameterRole,  // Check is student
-                                par: [stud, "01"]
-                            })
-                        }
-                        // Send dynamic querys
-                        return DBS.genericCycleQuery(...checkQuerys);
-                        
-                    } else { 
-                        return Promise.reject(400); /* Error in parameter*/ 
-                    }
-                } else { 
-                    return Promise.reject(403);    /* You aren't a prof in class*/
-                }
+            // Create query for check student profile and class exist
+            let checkQuerys = [];
+            checkQuerys.push({
+                queryMethod: DBS.isExistClassByid,  // Check class
+                par: [class_id]
             })
-            .then((result) => {
-                // Sum for check that only email is register users
-                let sum = 0; result.forEach(r => {sum += r.value[0]["COUNT(*)"] });
 
-                if(sum === result.length){
+            for (const stud of students) {
+                checkQuerys.push({
+                    queryMethod: DBS.isParameterRole,  // Check is student
+                    par: [stud, "01"]
+                })
+            }
+            
+            // Send dynamic querys
+            return DBS.genericCycleQuery(...checkQuerys);
+        })
+        .then((result) => {
+            // Sum for check that only email is register users
+            let sum = 0; result.forEach(r => {sum += r.value[0]["COUNT(*)"] });
 
-                    // Query array for add profs
-                    const queryArray = [];
-                    
-                    // Push student invitations if there are
-                    for (const stud of students) {
-                        queryArray.push({
-                            queryMethod: DBS.addClassInvite,
-                            par: [stud, class_id]
-                        })
-                    }
+            if(sum !== result.length)
+                return Promise.reject(400); // Error in parameter
 
-                    // Send invite for class
-                    return DBS.genericCycleQuery(...queryArray) // Send dynamic querys
-                } else {
-                    return Promise.reject(400); /* Error in parameter*/
-                }
-                
-            })
-            .then(() => {
-                res.sendStatus(200);    // You invieted students
-            })
-            .catch((err) => {
-                // console.log(err);
-                
-                if(err === 400 || err === 403)
-                    res.sendStatus(err);    // Error in parameter
-                else
-                    res.sendStatus(500); // Server error
-            })
-        }  else {
-            res.sendStatus(403);    // You aren't a prof
-        }
+            // Query array for add profs
+            const queryArray = [];
+            
+            // Push student invitations if there are
+            for (const stud of students) {
+                queryArray.push({
+                    queryMethod: DBS.addClassInvite,
+                    par: [stud, class_id]
+                })
+            }
+
+            // Send invite for class
+            return DBS.genericCycleQuery(...queryArray) // Send dynamic querys
+        })
+        .then(() => {
+            res.sendStatus(200);    // You invieted students
+        })
+        .catch((err) => {
+            // console.log(err);
+            
+            if(err === 400 || err === 403)
+                res.sendStatus(err);    // Error in parameter
+            else
+                res.sendStatus(500); // Server error
+        })
+        
     })
 
     // Get all your invites by email
@@ -144,20 +138,20 @@ router.route('/invites/:id')
             const class_id = result[0].value[0]?.id_class;
 
             // if invited exist 
-            if(class_id !== undefined){
-                return DBS.genericCycleQuery(
-                    {
-                        queryMethod: DBS.acceptInvitation,
-                        par: [class_id, email]
-                    },
-                    {
-                        queryMethod: DBS.deleteInvitation,
-                        par: [id]
-                    }
-                )
-            } else {
-                res.sendStatus(400); // Error in parameter
-            }
+            if(class_id === undefined)
+                return res.sendStatus(400); // Error in parameter
+
+            // Accept 
+            return DBS.genericCycleQuery(
+                {
+                    queryMethod: DBS.acceptInvitation,
+                    par: [class_id, email]
+                },
+                {
+                    queryMethod: DBS.deleteInvitation,
+                    par: [id]
+                }
+            ) 
         })
         .then(() => {
             res.sendStatus(200)   // Send ok
@@ -173,7 +167,6 @@ router.route('/invites/:id')
         const user = authJWT.parseAuthorization(req.headers.authorization)
         const {email} = user;
         
-
         // Indirect call 
         DBS.genericCycleQuery(
             {
@@ -187,16 +180,16 @@ router.route('/invites/:id')
         .then((result) => {
             
             // if invited exist 
-            if(result[0].value[0] !== undefined){
-                return DBS.genericCycleQuery(
-                    {
-                        queryMethod: DBS.deleteInvitation,
-                        par: [id]
-                    }
-                )
-            } else {
+            if(result[0].value[0] === undefined)
                 res.sendStatus(400); // Error in parameter
-            }
+
+            // Reject
+            return DBS.genericCycleQuery(
+                {
+                    queryMethod: DBS.deleteInvitation,
+                    par: [id]
+                }
+            )
         })
         .then(() => {
             res.sendStatus(200)   // Send ok

@@ -36,7 +36,7 @@ router.route('/lessons')
                 queryMethod: DBS.unitBelongCourse,
                 par: [id_course, id_unit]
             })
-        })
+        })  //aggiungere controllo che id_unit and name sono unique
         .then((result) => {
     
             if(result[0]?.value[0]['COUNT(*)'] == 0)
@@ -45,7 +45,7 @@ router.route('/lessons')
             // delete unit 
             return DBS.genericCycleQuery({
                 queryMethod: DBS.createLesson,
-                par: [name, link_video, quiz]   // aggiungere data
+                par: [id_unit, name, link_video, quiz]   // aggiungere data
             })
         })
         .then(() => {
@@ -60,7 +60,27 @@ router.route('/lessons')
     })
 
     // Get courses data by filter
-    .get((req, res) => {})
+    .get((req, res) => {
+
+        // Cast data for query
+        for (const key of Object.keys(req.query)) 
+            req.query[key] = DBS.strToArray(req.query[key])
+
+        // Query
+        DBS.genericCycleQuery({
+                queryMethod: DBS.getLessonsDataByFilter,
+                par: [req.query]
+        })
+        .then((response) => {
+            let lessonsData = response[0].value;
+       
+            // Send courses data
+            res.send(lessonsData);    
+        })
+        .catch(() => {
+            res.sendStatus(500); // Server error
+        })
+    })
 
 router.route('/lessons/:id')
 

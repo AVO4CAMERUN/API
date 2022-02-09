@@ -50,31 +50,59 @@ router.route('/units')
 
     // Get units data by filter (id corso)  // solo se sei iscritto -- cosa marginale
     .get((req, res) => {
+        let units;  // detto dalla fidanzatina
 
         // Cast data for query
         for (const key of Object.keys(req.query)) 
             req.query[key] = DBS.strToArray(req.query[key])
 
-        DBS.genericCycleQuery( 
-            {
-                queryMethod: DBS.getUnitsDataByFilter,
-                par: [req.query]
-            }
-        )
+        DBS.genericCycleQuery({
+            queryMethod: DBS.getUnitsDataByFilter,
+            par: [req.query]
+        })
         .then((response) => {
-            let unitsData = response[0].value;
-       
+            units = response[0].value;
+            
+            // Make querys
+            let querys = [];
+            for (const unit of units){
+                querys.push({
+                    queryMethod: DBS.getLessonsDataByFilter,  //
+                    par: [{id_unit: [unit.id_unit]}]
+                })
+            }
+            
+            // cosina per arrichire cosaltra
+            return DBS.genericCycleQuery(...querys) 
+        })
+        .then((response) => {
+            
+            // Add lessons on units
+            for (let i = 0; i < units.length; i++) {
+                let lessons = response[i].value;    // Extract data on query array 
+                units[i].lessons = [];  // Declarete array prop
+
+                //  Push lessons in its unit
+                lessons.forEach(l => {
+                    units[i].lessons.push({
+                        name: l.name,
+                        id: l.id_lesson
+                    })
+                });
+            }
+          
             // Send courses data
-            res.send(unitsData);    
+            res.send(units); 
         })
         .catch((err) => {
+            console.log(err);
             res.sendStatus(500); // Server error
         })
     })
 
 router.route('/units/:id')
 
-    // Update units data by id  //-------------------------------------------------da aggiusttrae errore non grave
+    // Update units data by id
     .put(authJWT.authenticateJWT, (req, res) => {
         const user = authJWT.parseAuthorization(req.headers.authorization)
         const {email, role} = user;
@@ -90,7 +118,7 @@ router.route('/units/:id')
         DBS.genericCycleQuery(
             {
                 queryMethod: DBS.isCourseCreator,
-                par: [email, course_id]     // da aggiudstare tramite metodino
+                par: [email, course_id]
             }
         )
         .then((result) => {

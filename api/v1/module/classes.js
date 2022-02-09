@@ -110,7 +110,7 @@ router.route('/classes')
         })  
     })
 
-    // Get class data by filter                    // => da fare join per filtro modificare 
+    // Get class data by filter                    // => da fare join per i prof e i studs 
     .get((req, res) => {
      
         // Cast data for query
