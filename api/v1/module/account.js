@@ -107,7 +107,7 @@ router.route('/account')
 
         // Da controllare se si vouole cambiare il role e negare, aggistare cambiare update password con sha2 ...
         if(req.body?.role) 
-            res.sendStatus(403)
+            return res.sendStatus(403)
         //if(user.password){ user.password = "SHA2('user.password', 256)"}    //se si riesce sistemare qua e non da generic cosa
         //rifattorizzare codice
         

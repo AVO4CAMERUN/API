@@ -10,6 +10,7 @@ const class_resurce = require('./module/classes');
 const invites = require('./module/invites');
 const courses = require('./module/courses');
 const units = require('./module/units');
+const lessons = require('./module/lessons');
 //...
 
 
@@ -21,6 +22,7 @@ router.use(class_resurce);
 router.use(invites);
 router.use(courses);
 router.use(units);
+router.use(lessons);
 
 // Export v1 router 
 module.exports = router

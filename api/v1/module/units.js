@@ -4,7 +4,6 @@
 const express = require('express');
 
 const DBS = require('./utils/DBservices');
-const BlobConvert = require('./utils/BlobConvert');
 const authJWT = require('./utils/Auth');
 
 const router = express.Router();    //Create router Object
@@ -47,30 +46,51 @@ router.route('/units')
             else
                 res.sendStatus(500) // Server error
         })
-
     })
 
-    // Get units data by filter (id corso)  // solo se sei iscritto
-    .get((req, res) => {})
+    // Get units data by filter (id corso)  // solo se sei iscritto -- cosa marginale
+    .get((req, res) => {
+
+        // Cast data for query
+        for (const key of Object.keys(req.query)) 
+            req.query[key] = DBS.strToArray(req.query[key])
+
+        DBS.genericCycleQuery( 
+            {
+                queryMethod: DBS.getUnitsDataByFilter,
+                par: [req.query]
+            }
+        )
+        .then((response) => {
+            let unitsData = response[0].value;
+       
+            // Send courses data
+            res.send(unitsData);    
+        })
+        .catch((err) => {
+            res.sendStatus(500); // Server error
+        })
+    })
 
 router.route('/units/:id')
 
-    // Update units data by id
-    .put(authJWT.authenticateJWT, (req, res) => {})
-
-    // Delete units by id
-    .delete(authJWT.authenticateJWT, (req, res) => {
+    // Update units data by id  //-------------------------------------------------da aggiusttrae errore non grave
+    .put(authJWT.authenticateJWT, (req, res) => {
         const user = authJWT.parseAuthorization(req.headers.authorization)
         const {email, role} = user;
-        const id_unit = req.params.id;
-        
+        const unit_id = req.params.id;
+        // req.body;
+
         if (role !== "02") 
             return res.sendStatus(403);    // You aren't a prof   
             
+        if (req.body?.id_course || req.body?.id_unit)
+            return res.sendStatus(400);     // Bad reqest
+
         DBS.genericCycleQuery(
             {
                 queryMethod: DBS.isCourseCreator,
-                par: [email, id_course]
+                par: [email, course_id]     // da aggiudstare tramite metodino
             }
         )
         .then((result) => {
@@ -79,10 +99,21 @@ router.route('/units/:id')
             if(result[0]?.value[0]['COUNT(*)'] == 0)
                 return Promise.reject(403);    // You aren't the tutor   
 
-            // if you are a creator commit query for delete course
+            // if you are a creator check if unit belong course 
             return DBS.genericCycleQuery({
-                queryMethod: DBS.deleteUnit,
-                par: [id_unit]
+                queryMethod: DBS.unitBelongCourse,
+                par: [course_id, unit_id]
+            })
+        })
+        .then((result) => {
+ 
+            if(result[0]?.value[0]['COUNT(*)'] == 0)
+                return Promise.reject(403);    // You aren't the tutor   
+
+            // delete unit 
+            return DBS.genericCycleQuery({
+                queryMethod: DBS.updateUnits,
+                par: [{id}, req.body]
             })
         })
         .then(() => {
@@ -91,7 +122,58 @@ router.route('/units/:id')
         .catch((err) => {
             if(err === 400 || err === 403)
                 res.sendStatus(err);    // Error in parameter
-            else
+            else 
+                res.sendStatus(500); // Server error
+        })
+    })
+
+    // Delete units by id
+    .delete(authJWT.authenticateJWT, (req, res) => {
+        const user = authJWT.parseAuthorization(req.headers.authorization)
+        const {email, role} = user;
+        const unit_id = req.params.id;
+        const {course_id} = req.body;
+
+        if (role !== "02") 
+            return res.sendStatus(403);    // You aren't a prof   
+            
+
+        DBS.genericCycleQuery(
+            {
+                queryMethod: DBS.isCourseCreator,
+                par: [email, course_id]
+            }
+        )
+        .then((result) => {
+
+            // Check if you are the creator of course
+            if(result[0]?.value[0]['COUNT(*)'] == 0)
+                return Promise.reject(403);    // You aren't the tutor   
+
+            // if you are a creator check if unit belong course 
+            return DBS.genericCycleQuery({
+                queryMethod: DBS.unitBelongCourse,
+                par: [course_id, unit_id]
+            })
+        })
+        .then((result) => {
+ 
+            if(result[0]?.value[0]['COUNT(*)'] == 0)
+                return Promise.reject(403);    // You aren't the tutor   
+
+            // delete unit 
+            return DBS.genericCycleQuery({
+                queryMethod: DBS.deleteUnit,
+                par: [unit_id]
+            })
+        })
+        .then(() => {
+            res.sendStatus(200);
+        })
+        .catch((err) => {
+            if(err === 400 || err === 403)
+                res.sendStatus(err);    // Error in parameter
+            else 
                 res.sendStatus(500); // Server error
         })
     })

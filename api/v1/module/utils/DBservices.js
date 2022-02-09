@@ -305,11 +305,33 @@ class DBservices {
         VALUES ('${id_course}','${name}','${description}');`)
     }
     
+    // Check if unit belong Course
+    static async unitBelongCourse(contex, id_course, id_unit){
+        return contex.genericQuery(`SELECT COUNT(*) FROM units WHERE id_unit = '${id_unit}' AND id_course = '${id_course}'`)   
+    }
+
+    // Query for get units data by filter
+    static async getUnitsDataByFilter(contex, filterObj){
+        return contex.genericQuery(contex.createGetQuery("units", ["*"], filterObj, "OR"))
+    }
+
+    // Query for update units by id and option
+    static async updateUnits(contex, whereObj, putDataObj){
+        return contex.genericQuery(contex.createUpdateQuery('units', whereObj, putDataObj))
+    }
+
     // Query for delete unit
     static async deleteUnit(contex, id){
         return contex.genericQuery(`DELETE FROM units WHERE id_unit = '${id}';`)   
     }
-    // 
+    
+    // --------------------------- Lessons ---------------------------
+
+    // Query for create lessons
+    static async createLesson(contex, name, link_video, quiz){
+        return contex.genericQuery(`INSERT INTO lessons (name, link_video, quiz) VALUES ('${name}','${link_video}','${quiz}');`)
+    }
+
 }
 
 module.exports = DBservices;

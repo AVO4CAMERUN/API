@@ -293,11 +293,14 @@ DELETE {base_URL}/api/v1/classes/**:class_id**
 >	- 403 &#8594; Forbidden: non sei un professore
 >   - 400 &#8594; Errore nei parametri (forse da specificare meglio)
 ***
+
 ### invitations
 
 
 ***
+
 ### Courses
+
 POST    {base_URL}/api/v1/**courses**
 
 > Request
