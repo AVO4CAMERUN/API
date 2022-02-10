@@ -2,7 +2,6 @@
 
 // Utils Module
 const express = require('express');
-
 const DBS = require('./utils/DBservices');
 const authJWT = require('./utils/Auth');
 
@@ -104,25 +103,29 @@ router.route('/units/:id')
 
     // Update units data by id
     .put(authJWT.authenticateJWT, (req, res) => {
+        
         const user = authJWT.parseAuthorization(req.headers.authorization)
         const {email, role} = user;
-        const unit_id = req.params.id;
-        // req.body;
-
+        const {id_course} = req.body;
+        const id_unit = req.params.id;
+        
         if (role !== "02") 
             return res.sendStatus(403);    // You aren't a prof   
             
-        if (req.body?.id_course || req.body?.id_unit)
+        if (!id_course || req.body?.id_unit)
             return res.sendStatus(400);     // Bad reqest
+
+        // Get course_id on body request
+        delete req.body.id_course;
 
         DBS.genericCycleQuery(
             {
                 queryMethod: DBS.isCourseCreator,
-                par: [email, course_id]
+                par: [email, id_course]
             }
         )
         .then((result) => {
-
+            
             // Check if you are the creator of course
             if(result[0]?.value[0]['COUNT(*)'] == 0)
                 return Promise.reject(403);    // You aren't the tutor   
@@ -130,7 +133,7 @@ router.route('/units/:id')
             // if you are a creator check if unit belong course 
             return DBS.genericCycleQuery({
                 queryMethod: DBS.unitBelongCourse,
-                par: [course_id, unit_id]
+                par: [id_course, id_unit]
             })
         })
         .then((result) => {
@@ -141,13 +144,14 @@ router.route('/units/:id')
             // delete unit 
             return DBS.genericCycleQuery({
                 queryMethod: DBS.updateUnits,
-                par: [{id}, req.body]
+                par: [{id_unit}, req.body]
             })
         })
         .then(() => {
             res.sendStatus(200);
         })
         .catch((err) => {
+            console.log(err);
             if(err === 400 || err === 403)
                 res.sendStatus(err);    // Error in parameter
             else 
@@ -159,17 +163,16 @@ router.route('/units/:id')
     .delete(authJWT.authenticateJWT, (req, res) => {
         const user = authJWT.parseAuthorization(req.headers.authorization)
         const {email, role} = user;
-        const unit_id = req.params.id;
-        const {course_id} = req.body;
+        const id_unit = req.params.id;
+        const {id_course} = req.body;
 
         if (role !== "02") 
             return res.sendStatus(403);    // You aren't a prof   
-            
-
+        
         DBS.genericCycleQuery(
             {
                 queryMethod: DBS.isCourseCreator,
-                par: [email, course_id]
+                par: [email, id_course]
             }
         )
         .then((result) => {
@@ -181,7 +184,7 @@ router.route('/units/:id')
             // if you are a creator check if unit belong course 
             return DBS.genericCycleQuery({
                 queryMethod: DBS.unitBelongCourse,
-                par: [course_id, unit_id]
+                par: [id_course, id_unit]
             })
         })
         .then((result) => {
@@ -192,7 +195,7 @@ router.route('/units/:id')
             // delete unit 
             return DBS.genericCycleQuery({
                 queryMethod: DBS.deleteUnit,
-                par: [unit_id]
+                par: [id_unit]
             })
         })
         .then(() => {

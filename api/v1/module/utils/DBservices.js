@@ -333,6 +333,23 @@ class DBservices {
     static async getLessonsDataByFilter(contex, filterObj){
         return contex.genericQuery(contex.createGetQuery("lessons", ["*"], filterObj, "OR"))
     }
+
+    // Check if lesson belong unit
+    static async lessonBelongUnit(contex, id_unit, id_lesson){
+        return contex.genericQuery(`SELECT COUNT(*) FROM lessons WHERE id_lesson = '${id_lesson}' AND id_unit = '${id_unit}'`)   
+    }
+
+    // Query for update lessons by id and option
+    static async updateLessons(contex, whereObj, putDataObj){
+        return contex.genericQuery(contex.createUpdateQuery('lessons', whereObj, putDataObj))
+    }
+
+    // Query for delete lessons
+    static async deleteLessons(contex, id){
+        return contex.genericQuery(`DELETE FROM lessons WHERE id_lesson = '${id}';`)   
+    }
+
+    // --------------------------- Exercise ---------------------------
 }
 
 module.exports = DBservices;

@@ -459,7 +459,7 @@ DELETE {base_URL}/api/v1/units/**:unit_id**
 >```
 >```json
 >{
->	"course_id": "..."
+>	"id_course": "..."
 >}
 >```
 
