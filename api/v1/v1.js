@@ -9,6 +9,7 @@ const account = require('./module/account');
 const class_resurce = require('./module/classes');
 const invites = require('./module/invites');
 const courses = require('./module/courses');
+const subscribe = require('./module/subscribe');
 const units = require('./module/units');
 const lessons = require('./module/lessons');
 //...
@@ -21,6 +22,7 @@ router.use(account);
 router.use(class_resurce);
 router.use(invites);
 router.use(courses);
+router.use(subscribe);
 router.use(units);
 router.use(lessons);
 

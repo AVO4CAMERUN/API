@@ -90,7 +90,7 @@ class DBservices {
         return query;
     }
 
-    // Generic methods generate GET request
+    // Generic methods generate GET request ///---> SELECT id_course FROM courses WHERE name LIKE 'ad%' OR name = 'sss';
     static createGetQuery(tableName, fieldsDataRequest, filterObj, opLogic = ''){
 
         // Generete selected fields
@@ -269,8 +269,8 @@ class DBservices {
     // --------------------------- Courses ---------------------------
 
     // Query for create course
-    static async createCourse(contex, name, email, description, img_cover, subject){
-        return contex.genericQuery(`INSERT INTO courses (name, description, img_cover, subject) 
+    static async createCourse(contex, name, email, description, img_cover = '', subject){
+        return contex.genericQuery(`INSERT INTO courses (name, email_creator, description, img_cover, subject) 
         VALUES ('${name}','${email}','${description}', '${img_cover}', '${subject}');`)
     }
 
@@ -293,6 +293,24 @@ class DBservices {
     static async delateCourse(contex, id){
         return contex.genericQuery(`DELETE FROM courses WHERE id_course = '${id}';`)   
     }
+
+    // --------------------------- Subscribe ---------------------------
+
+    // Query to subscription
+    static async subscription(contex, email, id_course){
+        return contex.genericQuery(`INSERT INTO courses_users (email, id_course) VALUES ('${email}','${id_course}');`)
+    }
+
+    // Query for get courses subscription by filter
+    static async getCoursesSubscriptionByFilter(contex, filterObj){
+        return contex.genericQuery(contex.createGetQuery("courses_users", ["*"], filterObj, "OR"))
+    }
+
+    // Query to delete subscription
+    static async delateSubscription(contex, email, id_course){
+        return contex.genericQuery(`DELETE FROM courses_users WHERE email = '${email}' AND id_course = '${id_course}';`)   
+    }
+
 
     // --------------------------- Units ---------------------------
 
