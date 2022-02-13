@@ -44,4 +44,3 @@ class Auth {
 }
 
 module.exports = Auth;
-//semplificare con un solo token

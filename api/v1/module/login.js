@@ -31,7 +31,7 @@ router.route('/login')
         )
         .then((result) => {
             
-            if(result[0].value[0]['COUNT(*)'] < 0)
+            if(result[0].value[0]['COUNT(*)'] != 1)
                 return res.sendStatus(403); // Forbiden
 
             // Util Data

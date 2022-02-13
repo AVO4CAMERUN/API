@@ -49,6 +49,7 @@ router.route('/subscribe')
             res.sendStatus(500); // Server error
         })
     })
+    
     // Delete subscribe to course by id
     .delete(authJWT.authenticateJWT, (req, res) => {
         const user = authJWT.parseAuthorization(req.headers.authorization)
