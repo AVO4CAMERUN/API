@@ -17,7 +17,7 @@ router.route('/invites')
         const {email, role} = user;
         const {class_id, students} = req.body;
 
-        if(role === "02")
+        if(role !== "02")
             return res.sendStatus(403);    // You aren't a prof
         
         DBS.genericCycleQuery(

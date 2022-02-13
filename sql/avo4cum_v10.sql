@@ -84,7 +84,7 @@ CREATE TABLE `courses` (
   `id_course` int(11) NOT NULL,
   `email_creator` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `description` varchar(255) DEFAULT NULL,
+  `description` varchar(156) DEFAULT NULL,
   `creation_date` date NOT NULL,
   `subject` enum('Mathematics','Electrical engineering',' Informatics',' English','Statistics','Chemistry') NOT NULL,
   `img_cover` blob DEFAULT NULL
