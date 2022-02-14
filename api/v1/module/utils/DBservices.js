@@ -5,7 +5,7 @@ class DBservices {
     static host = "localhost";
     static user = "root";
     static password = "";
-    static database = "avo4cum";
+    static database = "avo4cam";
 
     // --------------------------- Utils methods  -------------------------
 

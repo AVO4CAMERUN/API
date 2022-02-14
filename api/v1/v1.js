@@ -1,4 +1,4 @@
-//Version 1 on AVO4CUM REST API
+//Version 1 on AVO4CAM REST API
 
 const express = require('express');
 const router = express.Router();    //Create router Object
