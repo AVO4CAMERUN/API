@@ -2,10 +2,17 @@
 const mysql = require('mysql');
 
 class DBservices {
-    static host = "localhost";
-    static user = "root";
-    static password = "";
-    static database = "avo4cam";
+
+    // Static block for init pool 
+    static {
+        this.pool  = mysql.createPool({
+            connectionLimit : 100,
+            host:"localhost",
+            user: "root",
+            password: "",
+            database: "avo4cam"
+        });     
+    }
 
     // --------------------------- Utils methods  -------------------------
 
@@ -27,30 +34,20 @@ class DBservices {
 
     // Generic Query -->  gestire gli errori da then e catch
     static genericQuery(query){
-        let c = this.connect;
         // console.log(query);
-        return new Promise( (res, rej) => {
-            c.query(query, (err, result) => {
-                    if(err) rej(err)  
-                    else res(result) 
+        let p = this.pool;
+        return new Promise((res, rej) => {
+            p.query(query, (err, result) => {
+                if (err) rej(err)  
+                else res(result) 
             });
         });  
-
     }
 
     // Cycle Generic request
     static async genericCycleQuery(...queryObjs){
         const contex = this;
-        const {host, user, password, database} = this;
 
-        // Start connect
-        this.connect = mysql.createConnection({
-            host,
-            user,
-            password, 
-            database
-        })
-    
         // Query execute
         let promises = []
         for (let i = 0; i < queryObjs.length; i++) {
@@ -58,15 +55,11 @@ class DBservices {
             //console.log(queryObjs[i])
             let qm = queryObjs[i]?.queryMethod;
             let par = queryObjs[i]?.par;
-            
-            //console.log(...par);
 
             // Promise  //Spread array par
             promises.push(await qm(contex, ...par))
             // console.log(await qm(contex, par))
         }
-
-        this.connect.end()                    // Close connect
         return Promise.allSettled(promises)   // Return results wrapped in promises array
     }
 

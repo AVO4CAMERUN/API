@@ -30,8 +30,7 @@ router.route('/login')
             }
         )
         .then((result) => {
-            
-            if(result[0].value[0]['COUNT(*)'] != 1)
+            if(result[0]?.value[0]['COUNT(*)'] != 1)
                 return res.sendStatus(403); // Forbiden
 
             // Util Data
@@ -49,7 +48,8 @@ router.route('/login')
             // Send json with tokens
             res.json({accessToken, refreshToken});
         })  
-        .catch(() => {
+        .catch((err) => {
+            console.log(err);
             res.sendStatus(500); // Send Status server error
         })
     })
