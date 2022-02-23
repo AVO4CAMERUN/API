@@ -1,7 +1,6 @@
 // Courses DB services modules
-const {genericQuery, createGetQuery, createUpdateQuery} = require('../DBservises/generic.service');
 
-// --------------------------- Courses ---------------------------
+const {genericQuery, createGetQuery, createUpdateQuery} = require('../DBservises/generic.service');
 
 // Query for create course
 async function createCourse(name, email, description, img_cover = '', subject){

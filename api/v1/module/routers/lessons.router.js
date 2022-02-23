@@ -40,23 +40,22 @@ router.route('/lessons')
             }
         )
         .then((result) => {
-
             // Check if you are the creator of course
             if(result[0]?.value[0]['COUNT(*)'] == 0)
                 return Promise.reject(403);    // You aren't the creator 
 
             // if you are a creator check if unit belong course 
-            return DBS.genericCycleQuery({
+            return genericCycleQuery({
                 queryMethod: unitBelongCourse,
                 par: [id_course, id_unit]
             })
         })
         .then((result) => {
             if(result[0]?.value[0]['COUNT(*)'] == 0)
-                return Promise.reject(403);    // You aren't the tutor   
+                return Promise.reject(403);    // You aren't the creator   
 
             // delete unit 
-            return DBS.genericCycleQuery({
+            return genericCycleQuery({
                 queryMethod: createLesson,
                 par: [id_unit, name, link_video, quiz]   // aggiungere data
             })

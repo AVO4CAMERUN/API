@@ -2,8 +2,6 @@
 
 const {genericQuery, createGetQuery} = require('../DBservises/generic.service');
 
-// --------------------------- Subscribe ---------------------------
-
 // Query to subscription
 async function subscription(email, id_course){
     return genericQuery(`INSERT INTO courses_users (email, id_course) VALUES ('${email}','${id_course}');`)

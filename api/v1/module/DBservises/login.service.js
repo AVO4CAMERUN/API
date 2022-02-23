@@ -3,8 +3,6 @@
 const DBSG = require('../DBservises/generic.service');
 const {genericQuery} = DBSG;
 
-// --------------------------- Login --------------------------------
-
 // Check username and password (Auth) 
 async function checkUsernamePassword(username, password){
     return genericQuery(`SELECT COUNT(*) FROM users WHERE username = '${username}' and password = SHA2('${password}', 256)`)

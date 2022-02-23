@@ -1,15 +1,17 @@
-const Utils = require('../utils/Utils');    // Utils fucntions
-const {genericQuery, createGetQuery, createUpdateQuery} = require('../DBservises/generic.service'); // DBgeneric services
+// Accounts DB services modules
 
-// --------------------------- Account ---------------------------
+const Utils = require('../utils/Utils');    // Utils fucntions
+const { // DBgeneric services
+    genericQuery, 
+    createGetQuery,
+    createUpdateQuery
+} = require('../DBservises/generic.service'); 
 
 // Query for create user
 async function createAccount(name, surname, username, password, email, role){
-    const date = Utils.getDateString();
-
     return genericQuery(
         `INSERT INTO users (email, role, username, firstname, lastname, password, registration_date, img_profile, id_class) 
-        VALUES ('${email}', '${role}', '${username}', '${name}', '${surname}', SHA2('${password}', 256), '${date}', NULL, NULL);`
+        VALUES ('${email}', '${role}', '${username}', '${name}', '${surname}', SHA2('${password}', 256), '${Utils.getDateString()}', NULL, NULL);`
     )
 }
 

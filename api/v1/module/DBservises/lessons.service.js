@@ -1,14 +1,12 @@
- // Lesson DB services modules
+// Lesson DB services modules
 
-const DBSG = require('../DBservises/generic.service');
-const {genericQuery, createGetQuery, createUpdateQuery} = DBSG;
- 
- 
- // --------------------------- Lessons ---------------------------
+const Utils = require('../utils/Utils');
+const {genericQuery, createGetQuery, createUpdateQuery} = require('../DBservises/generic.service');
 
 // Query for create lessons
 async function createLesson(id_unit, name, link_video, quiz){
-    return genericQuery(`INSERT INTO lessons (id_unit, name, link_video, quiz) VALUES ('${id_unit}', '${name}','${link_video}','${quiz}');`)
+    return genericQuery(`INSERT INTO lessons (id_unit, name, creation_date, link_video, quiz) 
+    VALUES ('${id_unit}', '${name}', '${Utils.getDateString()}','${link_video}','${quiz}');`)
 }
 
 // Query for get lessons data by filter

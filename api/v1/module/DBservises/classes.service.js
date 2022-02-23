@@ -1,11 +1,10 @@
 // Classes DB services modules
+
 const {
     genericQuery, 
     createGetQuery, 
     createUpdateQuery
 } = require('../DBservises/generic.service');
-
-// --------------------------- Classes ------------------------------
 
 // Query for create class
 async function createClass(name, img){

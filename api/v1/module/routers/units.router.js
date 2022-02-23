@@ -15,7 +15,8 @@ const {
     createUnit,
     getUnitsDataByFilter,
     unitBelongCourse,
-    updateUnits
+    updateUnits,
+    deleteUnit
 } = require('../DBservises/units.service'); // UnitsService
 
 // Allocate obj
@@ -131,7 +132,6 @@ router.route('/units/:id')
             }
         )
         .then((result) => {
-            
             // Check if you are the creator of course
             if(result[0]?.value[0]['COUNT(*)'] == 0)
                 return Promise.reject(403);    // You aren't the tutor   
@@ -143,7 +143,6 @@ router.route('/units/:id')
             })
         })
         .then((result) => {
- 
             if(result[0]?.value[0]['COUNT(*)'] == 0)
                 return Promise.reject(403);    // You aren't the tutor   
 
@@ -155,6 +154,7 @@ router.route('/units/:id')
         })
         .then(() => res.sendStatus(200))
         .catch((err) => {
+            console.log(err);
             if(err === 400 || err === 403) res.sendStatus(err);    // Error in parameter
             else res.sendStatus(500); // Server error
         })
@@ -172,7 +172,7 @@ router.route('/units/:id')
         
         genericCycleQuery(
             {
-                queryMethod: DBS.isCourseCreator,
+                queryMethod: isCourseCreator,
                 par: [email, id_course]
             }
         )
