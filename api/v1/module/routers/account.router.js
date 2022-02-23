@@ -1,12 +1,26 @@
 // Account mini-router
 
+// Dependences
 const express = require('express');
 const bodyParser = require('body-parser');
-const DBS = require('./utils/DBServices');
-const MailSender = require('./utils/MailSender');
-const authJWT = require('./utils/Auth');
-const BlobConvert = require('./utils/BlobConvert');
 
+// Utils servises
+const BlobConvert = require('../utils/BlobConvert');
+const MailSender = require('../utils/MailSender');
+const AuthJWT = require('../utils/Auth');
+const Utils = require('../utils/Utils');
+
+// Import DBservices and deconstruct function
+const {genericCycleQuery} = require('../DBservises/generic.service');   // GenericService
+const {isRegistred, isFreeUsername} = require('../DBservises/login.service');   //LoginService;                          
+const { // AccountService  
+    updateUserInfo, 
+    getUserDataByFilter, 
+    delateAccount, 
+    createAccount
+} = require('../DBservises/account.service');              
+
+// Allocate obj
 const router = express.Router();    // Create router Object
 router.use(bodyParser.json());      // Middleware for parse http req
 
@@ -14,8 +28,7 @@ router.use(bodyParser.json());      // Middleware for parse http req
 const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';                // Set for confirm token
 const mailSender = new MailSender('Gmail','avogadro4camerun@gmail.com','AmaraPriscoTommasi123');    // OBj for mails send
 
-// List for suspendedUsers
-// {code: value, usermane: vaule, password: value role: value} 
+// List for suspendedUsers --- model => {code: value, usermane: vaule, password: value role: value} 
 let suspendedUsers = [];               
 
 // Register and get all account
@@ -33,13 +46,13 @@ router.route('/account')
             return res.sendStatus(200); 
 
         // Check if it is alredy registered and if the choice username is free
-        DBS.genericCycleQuery(
+        genericCycleQuery(
             {
-                queryMethod: DBS.isRegistred,
+                queryMethod: isRegistred,
                 par: [email]
             },
             {
-                queryMethod: DBS.isFreeUsername,
+                queryMethod: isFreeUsername,
                 par: [username]
             }
         )
@@ -91,8 +104,8 @@ router.route('/account')
     })
     
     // Update user data 
-    .put(authJWT.authenticateJWT, (req, res) => {
-        const user = authJWT.parseAuthorization(req.headers.authorization)
+    .put(AuthJWT.authenticateJWT, (req, res) => {
+        const user = AuthJWT.parseAuthorization(req.headers.authorization)
         const {email} = user;
 
         // Check evil request
@@ -106,14 +119,15 @@ router.route('/account')
             req.body.img_profile = `x'${BlobConvert.base64ToHex(req.body.img_profile)}'`
 
         // Update user info by request body
-        DBS.genericCycleQuery({
-                queryMethod: DBS.updateUserInfo,
+        genericCycleQuery({
+                queryMethod: updateUserInfo,
                 par: [{email}, req.body]
         })
         .then(() => {
             res.sendStatus(200);
         })
-        .catch(() => {
+        .catch((err) => {
+            console.log(err);
             res.sendStatus(500); // Server error
         })
     })
@@ -123,11 +137,11 @@ router.route('/account')
 
         // Cast data for query
         for (const key of Object.keys(req.query)) 
-            req.query[key] = DBS.strToArray(req.query[key])
+            req.query[key] = Utils.strToArray(req.query[key])
         
         // Get users data by filters
-        DBS.genericCycleQuery({
-            queryMethod: DBS.getUserDataByFilter,
+        genericCycleQuery({
+            queryMethod: getUserDataByFilter,
             par: [req.query]
         })
         .then((result) => {
@@ -141,20 +155,21 @@ router.route('/account')
             // Responce 
             res.send(usersData)
         })
-        .catch(()=>{
+        .catch((err)=>{
+            console.log(err);
             res.sendStatus(500); // Server error
         })
     })   
 
     // Delete account
-    .delete(authJWT.authenticateJWT, (req, res) => {
-        const user = authJWT.parseAuthorization(req.headers.authorization)
+    .delete(AuthJWT.authenticateJWT, (req, res) => {
+        const user = AuthJWT.parseAuthorization(req.headers.authorization)
         let {email} = user;
 
         // Delete account and account relaction
-        DBS.genericCycleQuery(   // non necessario controllo tanto ce auth
+        genericCycleQuery(   // non necessario controllo tanto ce auth
             {
-                queryMethod:  DBS.delateAccount,
+                queryMethod:  delateAccount,
                 par: [email]
             }
         )
@@ -186,9 +201,9 @@ router.get('/account/:confirmCode', (req, res) => {
     const {name, surname, username, email, password} = suspendedUsers[index];
 
     // Create account
-    DBS.genericCycleQuery(
+    genericCycleQuery(
         {
-            queryMethod: DBS.createAccount,
+            queryMethod: createAccount,
             par: [name, surname, username, password, email, '01'] // In first time all users are student = 01
         }
     )

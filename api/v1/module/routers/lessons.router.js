@@ -2,8 +2,8 @@
 
 // Utils Module
 const express = require('express');
-const DBS = require('./utils/DBservices');
-const authJWT = require('./utils/Auth');
+const DBS = require('../utils/DBservices');
+const authJWT = require('../utils/Auth');
 
 const router = express.Router();    //Create router Object
 

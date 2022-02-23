@@ -1,19 +1,34 @@
-// Class mini-router
-
-// Utils Module
+// Dependences
 const express = require('express');
-const DBS = require('./utils/DBservices');
-const BlobConvert = require('./utils/BlobConvert');
-const authJWT = require('./utils/Auth');
 
+// Utils servises
+const BlobConvert = require('../utils/BlobConvert');
+const AuthJWT = require('../utils/Auth');
+const Utils = require('../utils/Utils');
+
+// Import DBservices and deconstruct function
+const {genericCycleQuery} = require('../DBservises/generic.service');   // GenericService                       
+const {isParameterRole} = require('../DBservises/account.service'); // AccountService 
+const {addClassInvite} = require('../DBservises/invites.service'); // InvitesService;
+const {  // ClassService
+    createClass, 
+    addProfsClass, 
+    getClassDataByFilter,
+    getClassDataByID, 
+    isParameterRoleInClass,
+    updateClass,
+    delateClass
+} = require('../DBservises/classes.service');   
+
+// Allocate obj
 const router = express.Router();    //Create router Object    
 
 // Routers for classes
 router.route('/classes')
 
     // Create new class
-    .post(authJWT.authenticateJWT, (req, res) => {
-        const user = authJWT.parseAuthorization(req.headers.authorization)
+    .post(AuthJWT.authenticateJWT, (req, res) => {
+        const user = AuthJWT.parseAuthorization(req.headers.authorization)
         const {email, role} = user;
         let {name, img_cover, students, profs} = req.body;
 
@@ -28,7 +43,7 @@ router.route('/classes')
         if(Array.isArray(profs)){
             for (const prof of profs) {
                 checkQuery.push({
-                    queryMethod: DBS.isParameterRole,  // Check is professor
+                    queryMethod: isParameterRole,  // Check is professor
                     par: [prof, "02"]
                 })
             }
@@ -37,16 +52,15 @@ router.route('/classes')
         if(Array.isArray(students)){
             for (const stud of students) {
                 checkQuerys.push({
-                    queryMethod: DBS.isParameterRole,  // Check is student
+                    queryMethod: isParameterRole,  // Check is student
                     par: [stud, "01"]
                 })
             }
         }
 
         // Send dynamic querys
-        DBS.genericCycleQuery(...checkQuerys)
+        genericCycleQuery(...checkQuerys)
         .then((result) => {
-            /*console.log(result[0].value[0]["COUNT(*)"]);*/
 
             // Sum for check that only email is register users
             let sum = 0; result.forEach(r => {sum += r.value[0]["COUNT(*)"] });
@@ -55,9 +69,9 @@ router.route('/classes')
             if(sum !== checkQuerys.length)
                 return Promise.reject(400)
 
-            return DBS.genericCycleQuery( 
+            return genericCycleQuery( 
                 {
-                    queryMethod: DBS.createClass,  // Create class and save id
+                    queryMethod: createClass,  // Create class and save id
                     par: [name, img_cover]
                 }
             )
@@ -71,7 +85,7 @@ router.route('/classes')
             
             // Push tutor
             queryArray.push({
-                queryMethod: DBS.addProfsClass,
+                queryMethod: addProfsClass,
                 par: [email, id, 'tutor']
             })
 
@@ -79,7 +93,7 @@ router.route('/classes')
             if(Array.isArray(profs)){
                 for (const prof of profs) {
                     queryArray.push({       // controllare se sono prof
-                        queryMethod: DBS.addProfsClass,
+                        queryMethod: addProfsClass,
                         par: [prof, id, 'normal']
                     })
                 }
@@ -89,40 +103,38 @@ router.route('/classes')
             if (Array.isArray(students)) {
                 for (const stud of students) {
                     queryArray.push({
-                        queryMethod: DBS.addClassInvite,
+                        queryMethod: addClassInvite,
                         par: [stud, id]
                     })
                 }
             }
 
             // Add relation in the class (start up student and profs) if there are
-            return DBS.genericCycleQuery(...queryArray) // Send dynamic querys               
+            return genericCycleQuery(...queryArray) // Send dynamic querys               
         })
         .then(() => {
             res.sendStatus(200);     // You create a your new class
         })
         .catch((err) => {
-            // console.log(err);
-            if(err === 400)
-                res.sendStatus(400);    // Error in parameter
-             else 
-                res.sendStatus(500); // Server error
+            console.log(err);
+            if(err === 400) res.sendStatus(400);    // Error in parameter
+            else res.sendStatus(500); // Server error
         })  
     })
 
-    // Get class data by filter                    // => da fare join per i prof e i studs 
+    // Get class data by filter     // => da fare join per i prof e i studs 
     .get((req, res) => {
      
         // Cast data for query
         for (const key of Object.keys(req.query)) 
-            req.query[key] = DBS.strToArray(req.query[key])
+            req.query[key] = Utils.strToArray(req.query[key])
             
         // console.log(req.query[key])      
 
         // Indirect call 
-        DBS.genericCycleQuery(
+        genericCycleQuery(
             {
-                queryMethod: DBS.getClassDataByFilter,
+                queryMethod: getClassDataByFilter,
                 par: [req.query]
             }
         )
@@ -151,9 +163,9 @@ router.route('/classes/:id')
         const id = req.params.id;
 
         // Indirect call 
-        DBS.genericCycleQuery(
+        genericCycleQuery(
             {
-                queryMethod: DBS.getClassDataByID,
+                queryMethod: getClassDataByID,
                 par: [id]
             }
         )
@@ -177,8 +189,8 @@ router.route('/classes/:id')
     })
     
     // Update class data by id
-    .put(authJWT.authenticateJWT, (req, res) =>{
-        const user = authJWT.parseAuthorization(req.headers.authorization)
+    .put(AuthJWT.authenticateJWT, (req, res) =>{
+        const user = AuthJWT.parseAuthorization(req.headers.authorization)
         const {email, role} = user;
         const id = req.params.id;
         
@@ -189,9 +201,9 @@ router.route('/classes/:id')
             req.body.img_cover = `x'${BlobConvert.base64ToHex(req.body.img_cover)}'`
 
         //console.log(req.body)
-        DBS.genericCycleQuery(
+        genericCycleQuery(
             {
-                queryMethod: DBS.isParameterRoleInClass,
+                queryMethod: isParameterRoleInClass,
                 par: [email, id, "tutor"]
             }
         )
@@ -201,8 +213,8 @@ router.route('/classes/:id')
                 return Promise.reject(403);    // You aren't the tutor    
             
             // if you are a tutor commit query for change class data
-            return DBS.genericCycleQuery({
-                queryMethod: DBS.updateClass,
+            return genericCycleQuery({
+                queryMethod: updateClass,
                 par: [{id}, req.body]
             })
             
@@ -219,17 +231,17 @@ router.route('/classes/:id')
     })
 
     // Delete class by id
-    .delete(authJWT.authenticateJWT, (req, res) => {
-        const user = authJWT.parseAuthorization(req.headers.authorization)
+    .delete(AuthJWT.authenticateJWT, (req, res) => {
+        const user = AuthJWT.parseAuthorization(req.headers.authorization)
         const {email, role} = user;
         const id = req.params.id;
         
         if (role !== "02")
             res.sendStatus(403)
 
-        DBS.genericCycleQuery(
+        genericCycleQuery(
             {
-                queryMethod: DBS.isParameterRoleInClass,
+                queryMethod: isParameterRoleInClass,
                 par: [email, id, "tutor"]
             }
         )
@@ -239,8 +251,8 @@ router.route('/classes/:id')
                 return Promise.reject(403);    // You aren't the tutor    
                 
             // if you are a tutor commit query for delete class
-            return DBS.genericCycleQuery({
-                queryMethod: DBS.delateClass,
+            return genericCycleQuery({
+                queryMethod: delateClass,
                 par: [id]
             })
             

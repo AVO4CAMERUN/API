@@ -1,19 +1,30 @@
 // Courses mini-router
 
-// Utils Module
+// Dependences
 const express = require('express');
 
-const DBS = require('./utils/DBservices');
-const BlobConvert = require('./utils/BlobConvert');
-const authJWT = require('./utils/Auth');
+// Utils servises
+const BlobConvert = require('../utils/BlobConvert');
+const AuthJWT = require('../utils/Auth');
+const Utils = require('../utils/Utils');
+
+// Import DBservices and deconstruct function
+const {genericCycleQuery} = require('../DBservises/generic.service');   // GenericService
+const {
+    createCourse, 
+    getCoursesDataByFilter, 
+    isCourseCreator, 
+    updateCourses, 
+    delateCourse
+} = require('../DBservises/courses.service'); // CourseService
 
 const router = express.Router();    //Create router Object
 
 router.route('/courses')
 
     // Create new courses 
-    .post(authJWT.authenticateJWT, (req, res) => {
-        const user = authJWT.parseAuthorization(req.headers.authorization)
+    .post(AuthJWT.authenticateJWT, (req, res) => {
+        const user = AuthJWT.parseAuthorization(req.headers.authorization)
         const {email, role} = user;
         let {name, description, img_cover, subject} = req.body;
 
@@ -24,9 +35,9 @@ router.route('/courses')
         if (role !== "02")
             return res.sendStatus(403);    // You aren't a prof
 
-        DBS.genericCycleQuery( 
+        genericCycleQuery( 
             {
-                queryMethod: DBS.createCourse,  // Create courses and save id
+                queryMethod: createCourse,  // Create courses and save id
                 par: [name, email, description, img_cover, subject]
             }
         )
@@ -42,11 +53,11 @@ router.route('/courses')
     .get((req, res) => {
         // Cast data for query
         for (const key of Object.keys(req.query)) 
-            req.query[key] = DBS.strToArray(req.query[key])
+            req.query[key] = Utils.strToArray(req.query[key])
 
-        DBS.genericCycleQuery( 
+        genericCycleQuery( 
             {
-                queryMethod: DBS.getCoursesDataByFilter,
+                queryMethod: getCoursesDataByFilter,
                 par: [req.query]
             }
         )
@@ -71,9 +82,9 @@ router.route('/courses/:id')
         const id = req.params.id;
 
         // Indirect call 
-        DBS.genericCycleQuery(
+        genericCycleQuery(
             {
-                queryMethod: DBS.getCoursesDataByFilter,
+                queryMethod: getCoursesDataByFilter,
                 par: [{id_course: [id]}]
             }
         )
@@ -97,8 +108,8 @@ router.route('/courses/:id')
     })
     
     // Update courses data by id
-    .put(authJWT.authenticateJWT, (req, res) => {
-        const user = authJWT.parseAuthorization(req.headers.authorization)
+    .put(AuthJWT.authenticateJWT, (req, res) => {
+        const user = AuthJWT.parseAuthorization(req.headers.authorization)
         const {email, role} = user;
         const id_course = req.params.id;
         
@@ -111,9 +122,9 @@ router.route('/courses/:id')
         if (req.body?.img_cover)
             req.body.img_cover = `x'${BlobConvert.base64ToHex(req.body.img_cover)}'`
           
-        DBS.genericCycleQuery(
+        genericCycleQuery(
             {
-                queryMethod: DBS.isCourseCreator,
+                queryMethod: isCourseCreator,
                 par: [email, id_course]
             }
         )
@@ -124,8 +135,8 @@ router.route('/courses/:id')
                 return Promise.reject(403);    // You aren't the tutor   
 
             // if you are a creator commit query for change course data
-            return DBS.genericCycleQuery({
-                queryMethod: DBS.updateCourses,
+            return genericCycleQuery({
+                queryMethod: updateCourses,
                 par: [{id_course}, req.body]
             })
             
@@ -142,17 +153,17 @@ router.route('/courses/:id')
     })
 
     // Delete courses by id
-    .delete(authJWT.authenticateJWT, (req, res) => {
-        const user = authJWT.parseAuthorization(req.headers.authorization)
+    .delete(AuthJWT.authenticateJWT, (req, res) => {
+        const user = AuthJWT.parseAuthorization(req.headers.authorization)
         const {email, role} = user;
         const id_course = req.params.id;
         
         if (role !== "02") 
             return res.sendStatus(403);    // You aren't a prof   
             
-        DBS.genericCycleQuery(
+        genericCycleQuery(
             {
-                queryMethod: DBS.isCourseCreator,
+                queryMethod: isCourseCreator,
                 par: [email, id_course]
             }
         )
@@ -163,8 +174,8 @@ router.route('/courses/:id')
                 return Promise.reject(403);    // You aren't the tutor   
 
             // if you are a creator commit query for delete course
-            return DBS.genericCycleQuery({
-                queryMethod: DBS.delateCourse,
+            return genericCycleQuery({
+                queryMethod: delateCourse,
                 par: [id_course]
             })
         })

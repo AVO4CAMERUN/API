@@ -1,14 +1,23 @@
 // Login mini-router
 
-// Util Module 
+// Dependences
 const express = require('express');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
-const authJWT = require('./utils/Auth'); 
-const DBS = require('./utils/DBservices');
 
-const router = express.Router();   //Create router Object
-router.use(bodyParser.json());     //Middleware for parse http req
+// Utils servises
+const AuthJWT = require('../utils/Auth'); 
+
+// Import DBservices and deconstruct function
+const {genericCycleQuery} = require('../DBservises/generic.service');   // GenericService
+const {  // LoginService
+    checkUsernamePassword,
+    getUserInfoByUsername
+} = require('../DBservises/login.service'); 
+
+// Allocate obj
+const router = express.Router();    // Create router Object
+router.use(bodyParser.json());      // Middleware for parse http req
 
 
 // Login
@@ -19,13 +28,13 @@ router.route('/login')
         const { username, password } = req.body;
         
         // Query check account
-        DBS.genericCycleQuery(
+        genericCycleQuery(
             {
-                queryMethod: DBS.checkUsernamePassword,
+                queryMethod: checkUsernamePassword,
                 par: [username, password]
             },
             {
-                queryMethod: DBS.getUserInfoByUsername,
+                queryMethod: getUserInfoByUsername,
                 par: [username]
             }
         )
@@ -39,17 +48,16 @@ router.route('/login')
             
             // generate an access token
             const userDataToken = {email, username, role}
-            const accessToken = jwt.sign(userDataToken, authJWT.accessTokenSecret, { expiresIn: '20m' });
-            const refreshToken = jwt.sign(userDataToken, authJWT.refreshTokenSecret);
+            const accessToken = jwt.sign(userDataToken, AuthJWT.accessTokenSecret, { expiresIn: '20m' });
+            const refreshToken = jwt.sign(userDataToken, AuthJWT.refreshTokenSecret);
 
             // Insert in activity account
-            authJWT.refreshTokens.push(refreshToken);
+            AuthJWT.refreshTokens.push(refreshToken);
             
             // Send json with tokens
             res.json({accessToken, refreshToken});
         })  
-        .catch((err) => {
-            console.log(err);
+        .catch(() => {
             res.sendStatus(500); // Send Status server error
         })
     })
@@ -59,13 +67,13 @@ router.route('/login')
         const { token } = req.body;
 
         if (!token) return res.sendStatus(401); 
-        if (!authJWT.refreshTokens.includes(token)) return res.sendStatus(403);
+        if (!AuthJWT.refreshTokens.includes(token)) return res.sendStatus(403);
     
-        jwt.verify(token, authJWT.refreshTokenSecret, (err) => {
+        jwt.verify(token, AuthJWT.refreshTokenSecret, (err) => {
             if (err) return res.sendStatus(403); 
 
-            let user = authJWT.jwtToObj(token);  //Extract js obj
-            const accessToken = jwt.sign({ username: user.username, role: user.role }, authJWT.accessTokenSecret, { expiresIn: '20m' });
+            let user = AuthJWT.jwtToObj(token);  //Extract js obj
+            const accessToken = jwt.sign({ username: user.username, role: user.role }, AuthJWT.accessTokenSecret, { expiresIn: '20m' });
             res.json({accessToken});
         });
     })
@@ -74,10 +82,10 @@ router.route('/login')
     .delete((req, res) => {
         const { token } = req.body;
 
-        if(!authJWT.refreshTokens.includes(token))
+        if(!AuthJWT.refreshTokens.includes(token))
             return res.sendStatus(403); // Fake tokens
 
-        authJWT.refreshTokens = authJWT.refreshTokens.filter(value => value !== token); //Delete token for logout
+        AuthJWT.refreshTokens = AuthJWT.refreshTokens.filter(value => value !== token); //Delete token for logout
         res.sendStatus(200);  // Ok Logout successful"
        
     })

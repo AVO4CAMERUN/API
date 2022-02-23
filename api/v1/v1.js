@@ -3,28 +3,17 @@
 const express = require('express');
 const router = express.Router();    //Create router Object
 
-// Import servesis module 
-const login = require('./module/login');
-const account = require('./module/account');
-const class_resurce = require('./module/classes');
-const invites = require('./module/invites');
-const courses = require('./module/courses');
-const subscribe = require('./module/subscribe');
-const units = require('./module/units');
-const lessons = require('./module/lessons');
+// Import servesis module and add mini-router
+router.use(require('./module/routers/login.router'));
+router.use(require('./module/routers/account.router'));
+router.use(require('./module/routers/classes.router'));
+router.use(require('./module/routers/invites.router'));
+router.use(require('./module/routers/courses.router'));
+/*
+router.use(require('./module/routers/subscribe.router'));
+router.use(require('./module/routers/units.router'));
+router.use(require('./module/routers/lessons.router'));*/
 //...
-
-
-
-// Add mini-router
-router.use(login);
-router.use(account);
-router.use(class_resurce);
-router.use(invites);
-router.use(courses);
-router.use(subscribe);
-router.use(units);
-router.use(lessons);
 
 // Export v1 router 
 module.exports = router
