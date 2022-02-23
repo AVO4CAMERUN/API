@@ -1,34 +1,39 @@
 // Subscribe mini-router
 
-// Utils Module
+// Dependences
 const express = require('express');
 
-const DBS = require('../utils/DBservices');
-const authJWT = require('../utils/Auth');
+// Utils servises
+const AuthJWT = require('../utils/Auth');
+const Utils = require('../utils/Utils');
+
+// Import DBservices and deconstruct function
+const {genericCycleQuery} = require('../DBservises/generic.service');   // GenericService
+const { 
+    subscription, 
+    getCoursesSubscriptionByFilter,
+    delateSubscription
+} = require('../DBservises/subscribe.service'); // CourseService
 
 const router = express.Router();    //Create router Object
 
 router.route('/subscribe')
 
     // Subscribe to course
-    .post(authJWT.authenticateJWT, (req, res) => {
-        const user = authJWT.parseAuthorization(req.headers.authorization)
+    .post(AuthJWT.authenticateJWT, (req, res) => {
+        const user = AuthJWT.parseAuthorization(req.headers.authorization)
         const {email} = user;
         const {id_course} = req.body;
   
         if (!id_course)
             return res.sendStatus(400);    // id_course is not defined
 
-        DBS.genericCycleQuery({
-            queryMethod: DBS.subscription,  // Subscription
+        genericCycleQuery({
+            queryMethod: subscription,  // Subscription
             par: [email, id_course]
         })
-        .then(() => {
-            res.sendStatus(200);    // You are subscriptioned
-        })
-        .catch((err) => {
-            res.sendStatus(500); // Server error
-        })
+        .then(() => res.sendStatus(200))     // You are subscriptioned
+        .catch(() => res.sendStatus(500)) // Server error
     })
 
     // Get subscribe by filter
@@ -36,39 +41,31 @@ router.route('/subscribe')
 
         // Cast data for query
         for (const key of Object.keys(req.query)) 
-            req.query[key] = DBS.strToArray(req.query[key])
+            req.query[key] = Utils.strToArray(req.query[key])
 
-        DBS.genericCycleQuery( {
-                queryMethod: DBS.getCoursesSubscriptionByFilter,
+        genericCycleQuery( {
+                queryMethod: getCoursesSubscriptionByFilter,
                 par: [req.query]
         })
-        .then((response) => {
-            res.send(response[0].value);   // Send subscribtions data
-        })
-        .catch((err) => {
-            res.sendStatus(500); // Server error
-        })
+        .then((response) => res.send(response[0].value)) // Send subscribtions data
+        .catch(() => res.sendStatus(500)) // Server error
     })
     
     // Delete subscribe to course by id
-    .delete(authJWT.authenticateJWT, (req, res) => {
-        const user = authJWT.parseAuthorization(req.headers.authorization)
+    .delete(AuthJWT.authenticateJWT, (req, res) => {
+        const user = AuthJWT.parseAuthorization(req.headers.authorization)
         const {email} = user;
         const {id_course} = req.body;
   
         if (!id_course)
             return res.sendStatus(400);    // id_course is not defined
 
-        DBS.genericCycleQuery({
-            queryMethod: DBS.delateSubscription,  // Delete subscription
+        genericCycleQuery({
+            queryMethod: delateSubscription,  // Delete subscription
             par: [email, id_course]
         })
-        .then(() => {
-            res.sendStatus(200);    //
-        })
-        .catch(() => {
-            res.sendStatus(500); // Server error
-        })
+        .then(() => res.sendStatus(200))  // ok
+        .catch(() => res.sendStatus(500)) // Server error
     })
 
 module.exports = router

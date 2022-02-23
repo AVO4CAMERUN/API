@@ -57,7 +57,6 @@ router.route('/account')
             }
         )
         .then((result) => {
-            
             // Result async query to check
             if(result[0]?.value[0]['COUNT(*)'] > 0 || result[1]?.value[0]['COUNT(*)'])
                 return res.sendStatus(403); // Forbidden --> hai gia profilo
@@ -76,14 +75,7 @@ router.route('/account')
             } while(!unique)
         
             // Save code and user info
-            suspendedUsers.push({
-                code, 
-                name,
-                surname,
-                email, 
-                username, 
-                password
-            }) 
+            suspendedUsers.push({code, name, surname, email, username, password}) 
 
             // Set expiration code
             setTimeout(() => {
@@ -96,11 +88,9 @@ router.route('/account')
             // All response
             mailSender.send(email, code); // Send email to confirm account
             console.log(code);
-            res.sendStatus(200); // OK
         })
-        .catch(() => {
-            res.sendStatus(500); // Server error
-        })
+        .then(() =>  res.sendStatus(200))  // Ok
+        .catch(() => res.sendStatus(500))  // Server error
     })
     
     // Update user data 
@@ -123,13 +113,8 @@ router.route('/account')
                 queryMethod: updateUserInfo,
                 par: [{email}, req.body]
         })
-        .then(() => {
-            res.sendStatus(200);
-        })
-        .catch((err) => {
-            console.log(err);
-            res.sendStatus(500); // Server error
-        })
+        .then(() =>  res.sendStatus(200))  // Ok
+        .catch(() => res.sendStatus(500))  // Server error)
     })
 
     // Get user data 
@@ -155,10 +140,7 @@ router.route('/account')
             // Responce 
             res.send(usersData)
         })
-        .catch((err)=>{
-            console.log(err);
-            res.sendStatus(500); // Server error
-        })
+        .catch(() => res.sendStatus(500))  // Server error
     })   
 
     // Delete account
@@ -173,12 +155,8 @@ router.route('/account')
                 par: [email]
             }
         )
-        .then(() => {
-            res.sendStatus(200);
-        })
-        .catch(() => {
-            res.sendStatus(500); // Server error
-        })
+        .then(() =>  res.sendStatus(200))  // Ok
+        .catch(() => res.sendStatus(500))  // Server error
     })
 
 // Route cofirm code
@@ -207,13 +185,11 @@ router.get('/account/:confirmCode', (req, res) => {
             par: [name, surname, username, password, email, '01'] // In first time all users are student = 01
         }
     )
-    .then((result) => {
+    .then(() => {
         suspendedUsers.filter(value => value !== suspendedUsers[index]);    // Remove in the suspendedUsers 
         res.sendStatus(200) // Ok 
     })
-    .catch(() => {
-        res.sendStatus(500); // Server error
-    })
+    .catch(() => res.sendStatus(500))  // Server error
 })
 
 module.exports = router;

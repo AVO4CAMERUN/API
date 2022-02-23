@@ -1,26 +1,40 @@
 // Units mini-router
 
-// Utils Module
+// Dependences
 const express = require('express');
-const DBS = require('../utils/DBservices');
-const authJWT = require('../utils/Auth');
 
+// Utils servises
+const AuthJWT = require('../utils/Auth');
+const Utils = require('../utils/Utils');
+
+// Import DBservices and deconstruct function
+const {genericCycleQuery} = require('../DBservises/generic.service');   // GenericService
+const {isCourseCreator} = require('../DBservises/courses.service'); // CourseService
+const {getLessonsDataByFilter} = require('../DBservises/lessons.service'); // LessonsService
+const {
+    createUnit,
+    getUnitsDataByFilter,
+    unitBelongCourse,
+    updateUnits
+} = require('../DBservises/units.service'); // UnitsService
+
+// Allocate obj
 const router = express.Router();    //Create router Object
 
 router.route('/units')
 
     // Create new units 
-    .post(authJWT.authenticateJWT, (req, res) => {
-        const user = authJWT.parseAuthorization(req.headers.authorization)
+    .post(AuthJWT.authenticateJWT, (req, res) => {
+        const user = AuthJWT.parseAuthorization(req.headers.authorization)
         const {email, role} = user;
         const {name, description, id_course} = req.body;
 
         if (role !== "02") 
             return res.sendStatus(403);    // You aren't a prof
 
-        DBS.genericCycleQuery( 
+        genericCycleQuery( 
             {
-                queryMethod: DBS.isCourseCreator,  // Check is your courses 
+                queryMethod: isCourseCreator,  // Check is your courses 
                 par: [email, id_course]
             }
         )
@@ -31,32 +45,28 @@ router.route('/units')
                 return Promise.reject(403);    // You aren't the creator
             
             // if you are a creator
-            return DBS.genericCycleQuery({
-                queryMethod: DBS.createUnit,
+            return genericCycleQuery({
+                queryMethod: createUnit,
                 par: [name, description, id_course]
             })
         })
-        .then(() => {
-            res.sendStatus(200);
-        })
+        .then(() => res.sendStatus(200)) // Ok
         .catch((err) => {
-            if(err === 400 || err === 403)
-                res.sendStatus(err)    // Error in parameter
-            else
-                res.sendStatus(500) // Server error
+            if(err === 400 || err === 403) res.sendStatus(err)  // Error in parameter
+            else res.sendStatus(500) // Server error
         })
     })
 
     // Get units data by filter (id corso)  // solo se sei iscritto -- cosa marginale
     .get((req, res) => {
-        let units;  // detto dalla fidanzatina
+        let units;
 
         // Cast data for query
         for (const key of Object.keys(req.query)) 
-            req.query[key] = DBS.strToArray(req.query[key])
+            req.query[key] = Utils.strToArray(req.query[key])
 
-        DBS.genericCycleQuery({
-            queryMethod: DBS.getUnitsDataByFilter,
+        genericCycleQuery({
+            queryMethod: getUnitsDataByFilter,
             par: [req.query]
         })
         .then((response) => {
@@ -66,13 +76,13 @@ router.route('/units')
             let querys = [];
             for (const unit of units){
                 querys.push({
-                    queryMethod: DBS.getLessonsDataByFilter,  //
+                    queryMethod: getLessonsDataByFilter,  //
                     par: [{id_unit: [unit.id_unit]}]
                 })
             }
             
             // cosina per arrichire cosaltra
-            return DBS.genericCycleQuery(...querys) 
+            return genericCycleQuery(...querys) 
         })
         .then((response) => {
             
@@ -93,18 +103,14 @@ router.route('/units')
             // Send courses data
             res.send(units); 
         })
-        .catch((err) => {
-            console.log(err);
-            res.sendStatus(500); // Server error
-        })
+        .catch((err) => res.sendStatus(500)) // Server error
     })
 
 router.route('/units/:id')
 
     // Update units data by id
-    .put(authJWT.authenticateJWT, (req, res) => {
-        
-        const user = authJWT.parseAuthorization(req.headers.authorization)
+    .put(AuthJWT.authenticateJWT, (req, res) => {
+        const user = AuthJWT.parseAuthorization(req.headers.authorization)
         const {email, role} = user;
         const {id_course} = req.body;
         const id_unit = req.params.id;
@@ -118,9 +124,9 @@ router.route('/units/:id')
         // Get course_id on body request
         delete req.body.id_course;
 
-        DBS.genericCycleQuery(
+        genericCycleQuery(
             {
-                queryMethod: DBS.isCourseCreator,
+                queryMethod: isCourseCreator,
                 par: [email, id_course]
             }
         )
@@ -131,8 +137,8 @@ router.route('/units/:id')
                 return Promise.reject(403);    // You aren't the tutor   
 
             // if you are a creator check if unit belong course 
-            return DBS.genericCycleQuery({
-                queryMethod: DBS.unitBelongCourse,
+            return genericCycleQuery({
+                queryMethod: unitBelongCourse,
                 par: [id_course, id_unit]
             })
         })
@@ -142,26 +148,21 @@ router.route('/units/:id')
                 return Promise.reject(403);    // You aren't the tutor   
 
             // delete unit 
-            return DBS.genericCycleQuery({
-                queryMethod: DBS.updateUnits,
+            return genericCycleQuery({
+                queryMethod: updateUnits,
                 par: [{id_unit}, req.body]
             })
         })
-        .then(() => {
-            res.sendStatus(200);
-        })
+        .then(() => res.sendStatus(200))
         .catch((err) => {
-            console.log(err);
-            if(err === 400 || err === 403)
-                res.sendStatus(err);    // Error in parameter
-            else 
-                res.sendStatus(500); // Server error
+            if(err === 400 || err === 403) res.sendStatus(err);    // Error in parameter
+            else res.sendStatus(500); // Server error
         })
     })
 
     // Delete units by id
-    .delete(authJWT.authenticateJWT, (req, res) => {
-        const user = authJWT.parseAuthorization(req.headers.authorization)
+    .delete(AuthJWT.authenticateJWT, (req, res) => {
+        const user = AuthJWT.parseAuthorization(req.headers.authorization)
         const {email, role} = user;
         const id_unit = req.params.id;
         const {id_course} = req.body;
@@ -169,43 +170,38 @@ router.route('/units/:id')
         if (role !== "02") 
             return res.sendStatus(403);    // You aren't a prof   
         
-        DBS.genericCycleQuery(
+        genericCycleQuery(
             {
                 queryMethod: DBS.isCourseCreator,
                 par: [email, id_course]
             }
         )
         .then((result) => {
-
             // Check if you are the creator of course
             if(result[0]?.value[0]['COUNT(*)'] == 0)
                 return Promise.reject(403);    // You aren't the tutor   
 
             // if you are a creator check if unit belong course 
-            return DBS.genericCycleQuery({
-                queryMethod: DBS.unitBelongCourse,
+            return genericCycleQuery({
+                queryMethod: unitBelongCourse,
                 par: [id_course, id_unit]
             })
         })
         .then((result) => {
- 
+            // 
             if(result[0]?.value[0]['COUNT(*)'] == 0)
                 return Promise.reject(403);    // You aren't the tutor   
 
             // delete unit 
-            return DBS.genericCycleQuery({
-                queryMethod: DBS.deleteUnit,
+            return genericCycleQuery({
+                queryMethod: deleteUnit,
                 par: [id_unit]
             })
         })
-        .then(() => {
-            res.sendStatus(200);
-        })
+        .then(() => res.sendStatus(200))
         .catch((err) => {
-            if(err === 400 || err === 403)
-                res.sendStatus(err);    // Error in parameter
-            else 
-                res.sendStatus(500); // Server error
+            if(err === 400 || err === 403) res.sendStatus(err);    // Error in parameter
+            else res.sendStatus(500); // Server error
         })
     })
 

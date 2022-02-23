@@ -1,7 +1,6 @@
 // Subscribe DB services modules
 
-const DBSG = require('../DBservises/generic.service');
-const {genericQuery, createGetQuery} = DBSG;
+const {genericQuery, createGetQuery} = require('../DBservises/generic.service');
 
 // --------------------------- Subscribe ---------------------------
 

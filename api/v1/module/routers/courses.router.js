@@ -18,6 +18,7 @@ const {
     delateCourse
 } = require('../DBservises/courses.service'); // CourseService
 
+// Allocate obj
 const router = express.Router();    //Create router Object
 
 router.route('/courses')

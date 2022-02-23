@@ -1,3 +1,5 @@
+// Classes mini-router
+
 // Dependences
 const express = require('express');
 
@@ -8,8 +10,8 @@ const Utils = require('../utils/Utils');
 
 // Import DBservices and deconstruct function
 const {genericCycleQuery} = require('../DBservises/generic.service');   // GenericService                       
-const {isParameterRole} = require('../DBservises/account.service'); // AccountService 
-const {addClassInvite} = require('../DBservises/invites.service'); // InvitesService;
+const {isParameterRole} = require('../DBservises/account.service');     // AccountService 
+const {addClassInvite} = require('../DBservises/invites.service');      // InvitesService
 const {  // ClassService
     createClass, 
     addProfsClass, 
@@ -112,11 +114,8 @@ router.route('/classes')
             // Add relation in the class (start up student and profs) if there are
             return genericCycleQuery(...queryArray) // Send dynamic querys               
         })
-        .then(() => {
-            res.sendStatus(200);     // You create a your new class
-        })
+        .then(() => res.sendStatus(200)) // You create a your new class 
         .catch((err) => {
-            console.log(err);
             if(err === 400) res.sendStatus(400);    // Error in parameter
             else res.sendStatus(500); // Server error
         })  
@@ -180,12 +179,8 @@ router.route('/classes/:id')
             } else {
                 res.sendStatus(404) // Not found
             }
-
         })
-        .catch((err)=>{
-            console.log(err);
-            res.sendStatus(500); // Server error
-        })
+        .catch(() => res.sendStatus(500))  // Server error
     })
     
     // Update class data by id
@@ -219,9 +214,7 @@ router.route('/classes/:id')
             })
             
         })
-        .then(() => {
-            res.sendStatus(200);
-        })
+        .then(() =>  res.sendStatus(200))  // Ok
         .catch((err) => {
             if(err === 400 || err === 403)
                 res.sendStatus(err);    // Error in parameter
@@ -257,9 +250,7 @@ router.route('/classes/:id')
             })
             
         })
-        .then(() => {
-            res.sendStatus(200);    // You changed a class data
-        })
+        .then(() =>  res.sendStatus(200))  // You changed a class data
         .catch((err) => {
             if(err === 400 || err === 403)
                 res.sendStatus(err);    // Error in parameter

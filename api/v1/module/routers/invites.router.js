@@ -4,7 +4,6 @@
 const express = require('express');
 
 // Utils servises
-const BlobConvert = require('../utils/BlobConvert');
 const AuthJWT = require('../utils/Auth');
 
 // Import DBservices and deconstruct function
