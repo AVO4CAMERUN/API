@@ -14,6 +14,7 @@ const pool = mysql.createPool({
 
 // --------------------------- Generic query function ---------------------------
 
+// fare tutte le generici cosi da aplicare lo staitmante a tutte stramite i generic
 // Generic Query
 function genericQuery(query){
     // console.log(query);

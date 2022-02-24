@@ -31,66 +31,73 @@ const mailSender = new MailSender('Gmail','avogadro4camerun@gmail.com','AmaraPri
 // List for suspendedUsers --- model => {code: value, usermane: vaule, password: value role: value} 
 let suspendedUsers = [];               
 
+const { body, oneOf, validationResult } = require('express-validator');
+
 // Register and get all account
 router.route('/account')
 
     // Create new account
-    .post((req, res) => {
-        const {username, email, password, name, surname} = req.body;
-
-        // Check that there is not already a request
-        let isThere; suspendedUsers.forEach((u, i) => { email === u['email']? isThere = true : isThere = false })
-
-        // Check if it has alredy taken request 
-        if(isThere)
-            return res.sendStatus(200); 
-
-        // Check if it is alredy registered and if the choice username is free
-        genericCycleQuery(
-            {
-                queryMethod: isRegistred,
-                par: [email]
-            },
-            {
-                queryMethod: isFreeUsername,
-                par: [username]
-            }
-        )
-        .then((result) => {
-            // Result async query to check
-            if(result[0]?.value[0]['COUNT(*)'] > 0 || result[1]?.value[0]['COUNT(*)'])
-                return res.sendStatus(403); // Forbidden --> hai gia profilo
+    .post(
+            body('email').isEmail().notEmpty(),
+            body('name', 'surname', 'username', 'password').isString().notEmpty(),  // sbagliato piu di uno cosi da modificare
+        (req, res) => {
+        try {
+            validationResult(req).throw();
             
-            // Generate confirm code
-            let code = '', unique = true;
-            do{
-                // Code generator
-                for (let i = 0; i < 30; i++)
-                    code += characters[Math.floor(Math.random() * characters.length )];
+            const {username, email, password, name, surname} = req.body;
+
+            // Check that there is not already a request
+            let isThere; suspendedUsers.forEach((u, i) => { email === u['email']? isThere = true : isThere = false })
+
+            // Check if it has alredy token request 
+            if(isThere) return res.sendStatus(200); 
+
+            // Check if it is alredy registered and if the choice username is free
+            genericCycleQuery(
+                {queryMethod: isRegistred, par: [email]},
+                {queryMethod: isFreeUsername, par: [username]}
+            )
+            .then((result) => {
+                // Result async query to check
+                if(result[0]?.value[0]['COUNT(*)'] > 0 || result[1]?.value[0]['COUNT(*)'])
+                    return res.sendStatus(403); // Forbidden --> hai gia profilo
                 
-                // Check that the code is unique 
-                suspendedUsers.forEach(suspendUser => {
-                    code !== suspendUser['code'] ?  unique = true : unique = false
-                })
-            } while(!unique)
-        
-            // Save code and user info
-            suspendedUsers.push({code, name, surname, email, username, password}) 
-
-            // Set expiration code
-            setTimeout(() => {
-                suspendedUsers.forEach( (suspendUser, index) => {
-                    if(code === suspendUser['code']) 
-                        suspendedUsers.splice(index, 1);     // Delete suspendUser with expired codes
-                })
-            }, 300000);  // 5 min 
+                // Generate confirm code
+                let code = '', unique = true;
+                do{
+                    // Code generator
+                    for (let i = 0; i < 30; i++)
+                        code += characters[Math.floor(Math.random() * characters.length )];
+                    
+                    // Check that the code is unique 
+                    suspendedUsers.forEach(suspendUser => {
+                        code !== suspendUser['code'] ?  unique = true : unique = false
+                    })
+                } while(!unique)
             
-            // All response
-            mailSender.send(email, code); // Send email to confirm account
-            console.log(code);
-        })
-        .then(() =>  res.sendStatus(200))  // Ok
-        .catch(() => res.sendStatus(500))  // Server error
+                // Save code and user info
+                suspendedUsers.push({code, name, surname, email, username, password}) 
+
+                // Set expiration code
+                setTimeout(() => {
+                    suspendedUsers.forEach( (suspendUser, index) => {
+                        if(code === suspendUser['code']) 
+                            suspendedUsers.splice(index, 1);     // Delete suspendUser with expired codes
+                    })
+                }, 300000);  // 5 min 
+                
+                // All response
+                mailSender.send(email, code); // Send email to confirm account
+                console.log(code);
+                res.sendStatus(200)
+            })
+            // .then(() =>  res.sendStatus(200))  // Ok
+            .catch(() => res.sendStatus(500))  // Server error
+
+        } catch (err) {
+            // res.sendStatus(400);
+            res.send(err);
+        }
     })
     
     // Update user data 

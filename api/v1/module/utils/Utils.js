@@ -1,4 +1,4 @@
-// --------------------------- Utils methods  -------------------------
+// Module for utils functions
 
 // Get string date yyyy-mm-gg 
 function getDateString(){
