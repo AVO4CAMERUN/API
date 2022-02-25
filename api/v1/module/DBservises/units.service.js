@@ -7,7 +7,7 @@ const {createPOST, createUPDATE, createGET, createDELETE} = require('../DBservis
 
 // Query for create unit
 async function createUnit(name, description, id_course){
-    return genericQuery(createPOST('lessons', {name, description, id_course}))
+    return genericQuery(createPOST('units', {name, description, id_course}))
 }
 
 // Check if unit belong Course

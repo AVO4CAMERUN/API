@@ -100,7 +100,6 @@ function createDELETE(table, whereDelete, opLogic = 'AND'){
 
     return query;
 }
-// `DELETE FROM users WHERE email='${email}';` {email:[ssss,ssss,sss]}  //da finire
 
 // Export functions
 module.exports = {

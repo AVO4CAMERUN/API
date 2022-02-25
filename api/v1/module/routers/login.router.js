@@ -10,7 +10,6 @@ const AuthJWT = require('../utils/Auth');
 
 // Import DBservices and deconstruct function
 const {multiQuerysCaller} = require('../DBservises/basic.service');   // BasicService
-const {createDELETE} = require('../DBservises/query-generate.service');   // BasicService
 const {  // LoginService
     checkUsernamePassword,
     getUserInfoByUsername
