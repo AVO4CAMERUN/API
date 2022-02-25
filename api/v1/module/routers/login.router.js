@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken');
 const AuthJWT = require('../utils/Auth'); 
 
 // Import DBservices and deconstruct function
-const {genericCycleQuery} = require('../DBservises/generic.service');   // GenericService
+const {multiQuerysCaller, createGET, createUPDATE} = require('../DBservises/generic.service');   // GenericService
 const {  // LoginService
     checkUsernamePassword,
     getUserInfoByUsername
@@ -27,16 +27,14 @@ router.route('/login')
     .post((req, res) => {
         const { username, password } = req.body;
         
+        //---------------------------------------------------
+    
+        //----------------------------------------------------
+       
         // Query check account
-        genericCycleQuery(
-            {
-                queryMethod: checkUsernamePassword,
-                par: [username, password]
-            },
-            {
-                queryMethod: getUserInfoByUsername,
-                par: [username]
-            }
+        multiQuerysCaller(
+            {queryMethod: checkUsernamePassword, par: [username, password]},
+            {queryMethod: getUserInfoByUsername, par: [username]}
         )
         .then((result) => {
             if(result[0]?.value[0]['COUNT(*)'] != 1)
@@ -57,7 +55,7 @@ router.route('/login')
             // Send json with tokens
             res.json({accessToken, refreshToken});
         })
-        .catch(() => res.sendStatus(500))  // Server error
+        .catch((err) => console.log(err))  // Server error
     })
 
     //Update session 

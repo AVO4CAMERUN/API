@@ -9,7 +9,7 @@ const AuthJWT = require('../utils/Auth');
 const Utils = require('../utils/Utils');
 
 // Import DBservices and deconstruct function
-const {genericCycleQuery} = require('../DBservises/generic.service');   // GenericService
+const {multiQuerysCaller} = require('../DBservises/generic.service');   // GenericService
 const {
     createCourse, 
     getCoursesDataByFilter, 
@@ -36,7 +36,7 @@ router.route('/courses')
         if (role !== "02")
             return res.sendStatus(403);    // You aren't a prof
 
-        genericCycleQuery( 
+        multiQuerysCaller( 
             {
                 queryMethod: createCourse,  // Create courses and save id
                 par: [name, email, description, img_cover, subject]
@@ -56,7 +56,7 @@ router.route('/courses')
         for (const key of Object.keys(req.query)) 
             req.query[key] = Utils.strToArray(req.query[key])
 
-        genericCycleQuery( 
+        multiQuerysCaller( 
             {
                 queryMethod: getCoursesDataByFilter,
                 par: [req.query]
@@ -83,7 +83,7 @@ router.route('/courses/:id')
         const id = req.params.id;
 
         // Indirect call 
-        genericCycleQuery(
+        multiQuerysCaller(
             {
                 queryMethod: getCoursesDataByFilter,
                 par: [{id_course: [id]}]
@@ -123,7 +123,7 @@ router.route('/courses/:id')
         if (req.body?.img_cover)
             req.body.img_cover = `x'${BlobConvert.base64ToHex(req.body.img_cover)}'`
           
-        genericCycleQuery(
+        multiQuerysCaller(
             {
                 queryMethod: isCourseCreator,
                 par: [email, id_course]
@@ -136,7 +136,7 @@ router.route('/courses/:id')
                 return Promise.reject(403);    // You aren't the tutor   
 
             // if you are a creator commit query for change course data
-            return genericCycleQuery({
+            return multiQuerysCaller({
                 queryMethod: updateCourses,
                 par: [{id_course}, req.body]
             })
@@ -162,7 +162,7 @@ router.route('/courses/:id')
         if (role !== "02") 
             return res.sendStatus(403);    // You aren't a prof   
             
-        genericCycleQuery(
+        multiQuerysCaller(
             {
                 queryMethod: isCourseCreator,
                 par: [email, id_course]
@@ -175,7 +175,7 @@ router.route('/courses/:id')
                 return Promise.reject(403);    // You aren't the tutor   
 
             // if you are a creator commit query for delete course
-            return genericCycleQuery({
+            return multiQuerysCaller({
                 queryMethod: delateCourse,
                 par: [id_course]
             })

@@ -8,7 +8,7 @@ const AuthJWT = require('../utils/Auth');
 const Utils = require('../utils/Utils');
 
 // Import DBservices and deconstruct function
-const {genericCycleQuery} = require('../DBservises/generic.service');   // GenericService
+const {multiQuerysCaller} = require('../DBservises/generic.service');   // GenericService
 const { 
     subscription, 
     getCoursesSubscriptionByFilter,
@@ -28,7 +28,7 @@ router.route('/subscribe')
         if (!id_course)
             return res.sendStatus(400);    // id_course is not defined
 
-        genericCycleQuery({
+        multiQuerysCaller({
             queryMethod: subscription,  // Subscription
             par: [email, id_course]
         })
@@ -43,7 +43,7 @@ router.route('/subscribe')
         for (const key of Object.keys(req.query)) 
             req.query[key] = Utils.strToArray(req.query[key])
 
-        genericCycleQuery( {
+        multiQuerysCaller( {
                 queryMethod: getCoursesSubscriptionByFilter,
                 par: [req.query]
         })
@@ -60,7 +60,7 @@ router.route('/subscribe')
         if (!id_course)
             return res.sendStatus(400);    // id_course is not defined
 
-        genericCycleQuery({
+        multiQuerysCaller({
             queryMethod: delateSubscription,  // Delete subscription
             par: [email, id_course]
         })

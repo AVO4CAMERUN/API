@@ -11,7 +11,7 @@ const AuthJWT = require('../utils/Auth');
 const Utils = require('../utils/Utils');
 
 // Import DBservices and deconstruct function
-const {genericCycleQuery} = require('../DBservises/generic.service');   // GenericService
+const {multiQuerysCaller} = require('../DBservises/generic.service');   // GenericService
 const {isRegistred, isFreeUsername} = require('../DBservises/login.service');   //LoginService;                          
 const { // AccountService  
     updateUserInfo, 
@@ -53,7 +53,7 @@ router.route('/account')
             if(isThere) return res.sendStatus(200); 
 
             // Check if it is alredy registered and if the choice username is free
-            genericCycleQuery(
+            multiQuerysCaller(
                 {queryMethod: isRegistred, par: [email]},
                 {queryMethod: isFreeUsername, par: [username]}
             )
@@ -116,7 +116,7 @@ router.route('/account')
             req.body.img_profile = `x'${BlobConvert.base64ToHex(req.body.img_profile)}'`
 
         // Update user info by request body
-        genericCycleQuery({
+        multiQuerysCaller({
                 queryMethod: updateUserInfo,
                 par: [{email}, req.body]
         })
@@ -132,7 +132,7 @@ router.route('/account')
             req.query[key] = Utils.strToArray(req.query[key])
         
         // Get users data by filters
-        genericCycleQuery({
+        multiQuerysCaller({
             queryMethod: getUserDataByFilter,
             par: [req.query]
         })
@@ -156,7 +156,7 @@ router.route('/account')
         let {email} = user;
 
         // Delete account and account relaction
-        genericCycleQuery(   // non necessario controllo tanto ce auth
+        multiQuerysCaller(   // non necessario controllo tanto ce auth
             {
                 queryMethod:  delateAccount,
                 par: [email]
@@ -186,7 +186,7 @@ router.get('/account/:confirmCode', (req, res) => {
     const {name, surname, username, email, password} = suspendedUsers[index];
 
     // Create account
-    genericCycleQuery(
+    multiQuerysCaller(
         {
             queryMethod: createAccount,
             par: [name, surname, username, password, email, '01'] // In first time all users are student = 01

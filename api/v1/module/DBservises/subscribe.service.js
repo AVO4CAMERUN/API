@@ -1,6 +1,6 @@
 // Subscribe DB services modules
 
-const {genericQuery, createGetQuery} = require('../DBservises/generic.service');
+const {genericQuery, createGET} = require('../DBservises/generic.service');
 
 // Query to subscription
 async function subscription(email, id_course){
@@ -9,7 +9,7 @@ async function subscription(email, id_course){
 
 // Query for get courses subscription by filter
 async function getCoursesSubscriptionByFilter(filterObj){
-    return genericQuery(createGetQuery("courses_users", ["*"], filterObj, "OR"))
+    return genericQuery(createGET('courses_users', ['*'], filterObj, 'OR'))
 }
 
 // Query to delete subscription

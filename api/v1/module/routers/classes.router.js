@@ -9,7 +9,7 @@ const AuthJWT = require('../utils/Auth');
 const Utils = require('../utils/Utils');
 
 // Import DBservices and deconstruct function
-const {genericCycleQuery} = require('../DBservises/generic.service');   // GenericService                       
+const {multiQuerysCaller} = require('../DBservises/generic.service');   // GenericService                       
 const {isParameterRole} = require('../DBservises/account.service');     // AccountService 
 const {addClassInvite} = require('../DBservises/invites.service');      // InvitesService
 const {  // ClassService
@@ -61,7 +61,7 @@ router.route('/classes')
         }
 
         // Send dynamic querys
-        genericCycleQuery(...checkQuerys)
+        multiQuerysCaller(...checkQuerys)
         .then((result) => {
 
             // Sum for check that only email is register users
@@ -71,7 +71,7 @@ router.route('/classes')
             if(sum !== checkQuerys.length)
                 return Promise.reject(400)
 
-            return genericCycleQuery( 
+            return multiQuerysCaller( 
                 {
                     queryMethod: createClass,  // Create class and save id
                     par: [name, img_cover]
@@ -112,7 +112,7 @@ router.route('/classes')
             }
 
             // Add relation in the class (start up student and profs) if there are
-            return genericCycleQuery(...queryArray) // Send dynamic querys               
+            return multiQuerysCaller(...queryArray) // Send dynamic querys               
         })
         .then(() => res.sendStatus(200)) // You create a your new class 
         .catch((err) => {
@@ -131,7 +131,7 @@ router.route('/classes')
         // console.log(req.query[key])      
 
         // Indirect call 
-        genericCycleQuery(
+        multiQuerysCaller(
             {
                 queryMethod: getClassDataByFilter,
                 par: [req.query]
@@ -162,7 +162,7 @@ router.route('/classes/:id')
         const id = req.params.id;
 
         // Indirect call 
-        genericCycleQuery(
+        multiQuerysCaller(
             {
                 queryMethod: getClassDataByID,
                 par: [id]
@@ -196,7 +196,7 @@ router.route('/classes/:id')
             req.body.img_cover = `x'${BlobConvert.base64ToHex(req.body.img_cover)}'`
 
         //console.log(req.body)
-        genericCycleQuery(
+        multiQuerysCaller(
             {
                 queryMethod: isParameterRoleInClass,
                 par: [email, id, "tutor"]
@@ -208,7 +208,7 @@ router.route('/classes/:id')
                 return Promise.reject(403);    // You aren't the tutor    
             
             // if you are a tutor commit query for change class data
-            return genericCycleQuery({
+            return multiQuerysCaller({
                 queryMethod: updateClass,
                 par: [{id}, req.body]
             })
@@ -232,7 +232,7 @@ router.route('/classes/:id')
         if (role !== "02")
             res.sendStatus(403)
 
-        genericCycleQuery(
+        multiQuerysCaller(
             {
                 queryMethod: isParameterRoleInClass,
                 par: [email, id, "tutor"]
@@ -244,7 +244,7 @@ router.route('/classes/:id')
                 return Promise.reject(403);    // You aren't the tutor    
                 
             // if you are a tutor commit query for delete class
-            return genericCycleQuery({
+            return multiQuerysCaller({
                 queryMethod: delateClass,
                 par: [id]
             })

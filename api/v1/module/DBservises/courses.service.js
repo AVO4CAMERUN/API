@@ -1,6 +1,6 @@
 // Courses DB services modules
 
-const {genericQuery, createGetQuery, createUpdateQuery} = require('../DBservises/generic.service');
+const {genericQuery, createGET, createUPDATE} = require('../DBservises/generic.service');
 
 // Query for create course
 async function createCourse(name, email, description, img_cover = '', subject){
@@ -10,17 +10,21 @@ async function createCourse(name, email, description, img_cover = '', subject){
 
 // Query for get courses data by filter
 async function getCoursesDataByFilter(filterObj){
-    return genericQuery(createGetQuery("courses", ["*"], filterObj, "OR"))
+    return genericQuery(createGET('courses', ['*'], filterObj, 'OR'))
 }
 
 // Query for update course by id and option
 async function updateCourses(whereObj, putDataObj){
-    return genericQuery(createUpdateQuery('courses', whereObj, putDataObj))
+    return genericQuery(createUPDATE('courses', whereObj, putDataObj))
 }
 
 // Check if the prof is a creator
 async function isCourseCreator(email, id_course){
-    return genericQuery(`SELECT COUNT(*) FROM courses WHERE email_creator = '${email}' AND id_course = '${id_course}'`)   
+    const filter = {
+        email_creator: [email],
+        id_course: [id_course]
+    }
+    return genericQuery(createGET('courses', ['COUNT(*)'], filter, 'AND'))
 }
 
 // Query for delete course

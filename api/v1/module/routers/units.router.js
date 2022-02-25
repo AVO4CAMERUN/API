@@ -8,7 +8,7 @@ const AuthJWT = require('../utils/Auth');
 const Utils = require('../utils/Utils');
 
 // Import DBservices and deconstruct function
-const {genericCycleQuery} = require('../DBservises/generic.service');   // GenericService
+const {multiQuerysCaller} = require('../DBservises/generic.service');   // GenericService
 const {isCourseCreator} = require('../DBservises/courses.service'); // CourseService
 const {getLessonsDataByFilter} = require('../DBservises/lessons.service'); // LessonsService
 const {
@@ -33,7 +33,7 @@ router.route('/units')
         if (role !== "02") 
             return res.sendStatus(403);    // You aren't a prof
 
-        genericCycleQuery( 
+        multiQuerysCaller( 
             {
                 queryMethod: isCourseCreator,  // Check is your courses 
                 par: [email, id_course]
@@ -46,7 +46,7 @@ router.route('/units')
                 return Promise.reject(403);    // You aren't the creator
             
             // if you are a creator
-            return genericCycleQuery({
+            return multiQuerysCaller({
                 queryMethod: createUnit,
                 par: [name, description, id_course]
             })
@@ -66,7 +66,7 @@ router.route('/units')
         for (const key of Object.keys(req.query)) 
             req.query[key] = Utils.strToArray(req.query[key])
 
-        genericCycleQuery({
+        multiQuerysCaller({
             queryMethod: getUnitsDataByFilter,
             par: [req.query]
         })
@@ -83,7 +83,7 @@ router.route('/units')
             }
             
             // cosina per arrichire cosaltra
-            return genericCycleQuery(...querys) 
+            return multiQuerysCaller(...querys) 
         })
         .then((response) => {
             
@@ -125,7 +125,7 @@ router.route('/units/:id')
         // Get course_id on body request
         delete req.body.id_course;
 
-        genericCycleQuery(
+        multiQuerysCaller(
             {
                 queryMethod: isCourseCreator,
                 par: [email, id_course]
@@ -137,7 +137,7 @@ router.route('/units/:id')
                 return Promise.reject(403);    // You aren't the tutor   
 
             // if you are a creator check if unit belong course 
-            return genericCycleQuery({
+            return multiQuerysCaller({
                 queryMethod: unitBelongCourse,
                 par: [id_course, id_unit]
             })
@@ -147,7 +147,7 @@ router.route('/units/:id')
                 return Promise.reject(403);    // You aren't the tutor   
 
             // delete unit 
-            return genericCycleQuery({
+            return multiQuerysCaller({
                 queryMethod: updateUnits,
                 par: [{id_unit}, req.body]
             })
@@ -170,7 +170,7 @@ router.route('/units/:id')
         if (role !== "02") 
             return res.sendStatus(403);    // You aren't a prof   
         
-        genericCycleQuery(
+        multiQuerysCaller(
             {
                 queryMethod: isCourseCreator,
                 par: [email, id_course]
@@ -182,7 +182,7 @@ router.route('/units/:id')
                 return Promise.reject(403);    // You aren't the tutor   
 
             // if you are a creator check if unit belong course 
-            return genericCycleQuery({
+            return multiQuerysCaller({
                 queryMethod: unitBelongCourse,
                 par: [id_course, id_unit]
             })
@@ -193,7 +193,7 @@ router.route('/units/:id')
                 return Promise.reject(403);    // You aren't the tutor   
 
             // delete unit 
-            return genericCycleQuery({
+            return multiQuerysCaller({
                 queryMethod: deleteUnit,
                 par: [id_unit]
             })

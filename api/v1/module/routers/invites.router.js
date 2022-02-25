@@ -7,7 +7,7 @@ const express = require('express');
 const AuthJWT = require('../utils/Auth');
 
 // Import DBservices and deconstruct function
-const {genericCycleQuery} = require('../DBservises/generic.service');   // GenericService
+const {multiQuerysCaller} = require('../DBservises/generic.service');   // GenericService
 const {isParameterRole} = require('../DBservises/account.service');     // AccountService
 const {isParameterRoleInClass, isExistClassByid} = require('../DBservises/classes.service'); // ClassService
 const { // InvitesService
@@ -33,7 +33,7 @@ router.route('/invites')
         if(role !== "02")
             return res.sendStatus(403);    // You aren't a prof
         
-        genericCycleQuery(
+        multiQuerysCaller(
             {
                 queryMethod: isParameterRoleInClass,
                 par: [email, class_id, "tutor"]
@@ -69,7 +69,7 @@ router.route('/invites')
             }
             
             // Send dynamic querys
-            return genericCycleQuery(...checkQuerys);
+            return multiQuerysCaller(...checkQuerys);
         })
         .then((result) => {
             // Sum for check that all email is register users
@@ -91,7 +91,7 @@ router.route('/invites')
             }
 
             // Send invite for class
-            return genericCycleQuery(...queryArray) // Send dynamic querys
+            return multiQuerysCaller(...queryArray) // Send dynamic querys
         })
         .then(() => {
             res.sendStatus(200);    // You invieted students
@@ -109,7 +109,7 @@ router.route('/invites')
         const {email} = user;
 
         // Indirect call 
-        genericCycleQuery(
+        multiQuerysCaller(
             {
                 queryMethod: getInvitedDataByFilter,
                 par: [{email: [email]}] // Array con un obj di filtri accompatiti per colonna
@@ -133,7 +133,7 @@ router.route('/invites/:id')
         const {email} = user;
 
         // Indirect call 
-        genericCycleQuery(
+        multiQuerysCaller(
             {
                 queryMethod: getInvitedDataByFilter,
                 par: [{
@@ -150,7 +150,7 @@ router.route('/invites/:id')
                 return res.sendStatus(400); // Error in parameter
 
             // Accept 
-            return genericCycleQuery(
+            return multiQuerysCaller(
                 {
                     queryMethod: acceptInvitation,
                     par: [class_id, email]
@@ -176,7 +176,7 @@ router.route('/invites/:id')
         const {email} = user;
         
         // Indirect call 
-        genericCycleQuery(
+        multiQuerysCaller(
             {
                 queryMethod: getInvitedDataByFilter,
                 par: [{
@@ -192,7 +192,7 @@ router.route('/invites/:id')
                 res.sendStatus(400); // Error in parameter
 
             // Reject
-            return genericCycleQuery(
+            return multiQuerysCaller(
                 {
                     queryMethod: deleteInvitation,
                     par: [id]
