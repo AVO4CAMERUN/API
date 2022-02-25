@@ -20,7 +20,8 @@ async function acceptInvitation(id, email){
 
 // Delete invitations by id
 async function deleteInvitation(id){
-    return genericQuery(`DELETE FROM invitations WHERE id = '${id}'`)
+    createDELETE('invitations', {id: [id]})
+    return genericQuery(createDELETE('invitations', {id: [id]}))
 }
 
 // Export functions 

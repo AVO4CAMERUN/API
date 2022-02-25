@@ -30,7 +30,7 @@ async function isCourseCreator(email, id_course){
 
 // Query for delete course
 async function delateCourse(id){
-    return genericQuery(`DELETE FROM courses WHERE id_course = '${id}';`)   
+    return genericQuery(createDELETE('courses', {id_course: [id]}))   
 }
 
 // Export functions 

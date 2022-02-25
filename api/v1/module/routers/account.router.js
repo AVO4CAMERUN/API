@@ -12,7 +12,6 @@ const Utils = require('../utils/Utils');
 
 // Import DBservices and deconstruct function
 const {multiQuerysCaller} = require('../DBservises/basic.service');   // BasicService
-
 const {isRegistred, isFreeUsername} = require('../DBservises/login.service');   //LoginService;                          
 const { // AccountService  
     updateUserInfo, 

@@ -28,7 +28,8 @@ async function updateLessons(whereObj, putDataObj){
 
 // Query for delete lessons
 async function deleteLessons(id){
-    return genericQuery(`DELETE FROM lessons WHERE id_lesson = '${id}';`)   
+    createDELETE('lessons', {id_lesson: [id]})
+    return genericQuery(createDELETE('lessons', {id_lesson: [id]}))   
 }
 
 // Export functions 

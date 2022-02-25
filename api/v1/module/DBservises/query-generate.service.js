@@ -75,9 +75,8 @@ function createUPDATE(table, whereObj, putDataObj){
     return query;
 }
 
-// `DELETE FROM users WHERE email='${email}';` {email:[ssss,ssss,sss]}  //da finire
 // Generic function to generate DELETE request  
-function createDELETE(table, whereDelete){
+function createDELETE(table, whereDelete, opLogic = 'AND'){
     const keys = Object.keys(whereDelete)
     const values = Object.values(whereDelete)
     
@@ -85,23 +84,23 @@ function createDELETE(table, whereDelete){
     let query = `DELETE FROM ${table} WHERE ` 
 
     // Add delete where fields
-    for (const key of keys) query += `${key}, `
+    // for (const key of keys) query += `${key} = ${opLogic}`
     
-    // Add VALUES
-    query = query.substring(0, query.length -2); // Troncate last comma
-    query += ") VALUES (";          
-    
-    // Add values
-    for (const value of values) query += `${value}, `
-    
-    // Add last )
-    query = query.substring(0, query.length -2)  // Troncate last comma
-    query += ');';
+    // Iterator in obj and in singol props
+    for (const key of keys) 
+        for (const value of whereDelete[key]) 
+            query += ` ${key} = '${value}' ${opLogic}`
+        
+    // 
+    query = query.substring(0, query.length - opLogic.length)
+
+    // Troncate last comma and add ;
+    query = query.substring(0, query.length -1)  
+    query += ';';
 
     return query;
-
-
 }
+// `DELETE FROM users WHERE email='${email}';` {email:[ssss,ssss,sss]}  //da finire
 
 // Export functions
 module.exports = {

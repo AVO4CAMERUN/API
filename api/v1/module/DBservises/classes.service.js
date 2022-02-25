@@ -41,7 +41,7 @@ async function updateClass(whereObj, putDataObj){
 
 // Query for delete class
 async function delateClass(id){
-    return genericQuery(`DELETE FROM classes WHERE id = '${id}';`)   
+    return genericQuery(createDELETE('classes', {id: [id]}))   
 }
 
 // Export functions

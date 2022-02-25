@@ -28,7 +28,7 @@ async function updateUnits(whereObj, putDataObj){
 
 // Query for delete unit
 async function deleteUnit(id){
-    return genericQuery(`DELETE FROM units WHERE id_unit = '${id}';`)   
+    return genericQuery(createDELETE('units', {id_unit: [id]}))   
 }
 
 // Export functions 

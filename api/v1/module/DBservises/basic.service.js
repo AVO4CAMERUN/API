@@ -10,7 +10,7 @@ const pool = mysql.createPool({
     user: "root",
     password: "",
     database: "avo4cam"
-});   
+});
 
 // Generic Query by pool (async function)
 function genericQuery(query){

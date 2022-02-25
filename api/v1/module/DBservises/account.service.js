@@ -34,7 +34,7 @@ async function updateUserInfo(whereObj, putDataObj){
 
 // Query for delete user and all relaction
 async function delateAccount(email){
-    return genericQuery(`DELETE FROM users WHERE email='${email}';`)   
+    return genericQuery(createDELETE('users', {email: [email]}, 'AND'))   
 }
 
 // Export functions

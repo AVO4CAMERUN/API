@@ -15,7 +15,7 @@ async function getCoursesSubscriptionByFilter(filterObj){
 
 // Query to delete subscription
 async function delateSubscription(email, id_course){
-    return genericQuery(`DELETE FROM courses_users WHERE email = '${email}' AND id_course = '${id_course}';`)   
+    return genericQuery(createDELETE('courses_users', {email: [email], id_course: [id_course]}, 'AND'))   
 }
 
 // Export functions 
