@@ -43,7 +43,7 @@ router.route('/subscribe')
         for (const key of Object.keys(req.query)) 
             req.query[key] = Utils.strToArray(req.query[key])
 
-        multiQuerysCaller( {
+        multiQuerysCaller({
                 queryMethod: getCoursesSubscriptionByFilter,
                 par: [req.query]
         })

@@ -34,10 +34,7 @@ router.route('/lessons')
             return res.sendStatus(403);    // You aren't a prof
 
         multiQuerysCaller(
-            {
-                queryMethod: isCourseCreator,
-                par: [email, id_course]
-            }
+            {queryMethod: isCourseCreator, par: [email, id_course]}
         )
         .then((result) => {
             // Check if you are the creator of course
@@ -45,10 +42,9 @@ router.route('/lessons')
                 return Promise.reject(403);    // You aren't the creator 
 
             // if you are a creator check if unit belong course 
-            return multiQuerysCaller({
-                queryMethod: unitBelongCourse,
-                par: [id_course, id_unit]
-            })
+            return multiQuerysCaller(
+                {queryMethod: unitBelongCourse, par: [id_course, id_unit]}
+            )
         })
         .then((result) => {
             if(result[0]?.value[0]['COUNT(*)'] == 0)
@@ -169,10 +165,7 @@ router.route('/lessons/:id')
         delete req.body.id_unit;
 
         multiQuerysCaller(
-            {
-                queryMethod: isCourseCreator,
-                par: [email, id_course]
-            }
+            {queryMethod: isCourseCreator, par: [email, id_course]}
         )
         .then((result) => {
 
@@ -182,14 +175,8 @@ router.route('/lessons/:id')
 
             // if you are a creator check if unit belong course and lesson belong in unit
             return multiQuerysCaller(
-                {
-                    queryMethod: unitBelongCourse,
-                    par: [id_course, id_unit]
-                },
-                {
-                    queryMethod: lessonBelongUnit,
-                    par: [id_unit, id_lesson]
-                }
+                {queryMethod: unitBelongCourse, par: [id_course, id_unit]},
+                {queryMethod: lessonBelongUnit, par: [id_unit, id_lesson]}
             )
         })
         .then((result) => {
@@ -204,7 +191,6 @@ router.route('/lessons/:id')
         })
         .then(() => res.sendStatus(200)) // ok
         .catch((err) => {
-            console.log(err);
             if(err === 400 || err === 403) res.sendStatus(err)    // Error in parameter
             else res.sendStatus(500) // Server error
             // fare gestione tramite codici restituita da mysql

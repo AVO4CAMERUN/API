@@ -1,18 +1,12 @@
 // Accounts DB services modules
 
 const Utils = require('../utils/Utils');    // Utils fucntions
-const { // DBgeneric services
-    genericQuery, 
-    createGET,
-    createUPDATE
-} = require('../DBservises/generic.service'); 
+const {genericQuery, createPOST, createUPDATE, createGET, createDELETE} = require('../DBservises/generic.service'); 
 
 // Query for create user
 async function createAccount(name, surname, username, password, email, role){
-    return genericQuery(
-        `INSERT INTO users (email, role, username, firstname, lastname, password, registration_date, img_profile, id_class) 
-        VALUES ('${email}', '${role}', '${username}', '${name}', '${surname}', SHA2('${password}', 256), '${Utils.getDateString()}', NULL, NULL);`
-    )
+    const insert = { name, role, surname, username, email, password: `SHA2('${password}', 256)`}
+    return genericQuery(createPOST('users', insert))
 }
 
 // Query for get all data user for email
@@ -22,10 +16,7 @@ async function getUserInfoByEmail(email){
 
 // Check if the user is a prof
 async function isParameterRole(email, role){
-    const filter = {
-        email: [email],
-        role: [role]
-    }
+    const filter = { email: [email], role: [role] }
     return genericQuery(createGET('users', ['COUNT(*) '], filter, 'AND'))
 }
 

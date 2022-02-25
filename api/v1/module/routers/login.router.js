@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken');
 const AuthJWT = require('../utils/Auth'); 
 
 // Import DBservices and deconstruct function
-const {multiQuerysCaller, createGET, createUPDATE} = require('../DBservises/generic.service');   // GenericService
+const {multiQuerysCaller, createGET, createUPDATE, createPOST} = require('../DBservises/generic.service');   // GenericService
 const {  // LoginService
     checkUsernamePassword,
     getUserInfoByUsername
@@ -27,10 +27,6 @@ router.route('/login')
     .post((req, res) => {
         const { username, password } = req.body;
         
-        //---------------------------------------------------
-    
-        //----------------------------------------------------
-       
         // Query check account
         multiQuerysCaller(
             {queryMethod: checkUsernamePassword, par: [username, password]},

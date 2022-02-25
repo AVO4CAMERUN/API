@@ -84,10 +84,7 @@ router.route('/courses/:id')
 
         // Indirect call 
         multiQuerysCaller(
-            {
-                queryMethod: getCoursesDataByFilter,
-                par: [{id_course: [id]}]
-            }
+            { queryMethod: getCoursesDataByFilter, par: [{id_course: [id]}] }
         )
         .then((result) => {
             // Take the DB answer 
@@ -124,10 +121,7 @@ router.route('/courses/:id')
             req.body.img_cover = `x'${BlobConvert.base64ToHex(req.body.img_cover)}'`
           
         multiQuerysCaller(
-            {
-                queryMethod: isCourseCreator,
-                par: [email, id_course]
-            }
+            {queryMethod: isCourseCreator, par: [email, id_course]}
         )
         .then((result) => {
 
@@ -136,10 +130,9 @@ router.route('/courses/:id')
                 return Promise.reject(403);    // You aren't the tutor   
 
             // if you are a creator commit query for change course data
-            return multiQuerysCaller({
-                queryMethod: updateCourses,
-                par: [{id_course}, req.body]
-            })
+            return multiQuerysCaller(
+                {queryMethod: updateCourses, par: [{id_course}, req.body]}
+            )
             
         })
         .then(() => {
@@ -163,10 +156,7 @@ router.route('/courses/:id')
             return res.sendStatus(403);    // You aren't a prof   
             
         multiQuerysCaller(
-            {
-                queryMethod: isCourseCreator,
-                par: [email, id_course]
-            }
+            {queryMethod: isCourseCreator, par: [email, id_course]}
         )
         .then((result) => {
 

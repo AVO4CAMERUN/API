@@ -1,10 +1,10 @@
 // Subscribe DB services modules
 
-const {genericQuery, createGET} = require('../DBservises/generic.service');
+const {genericQuery, createPOST, createGET, createDELETE} = require('../DBservises/generic.service');
 
 // Query to subscription
 async function subscription(email, id_course){
-    return genericQuery(`INSERT INTO courses_users (email, id_course) VALUES ('${email}','${id_course}');`)
+    return genericQuery(createPOST('lessons', {email, id_course})) 
 }
 
 // Query for get courses subscription by filter

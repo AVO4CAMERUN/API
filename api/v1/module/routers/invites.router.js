@@ -34,14 +34,8 @@ router.route('/invites')
             return res.sendStatus(403);    // You aren't a prof
         
         multiQuerysCaller(
-            {
-                queryMethod: isParameterRoleInClass,
-                par: [email, class_id, "tutor"]
-            },
-            {
-                queryMethod: isParameterRoleInClass,
-                par: [email, class_id, "normal"]
-            }
+            {queryMethod: isParameterRoleInClass, par: [email, class_id, "tutor"]},
+            {queryMethod: isParameterRoleInClass, par: [email, class_id, "normal"]}
         )
         .then((result) => {
             const isProf = result[0].value[0]["COUNT(*)"] + result[1].value[0]["COUNT(*)"];
@@ -84,10 +78,9 @@ router.route('/invites')
             
             // Push student invitations if there are
             for (const stud of students) {
-                queryArray.push({
-                    queryMethod: addClassInvite,
-                    par: [stud, class_id]
-                })
+                queryArray.push(
+                    {queryMethod: addClassInvite, par: [stud, class_id]}
+                )
             }
 
             // Send invite for class
@@ -110,10 +103,8 @@ router.route('/invites')
 
         // Indirect call 
         multiQuerysCaller(
-            {
-                queryMethod: getInvitedDataByFilter,
-                par: [{email: [email]}] // Array con un obj di filtri accompatiti per colonna
-            }
+            {queryMethod: getInvitedDataByFilter, par: [{email: [email]}]} 
+            // Array con un obj di filtri accompatiti per colonna
         )
         .then((result) => {
             res.send(result[0].value)   // Send invites
@@ -151,14 +142,8 @@ router.route('/invites/:id')
 
             // Accept 
             return multiQuerysCaller(
-                {
-                    queryMethod: acceptInvitation,
-                    par: [class_id, email]
-                },
-                {
-                    queryMethod: deleteInvitation,
-                    par: [id]
-                }
+                {queryMethod: acceptInvitation, par: [class_id, email]},
+                {queryMethod: deleteInvitation, par: [id]}
             ) 
         })
         .then(() => {
@@ -193,18 +178,11 @@ router.route('/invites/:id')
 
             // Reject
             return multiQuerysCaller(
-                {
-                    queryMethod: deleteInvitation,
-                    par: [id]
-                }
+                {queryMethod: deleteInvitation, par: [id]}
             )
         })
-        .then(() => {
-            res.sendStatus(200)   // Send ok
-        })
-        .catch(() => {
-            res.sendStatus(500); // Server error
-        })
+        .then(() => res.sendStatus(200)) // ok
+        .catch(() => res.sendStatus(500)) // Server Error
     })
 
 module.exports = router

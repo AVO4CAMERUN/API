@@ -126,10 +126,7 @@ router.route('/units/:id')
         delete req.body.id_course;
 
         multiQuerysCaller(
-            {
-                queryMethod: isCourseCreator,
-                par: [email, id_course]
-            }
+            {queryMethod: isCourseCreator, par: [email, id_course]}
         )
         .then((result) => {
             // Check if you are the creator of course
@@ -171,10 +168,7 @@ router.route('/units/:id')
             return res.sendStatus(403);    // You aren't a prof   
         
         multiQuerysCaller(
-            {
-                queryMethod: isCourseCreator,
-                par: [email, id_course]
-            }
+            {queryMethod: isCourseCreator, par: [email, id_course]}
         )
         .then((result) => {
             // Check if you are the creator of course

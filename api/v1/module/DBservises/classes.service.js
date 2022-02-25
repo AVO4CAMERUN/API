@@ -1,19 +1,15 @@
 // Classes DB services modules
 
-const {
-    genericQuery, 
-    createGET, 
-    createUPDATE
-} = require('../DBservises/generic.service');
+const {genericQuery, createPOST, createUPDATE, createGET, createDELETE} = require('../DBservises/generic.service');
 
 // Query for create class
-async function createClass(name, img){
-    return genericQuery(`INSERT INTO classes (name, img_cover, archived) VALUES ('${name}',${img}, '0');`)
+async function createClass(name, img){ 
+    return genericQuery(createPOST('classes', { name, img_cover: img, archived: 0}))
 }
 
 // Query for add relaction prof and class
 async function addProfsClass(email, id_class, role){
-    return genericQuery(`INSERT INTO prof_classes (email, id_class, role) VALUES ('${email}','${id_class}', '${role}');`)
+    return genericQuery(createPOST('prof_classes', {email, id_class, role} ))
 }
 
 // Query for get data class for id
@@ -33,11 +29,7 @@ async function isExistClassByid(class_id){
 
 // Check if the prof is tutor in the class 
 async function isParameterRoleInClass(email, id_class, role){
-    const filter = {
-        email: [email],
-        id_class: [id_class],
-        role: [role]
-    }
+    const filter = {email: [email],  id_class: [id_class], role: [role]}
     return genericQuery(createGET('prof_classes', ['COUNT(*)'], filter, 'AND'))   
 }
 

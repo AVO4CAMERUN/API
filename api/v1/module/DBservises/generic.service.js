@@ -40,33 +40,34 @@ async function multiQuerysCaller(...queryObjs){
 // forse saparere in altro modulo
 // --------------------------- Generate query string function ---------------------------
 
-// createPOST
+
 // Generic function to generate POST request
-// Generic function to generate one insert of n record (use in relaction tab)
-function createPOST(tableName, identifier, fieldsData, fieldsValue){
-    // INSERT INTO classes (name, img_cover, archived) VALUES ('${name}','${img}', '0');
+function createPOST(table, insertData){
+    const keys = Object.keys(insertData)
+    const values = Object.values(insertData)
+    
     // Generete selected fields
-    let query = `INSERT INTO ${tableName} (` 
-    for (const key of fieldsData) {
-        query += ` ${key},`
-    }
-    //query = query.substring(0, query.length -1) // Troncate last comma
+    let query = `INSERT INTO ${table} (` 
 
-    // (value_list_1),
-    // (value_list_2)
+    // Add fields
+    for (const key of keys) query += `${key}, `
+    
+    // Add VALUES
+    query = query.substring(0, query.length -2); // Troncate last comma
+    query += ") VALUES (";          
+    
+    // Add values
+    for (const value of values) query += `${value}, `
+    
+    // Add last )
+    query = query.substring(0, query.length -2)  // Troncate last comma
+    query += ');';
 
-    // Build Cycle of n insert 
-    for (const field of fieldsValue) { 
-        query += `(${identifier}, '${value}'),`
-    }
-    query = query.substring(0, query.length -2)
-    query += ';';
-    return query;  
+    return query;
 }
 
-//---> SELECT id_course FROM courses WHERE name LIKE 'ad%' OR name = 'sss'; ADD like regex
-// Generic function generate GET request 
-function createGET(tableName, fieldsDataRequest, filterObj, opLogic = ''){
+// Generic function generate GET request ==> ADD like regex
+function createGET(table, fieldsDataRequest, filterObj, opLogic = ''){
 
     // Generete selected fields
     let query = `SELECT` 
@@ -74,7 +75,7 @@ function createGET(tableName, fieldsDataRequest, filterObj, opLogic = ''){
         query += ` ${key},`
     }
     query = query.substring(0, query.length -1) // Troncate last comma
-    query += ` FROM ${tableName}`               // Add table target
+    query += ` FROM ${table}`               // Add table target
 
     // Checks if the filter obj exists
     if(typeof filterObj === 'object' && Object.keys(filterObj).length > 0){ 
@@ -96,8 +97,8 @@ function createGET(tableName, fieldsDataRequest, filterObj, opLogic = ''){
 }
 
 // Generic function to generate PUT request
-function createUPDATE(tableName, whereObj, putDataObj){
-    let query = `UPDATE ${tableName} SET`;
+function createUPDATE(table, whereObj, putDataObj){
+    let query = `UPDATE ${table} SET`;
     let putDatakeys = Object.keys(putDataObj)
     let whereKey = Object.keys(whereObj)
     const regex = new RegExp('img_*');
@@ -110,21 +111,48 @@ function createUPDATE(tableName, whereObj, putDataObj){
             query += ` ${key} = '${putDataObj[key]}',`
     }
     query = query.substring(0, query.length -1)
-
     query += ` WHERE ${whereKey} = '${whereObj[whereKey]}'`
+
     return query;
 }
 
-// Generic function to generate DELETE request
-function createDELETE(tableName, identifier, fieldsData, fieldsValue){}
+// `DELETE FROM users WHERE email='${email}';` {email:[ssss,ssss,sss]}  //da finire
+// Generic function to generate DELETE request  
+function createDELETE(table, whereDelete){
+    const keys = Object.keys(whereDelete)
+    const values = Object.values(whereDelete)
+    
+    // Generete selected fields
+    let query = `DELETE FROM ${table} WHERE ` 
+
+    // Add delete where fields
+    for (const key of keys) query += `${key}, `
+    
+    // Add VALUES
+    query = query.substring(0, query.length -2); // Troncate last comma
+    query += ") VALUES (";          
+    
+    // Add values
+    for (const value of values) query += `${value}, `
+    
+    // Add last )
+    query = query.substring(0, query.length -2)  // Troncate last comma
+    query += ');';
+
+    return query;
+
+
+}
 
 // Export functions
 module.exports = {
     genericQuery,
     multiQuerysCaller,
+    createPOST,
     createGET,
     createUPDATE,
-    createPOST
+    createDELETE
+    
 };
 
 

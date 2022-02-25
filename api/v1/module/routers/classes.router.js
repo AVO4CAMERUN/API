@@ -233,10 +233,7 @@ router.route('/classes/:id')
             res.sendStatus(403)
 
         multiQuerysCaller(
-            {
-                queryMethod: isParameterRoleInClass,
-                par: [email, id, "tutor"]
-            }
+            {queryMethod: isParameterRoleInClass, par: [email, id, "tutor"]}
         )
         .then((result) => {
             // Check if you are the tutur of class
@@ -244,10 +241,9 @@ router.route('/classes/:id')
                 return Promise.reject(403);    // You aren't the tutor    
                 
             // if you are a tutor commit query for delete class
-            return multiQuerysCaller({
-                queryMethod: delateClass,
-                par: [id]
-            })
+            return multiQuerysCaller(
+                {queryMethod: delateClass, par: [id]}
+            )
             
         })
         .then(() =>  res.sendStatus(200))  // You changed a class data

@@ -1,12 +1,12 @@
 // Lesson DB services modules
 
 const Utils = require('../utils/Utils');
-const {genericQuery, createGET, createUPDATE} = require('../DBservises/generic.service');
+const {genericQuery, createPOST, createUPDATE, createGET, createDELETE} = require('../DBservises/generic.service');
 
 // Query for create lessons
 async function createLesson(id_unit, name, link_video, quiz){
-    return genericQuery(`INSERT INTO lessons (id_unit, name, creation_date, link_video, quiz) 
-    VALUES ('${id_unit}', '${name}', '${Utils.getDateString()}','${link_video}','${quiz}');`)
+    const insert = {id_unit, name, link_video, quiz, creation_date: Utils.getDateString()}
+    return genericQuery(createPOST('lessons', insert)) 
 }
 
 // Query for get lessons data by filter
@@ -16,10 +16,7 @@ async function getLessonsDataByFilter(filterObj){
 
 // Check if lesson belong unit
 async function lessonBelongUnit(id_unit, id_lesson){
-    const filter = {
-        id_lesson: [id_lesson],
-        id_unit: [id_unit]
-    }
+    const filter = {id_lesson: [id_lesson], id_unit: [id_unit]}
     return genericQuery(createGET('lessons', ['COUNT(*)'], filter, 'AND')) 
 }
 

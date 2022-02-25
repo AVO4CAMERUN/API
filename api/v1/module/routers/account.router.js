@@ -25,8 +25,8 @@ const router = express.Router();    // Create router Object
 router.use(bodyParser.json());      // Middleware for parse http req
 
 // Util Obj
-const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';                // Set for confirm token
-const mailSender = new MailSender('Gmail','avogadro4camerun@gmail.com','AmaraPriscoTommasi123');    // OBj for mails send
+const CHARATERS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';                // Set for confirm token
+const mailSender = new MailSender('Gmail','avogadro4camerun@gmail.com','AmaraPriscoTommasi123');   // OBj for mails send
 
 // List for suspendedUsers --- model => {code: value, usermane: vaule, password: value role: value} 
 let suspendedUsers = [];               
@@ -67,7 +67,7 @@ router.route('/account')
                 do{
                     // Code generator
                     for (let i = 0; i < 30; i++)
-                        code += characters[Math.floor(Math.random() * characters.length )];
+                        code += CHARATERS[Math.floor(Math.random() * CHARATERS.length )];
                     
                     // Check that the code is unique 
                     suspendedUsers.forEach(suspendUser => {
@@ -116,10 +116,9 @@ router.route('/account')
             req.body.img_profile = `x'${BlobConvert.base64ToHex(req.body.img_profile)}'`
 
         // Update user info by request body
-        multiQuerysCaller({
-                queryMethod: updateUserInfo,
-                par: [{email}, req.body]
-        })
+        multiQuerysCaller(
+            {queryMethod: updateUserInfo, par: [{email}, req.body]}
+        )
         .then(() =>  res.sendStatus(200))  // Ok
         .catch(() => res.sendStatus(500))  // Server error)
     })
@@ -132,10 +131,9 @@ router.route('/account')
             req.query[key] = Utils.strToArray(req.query[key])
         
         // Get users data by filters
-        multiQuerysCaller({
-            queryMethod: getUserDataByFilter,
-            par: [req.query]
-        })
+        multiQuerysCaller(
+            {queryMethod: getUserDataByFilter, par: [req.query]}
+        )
         .then((result) => {
             // Take the DB answer 
             let usersData = result[0].value;
@@ -157,10 +155,7 @@ router.route('/account')
 
         // Delete account and account relaction
         multiQuerysCaller(   // non necessario controllo tanto ce auth
-            {
-                queryMethod:  delateAccount,
-                par: [email]
-            }
+            {queryMethod:  delateAccount, par: [email]}
         )
         .then(() =>  res.sendStatus(200))  // Ok
         .catch(() => res.sendStatus(500))  // Server error

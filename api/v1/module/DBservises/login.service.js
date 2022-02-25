@@ -4,10 +4,7 @@ const {genericQuery, createGET} = require('../DBservises/generic.service');
 
 // Check username and password (Auth) 
 async function checkUsernamePassword(username, password){
-    const filter =  {
-        username: [username],
-        password: [`SHA2('${password}', 256)`]
-    }
+    const filter =  {username: [username], password: [`SHA2('${password}', 256)`]}
     return genericQuery(createGET('users', ['COUNT(*)'], filter, 'AND'))
 }
 

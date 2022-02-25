@@ -1,10 +1,10 @@
 // Invites DB services modules
 
-const {genericQuery, createGET} = require('../DBservises/generic.service');
+const {genericQuery, createPOST, createUPDATE, createGET, createDELETE} = require('../DBservises/generic.service');
 
 // Query for add invite for join class 
 async function addClassInvite(email, id_class){
-    return genericQuery(`INSERT INTO invitations (email, id_class) VALUES ('${email}','${id_class}');`)    
+    return genericQuery(createPOST('invitations', {email, id_class})) 
 }
 
 // Query for get invite data by filter

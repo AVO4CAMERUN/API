@@ -1,11 +1,11 @@
 // Courses DB services modules
 
-const {genericQuery, createGET, createUPDATE} = require('../DBservises/generic.service');
+const {genericQuery, createPOST, createUPDATE, createGET, createDELETE} = require('../DBservises/generic.service');
 
 // Query for create course
 async function createCourse(name, email, description, img_cover = '', subject){
-    return genericQuery(`INSERT INTO courses (name, email_creator, description, img_cover, subject) 
-    VALUES ('${name}','${email}','${description}', '${img_cover}', '${subject}');`)
+    const insert = {name, email_creator: email, description, img_cover, subject}
+    return genericQuery(createPOST('courses', insert))
 }
 
 // Query for get courses data by filter

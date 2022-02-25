@@ -1,22 +1,17 @@
 // Units DB services modules
 
-const DBSG = require('../DBservises/generic.service');
-const {genericQuery, createGET, createUPDATE} = DBSG;
+const {genericQuery, createPOST, createUPDATE, createGET, createDELETE} = require('../DBservises/generic.service');
 
 // --------------------------- Units ---------------------------
 
 // Query for create unit
 async function createUnit(name, description, id_course){
-    return genericQuery(`INSERT INTO units (id_course, name, description) 
-    VALUES ('${id_course}','${name}','${description}');`)
+    return genericQuery(createPOST('lessons', {name, description, id_course}))
 }
 
 // Check if unit belong Course
 async function unitBelongCourse(id_course, id_unit){
-    const filter = {
-        id_unit: [id_unit],
-        id_course: [id_course]
-    }
+    const filter = {id_unit: [id_unit], id_course: [id_course]}
     return genericQuery(createGET('units', ['COUNT(*)'], filter, 'AND')) 
 }
 
