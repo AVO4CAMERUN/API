@@ -16,7 +16,7 @@ function createPOST(table, insertData){
     query += ") VALUES (";          
     
     // Add values
-    for (const value of values) query += `${value}, `
+    for (const value of values) query += `'${value}', `
     
     // Add last )
     query = query.substring(0, query.length -2)  // Troncate last comma

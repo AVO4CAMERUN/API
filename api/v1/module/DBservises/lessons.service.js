@@ -1,35 +1,32 @@
 // Lesson DB services modules
 
 const Utils = require('../utils/Utils');
-const {genericQuery} = require('./basic.service');
-const {createPOST, createUPDATE, createGET, createDELETE} = require('../DBservises/query-generate.service'); 
+const {genericQuery, createGetQuery, createUpdateQuery} = require('../DBservises/generic.service');
 
 // Query for create lessons
 async function createLesson(id_unit, name, link_video, quiz){
-    const insert = {id_unit, name, link_video, quiz, creation_date: Utils.getDateString()}
-    return genericQuery(createPOST('lessons', insert)) 
+    return genericQuery(`INSERT INTO lessons (id_unit, name, creation_date, link_video, quiz) 
+    VALUES ('${id_unit}', '${name}', '${Utils.getDateString()}','${link_video}','${quiz}');`)
 }
 
 // Query for get lessons data by filter
 async function getLessonsDataByFilter(filterObj){
-    return genericQuery(createGET('lessons', ['*'], filterObj, 'OR'))
+    return genericQuery(createGetQuery("lessons", ["*"], filterObj, "OR"))
 }
 
 // Check if lesson belong unit
 async function lessonBelongUnit(id_unit, id_lesson){
-    const filter = {id_lesson: [id_lesson], id_unit: [id_unit]}
-    return genericQuery(createGET('lessons', ['COUNT(*)'], filter, 'AND')) 
+    return genericQuery(`SELECT COUNT(*) FROM lessons WHERE id_lesson = '${id_lesson}' AND id_unit = '${id_unit}'`)   
 }
 
 // Query for update lessons by id and option
 async function updateLessons(whereObj, putDataObj){
-    return genericQuery(createUPDATE('lessons', whereObj, putDataObj))
+    return genericQuery(createUpdateQuery('lessons', whereObj, putDataObj))
 }
 
 // Query for delete lessons
 async function deleteLessons(id){
-    createDELETE('lessons', {id_lesson: [id]})
-    return genericQuery(createDELETE('lessons', {id_lesson: [id]}))   
+    return genericQuery(`DELETE FROM lessons WHERE id_lesson = '${id}';`)   
 }
 
 // Export functions 

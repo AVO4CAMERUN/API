@@ -5,7 +5,7 @@ const {createPOST, createGET, createDELETE} = require('../DBservises/query-gener
 
 // Query to subscription
 async function subscription(email, id_course){
-    return genericQuery(createPOST('lessons', {email, id_course})) 
+    return genericQuery(createPOST('courses_users', {email, id_course})) 
 }
 
 // Query for get courses subscription by filter
