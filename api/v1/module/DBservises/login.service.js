@@ -1,6 +1,8 @@
 // Login DB services modules
 
-const {genericQuery, createGET} = require('../DBservises/generic.service');
+
+const {genericQuery} = require('./basic.service');
+const {createGET} = require('../DBservises/query-generate.service'); 
 
 // Check username and password (Auth) 
 async function checkUsernamePassword(username, password){

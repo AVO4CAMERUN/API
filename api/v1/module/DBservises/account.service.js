@@ -1,7 +1,9 @@
 // Accounts DB services modules
 
 const Utils = require('../utils/Utils');    // Utils fucntions
-const {genericQuery, createPOST, createUPDATE, createGET, createDELETE} = require('../DBservises/generic.service'); 
+const {genericQuery} = require('./basic.service');
+const {createPOST, createUPDATE, createGET, createDELETE} = require('../DBservises/query-generate.service'); 
+
 
 // Query for create user
 async function createAccount(name, surname, username, password, email, role){

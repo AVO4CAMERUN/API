@@ -1,7 +1,8 @@
 // Lesson DB services modules
 
 const Utils = require('../utils/Utils');
-const {genericQuery, createPOST, createUPDATE, createGET, createDELETE} = require('../DBservises/generic.service');
+const {genericQuery} = require('./basic.service');
+const {createPOST, createUPDATE, createGET, createDELETE} = require('../DBservises/query-generate.service'); 
 
 // Query for create lessons
 async function createLesson(id_unit, name, link_video, quiz){

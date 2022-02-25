@@ -11,7 +11,8 @@ const AuthJWT = require('../utils/Auth');
 const Utils = require('../utils/Utils');
 
 // Import DBservices and deconstruct function
-const {multiQuerysCaller} = require('../DBservises/generic.service');   // GenericService
+const {multiQuerysCaller} = require('../DBservises/basic.service');   // BasicService
+
 const {isRegistred, isFreeUsername} = require('../DBservises/login.service');   //LoginService;                          
 const { // AccountService  
     updateUserInfo, 

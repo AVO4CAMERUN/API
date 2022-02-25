@@ -1,6 +1,7 @@
 // Units DB services modules
 
-const {genericQuery, createPOST, createUPDATE, createGET, createDELETE} = require('../DBservises/generic.service');
+const {genericQuery} = require('./basic.service');
+const {createPOST, createUPDATE, createGET, createDELETE} = require('../DBservises/query-generate.service');
 
 // --------------------------- Units ---------------------------
 

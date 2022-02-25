@@ -1,6 +1,7 @@
 // Invites DB services modules
 
-const {genericQuery, createPOST, createUPDATE, createGET, createDELETE} = require('../DBservises/generic.service');
+const {genericQuery} = require('./basic.service');
+const {createPOST, createUPDATE, createGET, createDELETE} = require('../DBservises/query-generate.service'); 
 
 // Query for add invite for join class 
 async function addClassInvite(email, id_class){

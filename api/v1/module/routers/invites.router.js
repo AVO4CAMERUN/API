@@ -7,7 +7,7 @@ const express = require('express');
 const AuthJWT = require('../utils/Auth');
 
 // Import DBservices and deconstruct function
-const {multiQuerysCaller} = require('../DBservises/generic.service');   // GenericService
+const {multiQuerysCaller} = require('../DBservises/basic.service');     // BasicService
 const {isParameterRole} = require('../DBservises/account.service');     // AccountService
 const {isParameterRoleInClass, isExistClassByid} = require('../DBservises/classes.service'); // ClassService
 const { // InvitesService

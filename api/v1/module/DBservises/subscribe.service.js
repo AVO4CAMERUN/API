@@ -1,6 +1,7 @@
 // Subscribe DB services modules
 
-const {genericQuery, createPOST, createGET, createDELETE} = require('../DBservises/generic.service');
+const {genericQuery} = require('./basic.service');
+const {createPOST, createGET, createDELETE} = require('../DBservises/query-generate.service'); 
 
 // Query to subscription
 async function subscription(email, id_course){
