@@ -50,7 +50,7 @@ router.route('/login')
             // Send json with tokens
             res.json({accessToken, refreshToken});
         })
-        .catch((err) => console.log(err))  // Server error
+        .catch(() => res.sendStatus(500))  // Server error
     })
 
     //Update session 

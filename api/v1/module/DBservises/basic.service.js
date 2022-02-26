@@ -37,6 +37,7 @@ async function multiQuerysCaller(...queryObjs){
 }
 // Export functions
 module.exports = {
+    pool,
     genericQuery,
     multiQuerysCaller
 };

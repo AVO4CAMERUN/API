@@ -1,5 +1,7 @@
 // Generic DB services modules
 
+const {pool} = require('./basic.service');
+
 // Generic function to generate POST request
 function createPOST(table, insertData){
     const keys = Object.keys(insertData)
@@ -9,14 +11,14 @@ function createPOST(table, insertData){
     let query = `INSERT INTO ${table} (` 
 
     // Add fields
-    for (const key of keys) query += `${key}, `
+    for (const key of keys) query += `${pool.escape(key)}, `
     
     // Add VALUES
     query = query.substring(0, query.length -2); // Troncate last comma
     query += ") VALUES (";          
     
     // Add values
-    for (const value of values) query += `'${value}', `
+    for (const value of values) query += `'${pool.escape(value)}', `
     
     // Add last )
     query = query.substring(0, query.length -2)  // Troncate last comma
@@ -26,12 +28,12 @@ function createPOST(table, insertData){
 }
 
 // Generic function generate GET request ==> ADD like regex
-function createGET(table, fieldsDataRequest, filterObj, opLogic = ''){
+function createGET(table, fieldsDataRequest, filterObj, opLogic = ''){ 
 
     // Generete selected fields
     let query = `SELECT` 
     for (const key of fieldsDataRequest) {
-        query += ` ${key},`
+        query += ` ${pool.escape(key)},`
     }
     query = query.substring(0, query.length -1) // Troncate last comma
     query += ` FROM ${table}`               // Add table target
@@ -45,9 +47,9 @@ function createGET(table, fieldsDataRequest, filterObj, opLogic = ''){
         for (const fKey of fKeys) {
             for (const value of filterObj[fKey]) {
                 if (fKey === 'password') 
-                    query += ` ${fKey} = ${value} ${opLogic}`
+                    query += ` ${pool.escape(fKey)} = ${pool.escape(value)} ${opLogic}`
                 else 
-                    query += ` ${fKey} = '${value}' ${opLogic}`
+                    query += ` ${pool.escape(fKey)} = '${pool.escape(value)}' ${opLogic}`
             }
         }
         query = query.substring(0, query.length - opLogic.length)
@@ -65,12 +67,12 @@ function createUPDATE(table, whereObj, putDataObj){
     // Check special fields
     for (const key of putDatakeys) {
         if (regex.test(key) || key === "password") 
-            query += ` ${key} = ${putDataObj[key]},`
+            query += ` ${pool.escape(key)} = ${pool.escape(putDataObj[key])},`
         else 
-            query += ` ${key} = '${putDataObj[key]}',`
+            query += ` ${pool.escape(key)} = '${pool.escape(putDataObj[key])}',`
     }
     query = query.substring(0, query.length -1)
-    query += ` WHERE ${whereKey} = '${whereObj[whereKey]}'`
+    query += ` WHERE ${pool.escape(whereKey)} = '${pool.escape(whereObj[whereKey])}'`
 
     return query;
 }
@@ -78,20 +80,16 @@ function createUPDATE(table, whereObj, putDataObj){
 // Generic function to generate DELETE request  
 function createDELETE(table, whereDelete, opLogic = 'AND'){
     const keys = Object.keys(whereDelete)
-    const values = Object.values(whereDelete)
     
     // Generete selected fields
     let query = `DELETE FROM ${table} WHERE ` 
-
-    // Add delete where fields
-    // for (const key of keys) query += `${key} = ${opLogic}`
     
     // Iterator in obj and in singol props
     for (const key of keys) 
         for (const value of whereDelete[key]) 
-            query += ` ${key} = '${value}' ${opLogic}`
+            query += ` ${pool.escape(key)} = '${pool.escape(value)}' ${opLogic}`
         
-    // 
+    //
     query = query.substring(0, query.length - opLogic.length)
 
     // Troncate last comma and add ;
