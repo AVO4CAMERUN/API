@@ -36,12 +36,10 @@ router.route('/courses')
         if (role !== "02")
             return res.sendStatus(403);    // You aren't a prof
 
-        multiQuerysCaller( 
-            {
-                queryMethod: createCourse,  // Create courses and save id
-                par: [name, email, description, img_cover, subject]
-            }
-        )
+        multiQuerysCaller({
+            queryMethod: createCourse,  // Create courses and save id
+            par: [name, email, description, img_cover, subject]
+        })
         .then(() => {
             res.sendStatus(200);    // You create a your new courses
         })
@@ -72,6 +70,7 @@ router.route('/courses')
             res.send(courseData);    
         })
         .catch((err) => {
+            console.log(err);
             res.sendStatus(500); // Server error
         })
     })

@@ -115,14 +115,8 @@ router.route('/lessons/:id')
 
             // if you are a creator check if unit belong course and lesson belong in unit
             return multiQuerysCaller(
-                {
-                    queryMethod: unitBelongCourse,
-                    par: [id_course, id_unit]
-                },
-                {
-                    queryMethod: lessonBelongUnit,
-                    par: [id_unit, id_lesson]
-                }
+                {queryMethod: unitBelongCourse, par: [id_course, id_unit]},
+                {queryMethod: lessonBelongUnit, par: [id_unit, id_lesson]}
             )
         })
         .then((result) => {
