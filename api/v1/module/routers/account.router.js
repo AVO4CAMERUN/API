@@ -26,7 +26,7 @@ router.use(bodyParser.json());      // Middleware for parse http req
 
 // Util Obj
 const CHARATERS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';                // Set for confirm token
-const mailSender = new MailSender('Gmail','avogadro4camerun@gmail.com','AmaraPriscoTommasi123');   // OBj for mails send
+const mailSender = new MailSender(process.env.MAIL_SERVICE, process.env.MAIL_USER, process.env.MAIL_PASS);   // OBj for mails send
 
 // List for suspendedUsers --- model => {code: value, usermane: vaule, password: value role: value} 
 let suspendedUsers = [];               

@@ -4,8 +4,8 @@ const jwt = require('jsonwebtoken');
 class Auth {
 
     // Da mettere in auth.js
-    static accessTokenSecret = 'youraccesstokensecret';
-    static refreshTokenSecret = 'yourrefreshtokensecrethere';
+    static accessTokenSecret = process.env.JWT_SECRET;
+    static refreshTokenSecret = process.env.JWT_SECRET_REFRESH;
     static refreshTokens = [];
 
     // Middleware authenticateJWT

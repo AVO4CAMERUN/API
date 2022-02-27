@@ -1,6 +1,7 @@
 // https://www.freecodecamp.org/news/rest-api-best-practices-rest-endpoint-design-examples/
 
 // Standard module import
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors')
 const path = require('path');

@@ -6,10 +6,10 @@ const mysql = require('mysql');
 // Init pool 
 const pool = mysql.createPool({
     connectionLimit : 100,
-    host:"localhost",
-    user: "root",
-    password: "",
-    database: "avo4cam"
+    host: process.env.DB_HOST,
+    user: process.env.DB_USERNAME,
+    password: process.env.DB_PWD,
+    database: process.env.DB
 });
 
 // Generic Query by pool (async function)
