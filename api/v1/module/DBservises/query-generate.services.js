@@ -1,6 +1,6 @@
 // Generic DB services modules
 
-const {pool} = require('./basic.service');
+const {pool} = require('./basic.services');
 
 // Functions for managment specific prop (codice brutto poco generico :( )
 function managmentEscape(key, value) {

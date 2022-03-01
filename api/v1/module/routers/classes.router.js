@@ -9,10 +9,10 @@ const AuthJWT = require('../utils/Auth');
 const Utils = require('../utils/Utils');
 
 // Import DBservices and deconstruct function
-const {multiQuerysCaller} = require('../DBservises/basic.service');     // BasicService                      
-const {isParameterRole} = require('../DBservises/account.service');     // AccountService 
-const {addClassInvite} = require('../DBservises/invites.service');      // InvitesService
-const {  // ClassService
+const {multiQuerysCaller} = require('../DBservises/basic.services');     // Basicservices                      
+const {isParameterRole} = require('../DBservises/account.services');     // Accountservices 
+const {addClassInvite} = require('../DBservises/invites.services');      // Invitesservices
+const {  // Classservices
     createClass, 
     addProfsClass, 
     getClassDataByFilter,
@@ -20,7 +20,7 @@ const {  // ClassService
     isParameterRoleInClass,
     updateClass,
     delateClass
-} = require('../DBservises/classes.service');   
+} = require('../DBservises/classes.services');   
 
 // Allocate obj
 const router = express.Router();    //Create router Object    

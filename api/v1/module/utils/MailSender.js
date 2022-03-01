@@ -3,9 +3,9 @@ const nodemailer = require('nodemailer');
 // Class for send email
 class MailSender {
 
-    constructor(service, user, pass){
+    constructor(services, user, pass){
         this.transporter = nodemailer.createTransport({
-            service,
+            services,
             auth: {user,  pass}
         });   
     }

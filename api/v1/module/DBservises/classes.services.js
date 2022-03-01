@@ -1,7 +1,7 @@
 // Classes DB services modules
 
-const {genericQuery} = require('./basic.service');
-const {createPOST, createUPDATE, createGET, createDELETE} = require('../DBservises/query-generate.service');
+const {genericQuery} = require('./basic.services');
+const {createPOST, createUPDATE, createGET, createDELETE} = require('./query-generate.services');
 
 // Query for create class
 async function createClass(name, img){ 

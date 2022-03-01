@@ -7,15 +7,15 @@ const express = require('express');
 const AuthJWT = require('../utils/Auth');
 
 // Import DBservices and deconstruct function
-const {multiQuerysCaller} = require('../DBservises/basic.service');     // BasicService
-const {isParameterRole} = require('../DBservises/account.service');     // AccountService
-const {isParameterRoleInClass, isExistClassByid} = require('../DBservises/classes.service'); // ClassService
-const { // InvitesService
+const {multiQuerysCaller} = require('../DBservises/basic.services');     // Basicservices
+const {isParameterRole} = require('../DBservises/account.services');     // Accountservices
+const {isParameterRoleInClass, isExistClassByid} = require('../DBservises/classes.services'); // Classservices
+const { // Invitesservices
     addClassInvite, 
     getInvitedDataByFilter,
     acceptInvitation, 
     deleteInvitation
-} = require('../DBservises/invites.service'); 
+} = require('../DBservises/invites.services'); 
 
 
 // Allocate obj

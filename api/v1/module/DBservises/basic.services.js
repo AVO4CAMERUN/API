@@ -43,5 +43,5 @@ module.exports = {
 };
 
 
-// const {genericQuery, multiQuerysCaller} = require('./basic.service');
+// const {genericQuery, multiQuerysCaller} = require('./basic.services');
 // importare in tutte le cose

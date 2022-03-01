@@ -8,16 +8,16 @@ const AuthJWT = require('../utils/Auth');
 const Utils = require('../utils/Utils');
 
 // Import DBservices and deconstruct function
-const {multiQuerysCaller} = require('../DBservises/basic.service');   // BasicService
-const {isCourseCreator} = require('../DBservises/courses.service'); // CourseService
-const {getLessonsDataByFilter} = require('../DBservises/lessons.service'); // LessonsService
+const {multiQuerysCaller} = require('../DBservises/basic.services');   // Basicservices
+const {isCourseCreator} = require('../DBservises/courses.services'); // Courseservices
+const {getLessonsDataByFilter} = require('../DBservises/lessons.services'); // Lessonsservices
 const {
     createUnit,
     getUnitsDataByFilter,
     unitBelongCourse,
     updateUnits,
     deleteUnit
-} = require('../DBservises/units.service'); // UnitsService
+} = require('../DBservises/units.services'); // Unitsservices
 
 // Allocate obj
 const router = express.Router();    //Create router Object

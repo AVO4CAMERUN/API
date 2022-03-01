@@ -9,11 +9,11 @@ const jwt = require('jsonwebtoken');
 const AuthJWT = require('../utils/Auth'); 
 
 // Import DBservices and deconstruct function
-const {multiQuerysCaller} = require('../DBservises/basic.service');   // BasicService
-const {  // LoginService
+const {multiQuerysCaller} = require('../DBservises/basic.services');   // Basicservices
+const {  // Loginservices
     checkUsernamePassword,
     getUserInfoByUsername
-} = require('../DBservises/login.service'); 
+} = require('../DBservises/login.services'); 
 
 // Allocate obj
 const router = express.Router();    // Create router Object

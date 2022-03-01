@@ -11,14 +11,14 @@ const AuthJWT = require('../utils/Auth');
 const Utils = require('../utils/Utils');
 
 // Import DBservices and deconstruct function
-const {multiQuerysCaller} = require('../DBservises/basic.service');   // BasicService
-const {isRegistred, isFreeUsername} = require('../DBservises/login.service');   //LoginService;                          
-const { // AccountService  
+const {multiQuerysCaller} = require('../DBservises/basic.services');   // Basicservices
+const {isRegistred, isFreeUsername} = require('../DBservises/login.services');   //Loginservices;                          
+const { // Accountservices  
     updateUserInfo, 
     getUserDataByFilter, 
     delateAccount, 
     createAccount
-} = require('../DBservises/account.service');              
+} = require('../DBservises/account.services');              
 
 // Allocate obj
 const router = express.Router();    // Create router Object
@@ -26,7 +26,7 @@ router.use(bodyParser.json());      // Middleware for parse http req
 
 // Util Obj
 const CHARATERS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';                // Set for confirm token
-const mailSender = new MailSender(process.env.MAIL_SERVICE, process.env.MAIL_USER, process.env.MAIL_PASS);   // OBj for mails send
+const mailSender = new MailSender(process.env.MAIL_services, process.env.MAIL_USER, process.env.MAIL_PASS);   // OBj for mails send
 
 // List for suspendedUsers --- model => {code: value, usermane: vaule, password: value role: value} 
 let suspendedUsers = [];               

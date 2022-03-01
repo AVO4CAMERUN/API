@@ -8,12 +8,12 @@ const AuthJWT = require('../utils/Auth');
 const Utils = require('../utils/Utils');
 
 // Import DBservices and deconstruct function
-const {multiQuerysCaller} = require('../DBservises/basic.service');   // BasicService
+const {multiQuerysCaller} = require('../DBservises/basic.services');   // Basicservices
 const { 
     subscription, 
     getCoursesSubscriptionByFilter,
     delateSubscription
-} = require('../DBservises/subscribe.service'); // CourseService
+} = require('../DBservises/subscribe.services'); // Courseservices
 
 const router = express.Router();    //Create router Object
 
