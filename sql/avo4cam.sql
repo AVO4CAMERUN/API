@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Mar 01, 2022 alle 19:28
+-- Creato il: Mar 01, 2022 alle 19:35
 -- Versione del server: 10.4.21-MariaDB
 -- Versione PHP: 8.0.11
 
@@ -117,32 +117,31 @@ CREATE TABLE `lessons` (
   `name` varchar(50) NOT NULL,
   `creation_date` date NOT NULL,
   `link_video` varchar(255) NOT NULL,
-  `quiz` text NOT NULL,
-  `lesson_order` int(11) NOT NULL
+  `quiz` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dump dei dati per la tabella `lessons`
 --
 
-INSERT INTO `lessons` (`id_lesson`, `id_unit`, `name`, `creation_date`, `link_video`, `quiz`, `lesson_order`) VALUES
-(1, 1, 'Archives', '2022-02-14', '8SSGiA4myck', '{ \"lesson_id\": 1, \"title\": \"Archivi, Database e DBMS\", \"type\": \"multiple\", \"quiz\": [ { \"question_id\": 1, \"question\": \"Cos\'è un archivio?\", \"correct_answer\": \"É un insieme di informazioni\", \"incorrect_answers\": [ \"É un insieme di soli documenti\", \"É un software per la condivisione di file\", \"Altro\" ] }, { \"question_id\": 2, \"question\": \"Perché utilizzare un hard disk per la memorizzazione dei dati in un archivio?\", \"correct_answer\": \"Perché è un supporto duraturo e molto capiente\", \"incorrect_answers\": [ \"Perché è il supporto più veloce in commercio\", \"Perché può contenere file di piccola dimensione\", \"Perché viene definito da uno standard\" ] }, { \"question_id\": 3, \"question\": \"Qual è il più grande vantaggio nell\'utilizzo di un database?\", \"correct_answer\": \"Il fatto che i dati possano essere consultati da ogni parte del mondo\", \"incorrect_answers\": [ \"Il fatto che sia molto veloce\", \"Il fatto che le informazioni vengano scritte su carta\", \"Il fatto che la memorizzazione sia temporanea\" ] }, { \"question_id\": 4, \"question\": \"Cosa si può fare grazie a un DBMS?\", \"correct_answer\": \"Manipolare, Scrivere e Interrogare le informazioni contenute in un Database\", \"incorrect_answers\": [ \"Si possono soltanto aggiungere le informazioni\", \"Si possono soltanto eliminare le informazioni\", \"Nessuna delle precedenti\" ] } ] }', 1),
-(2, 1, 'Types of Database', '2022-02-14', 'NEqcz2Fv4zc', '', 2),
-(3, 2, 'Database Planning', '2022-02-14', '', '', 3),
-(4, 2, 'Entity Relationship Model', '2022-02-14', 'rsqbR4IdARQ', '', 4),
-(5, 3, 'Logical Layer', '2022-02-14', 'oxIUrf_MVZQ', '', 5),
-(6, 3, 'Derivation Rules', '2022-02-14', '', '', 6),
-(7, 3, 'Normalization', '2022-02-14', '', '', 7),
-(8, 4, 'MySql Introduction', '2022-02-14', '', '', 8),
-(9, 4, 'XAMPP, CLI, PhpMyAdmin', '2022-02-14', '', '', 9),
-(10, 4, 'Data Definition Language', '2022-02-14', '', '', 10),
-(11, 4, 'Data Manipulation Language', '2022-02-14', '', '', 11),
-(12, 4, 'Data Control Language', '2022-02-14', '', '', 12),
-(13, 4, 'Transaction Control Language', '2022-02-14', '', '', 13),
-(14, 4, 'SELECT', '2022-02-14', '', '', 14),
-(15, 4, 'Access', '2022-02-14', '', '', 15),
-(17, 5, 'Corrente Elettrica', '2022-02-24', '4aI0PiWgUoo', '', 1),
-(18, 5, 'Resistenza Elettrica', '2022-02-24', 'GM6CnkOH2XY', '', 2);
+INSERT INTO `lessons` (`id_lesson`, `id_unit`, `name`, `creation_date`, `link_video`, `quiz`) VALUES
+(1, 1, 'Archives', '2022-02-14', '8SSGiA4myck', '{ \"lesson_id\": 1, \"title\": \"Archivi, Database e DBMS\", \"type\": \"multiple\", \"quiz\": [ { \"question_id\": 1, \"question\": \"Cos\'è un archivio?\", \"correct_answer\": \"É un insieme di informazioni\", \"incorrect_answers\": [ \"É un insieme di soli documenti\", \"É un software per la condivisione di file\", \"Altro\" ] }, { \"question_id\": 2, \"question\": \"Perché utilizzare un hard disk per la memorizzazione dei dati in un archivio?\", \"correct_answer\": \"Perché è un supporto duraturo e molto capiente\", \"incorrect_answers\": [ \"Perché è il supporto più veloce in commercio\", \"Perché può contenere file di piccola dimensione\", \"Perché viene definito da uno standard\" ] }, { \"question_id\": 3, \"question\": \"Qual è il più grande vantaggio nell\'utilizzo di un database?\", \"correct_answer\": \"Il fatto che i dati possano essere consultati da ogni parte del mondo\", \"incorrect_answers\": [ \"Il fatto che sia molto veloce\", \"Il fatto che le informazioni vengano scritte su carta\", \"Il fatto che la memorizzazione sia temporanea\" ] }, { \"question_id\": 4, \"question\": \"Cosa si può fare grazie a un DBMS?\", \"correct_answer\": \"Manipolare, Scrivere e Interrogare le informazioni contenute in un Database\", \"incorrect_answers\": [ \"Si possono soltanto aggiungere le informazioni\", \"Si possono soltanto eliminare le informazioni\", \"Nessuna delle precedenti\" ] } ] }'),
+(2, 1, 'Types of Database', '2022-02-14', 'NEqcz2Fv4zc', ''),
+(3, 2, 'Database Planning', '2022-02-14', '', ''),
+(4, 2, 'Entity Relationship Model', '2022-02-14', 'rsqbR4IdARQ', ''),
+(5, 3, 'Logical Layer', '2022-02-14', 'oxIUrf_MVZQ', ''),
+(6, 3, 'Derivation Rules', '2022-02-14', '', ''),
+(7, 3, 'Normalization', '2022-02-14', '', ''),
+(8, 4, 'MySql Introduction', '2022-02-14', '', ''),
+(9, 4, 'XAMPP, CLI, PhpMyAdmin', '2022-02-14', '', ''),
+(10, 4, 'Data Definition Language', '2022-02-14', '', ''),
+(11, 4, 'Data Manipulation Language', '2022-02-14', '', ''),
+(12, 4, 'Data Control Language', '2022-02-14', '', ''),
+(13, 4, 'Transaction Control Language', '2022-02-14', '', ''),
+(14, 4, 'SELECT', '2022-02-14', '', ''),
+(15, 4, 'Access', '2022-02-14', '', ''),
+(17, 5, 'Corrente Elettrica', '2022-02-24', '4aI0PiWgUoo', ''),
+(18, 5, 'Resistenza Elettrica', '2022-02-24', 'GM6CnkOH2XY', '');
 
 -- --------------------------------------------------------
 
@@ -166,22 +165,21 @@ CREATE TABLE `units` (
   `id_unit` int(11) NOT NULL,
   `id_course` int(11) NOT NULL,
   `name` varchar(30) NOT NULL,
-  `description` text NOT NULL,
-  `units_order` int(11) NOT NULL
+  `description` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dump dei dati per la tabella `units`
 --
 
-INSERT INTO `units` (`id_unit`, `id_course`, `name`, `description`, `units_order`) VALUES
-(1, 1, 'Databases', '', 1),
-(2, 1, 'The Relational Model', '', 2),
-(3, 1, 'The Logical Data Model', '', 3),
-(4, 1, 'MySql Database', '', 4),
-(5, 2, 'Elementi di elettronica', '', 1),
-(6, 2, 'Trasformatori elettrici', '', 2),
-(7, 2, 'Componenti di potenza', '', 3);
+INSERT INTO `units` (`id_unit`, `id_course`, `name`, `description`) VALUES
+(1, 1, 'Databases', ''),
+(2, 1, 'The Relational Model', ''),
+(3, 1, 'The Logical Data Model', ''),
+(4, 1, 'MySql Database', ''),
+(5, 2, 'Elementi di elettronica', ''),
+(6, 2, 'Trasformatori elettrici', ''),
+(7, 2, 'Componenti di potenza', '');
 
 -- --------------------------------------------------------
 
@@ -253,8 +251,7 @@ ALTER TABLE `invitations`
 --
 ALTER TABLE `lessons`
   ADD PRIMARY KEY (`id_lesson`),
-  ADD UNIQUE KEY `id_unit` (`id_unit`,`name`),
-  ADD UNIQUE KEY `id_unit_2` (`id_unit`,`lesson_order`);
+  ADD UNIQUE KEY `id_unit` (`id_unit`,`name`);
 
 --
 -- Indici per le tabelle `prof_classes`
@@ -268,8 +265,7 @@ ALTER TABLE `prof_classes`
 --
 ALTER TABLE `units`
   ADD PRIMARY KEY (`id_unit`),
-  ADD UNIQUE KEY `id_course` (`id_course`,`name`),
-  ADD UNIQUE KEY `id_course_2` (`id_course`,`units_order`);
+  ADD UNIQUE KEY `id_course` (`id_course`,`name`);
 
 --
 -- Indici per le tabelle `users`
