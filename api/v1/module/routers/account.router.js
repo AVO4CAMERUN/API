@@ -151,26 +151,20 @@ router.get('/account/:confirmCode', (req, res) => {
     // Check that suspendedUsers includes confirmCode
     let isThere, index; 
     suspendedUsers.forEach((u, i) =>{
-        if(req.params.confirmCode === u['code']){
-            isThere = true; index = i;
-        } else {
-            isThere = false
-        }  
+        if(req.params.confirmCode === u['code']){ isThere = true; index = i;
+        } else { isThere = false }  
     })
 
     // Confirmed code
-    if(!isThere)
-        return res.sendStatus(401); // Unauthorized
+    if(!isThere) return res.sendStatus(401); // Unauthorized
 
     const {name, surname, username, email, password} = suspendedUsers[index];
 
     // Create account
-    multiQuerysCaller(
-        {
-            queryMethod: createAccount,
-            par: [name, surname, username, password, email, '01'] // In first time all users are student = 01
-        }
-    )
+    multiQuerysCaller({
+        queryMethod: createAccount,
+        par: [name, surname, username, password, email, '01'] // In first time all users are student = 01
+    })
     .then(() => {
         suspendedUsers.filter(value => value !== suspendedUsers[index]);    // Remove in the suspendedUsers 
         res.sendStatus(200) // Ok 

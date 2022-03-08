@@ -7,7 +7,7 @@ const {createPOST, createUPDATE, createGET, createDELETE} = require('./query-gen
 
 // Query for create user
 async function createAccount(firstname, lastname, username, password, email, role){
-    const insert = {firstname, role, lastname, username, email, password: `SHA2('${password}', 256)`}
+    const insert = {firstname, role, lastname, username, email, password}
     return genericQuery(createPOST('users', insert))
 }
 
