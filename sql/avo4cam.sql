@@ -20,12 +20,14 @@ SET time_zone = "+00:00";
 --
 -- Database: `avo4cam`
 --
-
+CREATE DATABASE avo4cam;
 -- --------------------------------------------------------
 
 --
 -- Struttura della tabella `classes`
 --
+
+USE avo4cam;
 
 CREATE TABLE `classes` (
   `id` int(11) NOT NULL,
