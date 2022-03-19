@@ -45,13 +45,13 @@ router.route('/account')
         if(isThere) return res.sendStatus(200); 
 
         // Check if it is alredy registered and if the choice username is free
-        multiQuerysCaller(
-            {queryMethod: isRegistred, par: [email]},
-            {queryMethod: isFreeUsername, par: [username]}
-        )
+        Promise.allSettled([
+            isRegistred(email),
+            isFreeUsername(username)
+        ])
         .then((result) => {
             // Result async query to check
-            if(result[0]?.value[0]['COUNT(*)'] > 0 || result[1]?.value[0]['COUNT(*)'])
+            if(result[0]?.value['_count'] > 0 || result[1]?.value['_count'])
                 return res.sendStatus(403); // Forbidden --> hai gia profilo
             
             // Generate confirm code
@@ -100,27 +100,31 @@ router.route('/account')
             req.body.img_profile = `x'${BlobConvert.base64ToHex(req.body.img_profile)}'`
 
         // Update user info by request body
-        multiQuerysCaller(
-            {queryMethod: updateUserInfo, par: [{email}, req.body]}
-        )
+        Promise.allSettled([
+            updateUserInfo(email, req.body)
+        ])
         .then(() =>  res.sendStatus(200))  // Ok
         .catch(() => res.sendStatus(500))  // Server error)
     })
 
     // Get user data 
     .get((req, res) => { 
-
+        // console.log(req.query)
         // Cast data for query
         for (const key of Object.keys(req.query)) 
             req.query[key] = Utils.strToArray(req.query[key])
         
+        // console.log(req.query)
+
         // Get users data by filters
-        multiQuerysCaller(
-            {queryMethod: getUserDataByFilter, par: [req.query]}
-        )
+        Promise.allSettled([
+            getUserDataByFilter(req.query)
+        ])
         .then((result) => {
+            // console.log(result)
+
             // Take the DB answer 
-            let usersData = result[0].value;
+            const usersData = result[0].value;
       
             // Convert img in base64
             for (const user of usersData) 

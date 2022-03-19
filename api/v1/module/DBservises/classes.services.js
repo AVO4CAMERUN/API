@@ -10,7 +10,7 @@ async function createClass(name, img){
 
 // Query for add relaction prof and class
 async function addProfsClass(email, id_class, role){
-    return genericQuery(createPOST('prof_classes', {email, id_class, role} ))
+    return genericQuery(createPOST('prof_classes', {email, id_class, role}))
 }
 
 // Query for get data class for id

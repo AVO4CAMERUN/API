@@ -2,7 +2,11 @@
 
 const Utils = require('../utils/Utils');    // Utils fucntions
 const {genericQuery} = require('./basic.services');
-const {createPOST, createUPDATE, createGET, createDELETE} = require('./query-generate.services'); 
+const {createPOST, createUPDATE, createGET, createDELETE, createGET2} = require('./query-generate.services'); 
+
+const sha256 = require('js-sha256');
+const prisma = require('@prisma/client')
+const pc = new prisma.PrismaClient()
 
 
 // Query for create user
@@ -24,12 +28,22 @@ async function isParameterRole(email, role){
 
 // Query for get user data by filter
 async function getUserDataByFilter(filterObj){
-    return genericQuery(createGET('users', ['email', 'role', 'username', 'firstname', 'lastname', 'img_profile', 'id_class'], filterObj, 'OR'))
+    const obj = createGET2('users', ['email', 'role', 'username', 'firstname', 'lastname', 'img_profile', 'id_class'], filterObj, 'OR')
+    const { qf, select, where} = obj
+    return await qf({ select, where })
 }
 
 // Query for update user by filter and option
-async function updateUserInfo(whereObj, putDataObj){
-    return genericQuery(createUPDATE('users', whereObj, putDataObj))
+async function updateUserInfo(email, newData){
+    // hash password if exist
+    if (newData?.password !== undefined) 
+        newData.password = sha256(newData.password)
+
+    const response = await pc.users.update({
+        where: { email },
+        data: { ...newData }
+    })
+    return response
 }
 
 // Query for delete user and all relaction

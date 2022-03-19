@@ -2,6 +2,10 @@
 
 const {pool} = require('./basic.services');
 
+const sha256 = require('js-sha256');
+const prisma = require('@prisma/client')
+const pc = new prisma.PrismaClient()
+
 // Functions for managment specific prop (codice brutto poco generico :( )
 function managmentEscape(key, value) {
     const regex = new RegExp('img_*');
@@ -58,6 +62,21 @@ function createGET(table, fieldsDataRequest, filterObj, opLogic = ''){ // SERVE 
     return query;  
 }
 
+// Generic function generate GET request ==> ADD like regex
+function createGET2(table, selectField, filter, opLogic = ''){ // SERVE gestore
+    
+    // Create obj filter query
+    let where = {}
+    for (const key in filter)
+        where[key] = { in: filter[key] }
+
+    let select = {}
+    for (const iterator of selectField) 
+        select[iterator] = true
+     
+    return { qf: pc[table].findMany, select, where}
+}
+
 // Generic function to generate PUT request
 function createUPDATE(table, whereObj, putDataObj){
     let query = `UPDATE ${table} SET`;
@@ -97,6 +116,7 @@ function createDELETE(table, whereDelete, opLogic = 'AND'){
 module.exports = {
     createPOST,
     createGET,
+    createGET2,
     createUPDATE,
     createDELETE
 };

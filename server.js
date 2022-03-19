@@ -1,14 +1,15 @@
 // https://www.freecodecamp.org/news/rest-api-best-practices-rest-endpoint-design-examples/
 
 // Standard module import
-require('dotenv').config();
 const express = require('express');
 const cors = require('cors')
 const path = require('path');
+require('dotenv').config();
 
 // Create requets rooter
-const app = express(); 
+const app = express();
 app.use(cors())
+
 // Personal module import
 const v1 = require('./api/v1/v1');
 
@@ -33,5 +34,3 @@ app.use(express.static('front_end'))
 
 // Start http-server port 80
 app.listen(80);
-
-// Cambiare Dbconnect in una classe statica :)

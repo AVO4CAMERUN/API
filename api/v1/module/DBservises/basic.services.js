@@ -35,13 +35,10 @@ async function multiQuerysCaller(...queryObjs){
     // Return results wrapped in promises array
     return Promise.allSettled(promises)  
 }
+
 // Export functions
 module.exports = {
     pool,
     genericQuery,
     multiQuerysCaller
 };
-
-
-// const {genericQuery, multiQuerysCaller} = require('./basic.services');
-// importare in tutte le cose

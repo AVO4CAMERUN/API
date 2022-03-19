@@ -24,6 +24,9 @@ router.route('/subscribe')
         const user = AuthJWT.parseAuthorization(req.headers.authorization)
         const {email} = user;
         const {id_course} = req.body;
+
+        // console.log(user)
+        // console.log(req.headers.authorization)
         
         if (!id_course)
             return res.sendStatus(400);    // id_course is not defined
@@ -33,7 +36,10 @@ router.route('/subscribe')
             par: [email, id_course]
         })
         .then(() => res.sendStatus(200))     // You are subscriptioned
-        .catch((err) => res.sendStatus(500)) // Server error
+        .catch((err) => {
+            console.log(err);
+            res.sendStatus(500)
+        }) // Server error
     })
 
     // Get subscribe by filter
@@ -65,7 +71,7 @@ router.route('/subscribe')
             par: [email, id_course]
         })
         .then(() => res.sendStatus(200))  // ok
-        .catch(() => res.sendStatus(500)) // Server error
+        .catch((err) => res.sendStatus(500)) // Server error
     })
 
 module.exports = router

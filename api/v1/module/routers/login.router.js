@@ -27,19 +27,19 @@ router.route('/login')
         const { username, password } = req.body;
         
         // Query check account
-        multiQuerysCaller(
-            {queryMethod: checkUsernamePassword, par: [username, password]},
-            {queryMethod: getUserInfoByUsername, par: [username]}
-        )
+        Promise.allSettled([
+            checkUsernamePassword(username, password),
+            getUserInfoByUsername(username)
+        ])
         .then((result) => {
-            if(result[0]?.value[0]['COUNT(*)'] != 1)
+            if(result[0]?.value['_count'] != 1)
                 return res.sendStatus(403); // Forbiden
 
             // Util Data
-            let extendData = result[1].value[0];
-            let {email, username, role} = extendData;
+            const extendData = result[1].value;
+            const {email, username, role} = extendData;
             
-            // generate an access token
+            // Generate an access token
             const userDataToken = {email, username, role}
             const accessToken = jwt.sign(userDataToken, AuthJWT.accessTokenSecret, { expiresIn: '20m' });
             const refreshToken = jwt.sign(userDataToken, AuthJWT.refreshTokenSecret);
