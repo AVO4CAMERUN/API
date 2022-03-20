@@ -27,7 +27,7 @@ model courses {
   email_creator String          @db.VarChar(255)
   name          String          @db.VarChar(15)
   description   String?         @db.VarChar(156)
-  creation_date DateTime        @db.Date
+  creation_date DateTime        @db.Date  @default(now())
   subject       courses_subject
   img_cover     Bytes?          @db.Blob
   users         users           @relation(fields: [email_creator], references: [email], onDelete: Cascade, onUpdate: Restrict, map: "courses_ibfk_1")
@@ -39,12 +39,13 @@ model courses {
 
 model courses_users {
   email     String  @db.VarChar(255)
-  id_course Int
-  users     users   @relation(fields: [email], references: [email], onDelete: Cascade, onUpdate: Restrict, map: "courses_users_ibfk_1")
-  courses   courses @relation(fields: [id_course], references: [id_course], onDelete: Cascade, onUpdate: Restrict, map: "courses_users_ibfk_2")
+  id_course Int     @db.Int
+  users     users   @relation(fields: [email], references: [email], onDelete: Cascade, onUpdate: Cascade, map: "courses_users_ibfk_1")
+  courses   courses @relation(fields: [id_course], references: [id_course], onDelete: Cascade, onUpdate: Cascade, map: "courses_users_ibfk_2")
 
   @@unique([email, id_course], map: "email")
-  @@index([id_course], map: "courses_users_ibfk_2")
+  @@index([email, id_course], map: "courses_users_ibfk_3")
+  
 }
 
 model exercise {

@@ -9,7 +9,6 @@ const AuthJWT = require('../utils/Auth');
 const Utils = require('../utils/Utils');
 
 // Import DBservices and deconstruct function
-   // Basicservices
 const {
     createCourse, 
     getCoursesDataByFilter, 
@@ -23,24 +22,25 @@ const router = express.Router();    //Create router Object
 
 router.route('/courses')
 
-    // Create new courses 
+    // Create new courses
     .post(AuthJWT.authenticateJWT, (req, res) => {
         const user = AuthJWT.parseAuthorization(req.headers.authorization)
-        const {email, role} = user;
-        let {name, description, img_cover, subject} = req.body;
+        const { email, role } = user;
+        const { name, description, subject } = req.body;
+        let { img_cover } = req.body;
 
         // 
-        if (img_cover)
-            img_cover = `x'${BlobConvert.base64ToHex(img_cover)}'`
+        if (img_cover !== undefined) 
+            img_cover = BlobConvert.base64ToBlob(img_cover)
           
-        if (role !== "02")
+        if (role !== 'TEACHER')
             return res.sendStatus(403);    // You aren't a prof
 
-        multiQuerysCaller({
-            queryMethod: createCourse,  // Create courses and save id
-            par: [name, email, description, img_cover, subject]
-        })
-        .then(() => {
+        Promise.allSettled([
+            createCourse(name, email, description, img_cover, subject) // Create courses and save id
+        ])
+        .then((result) => {
+            console.log(result);    // fare resittuire le cose dopoe le post e le put
             res.sendStatus(200);    // You create a your new courses
         })
         .catch((err) => {
@@ -54,55 +54,25 @@ router.route('/courses')
         for (const key of Object.keys(req.query)) 
             req.query[key] = Utils.strToArray(req.query[key])
 
-        multiQuerysCaller( 
-            {
-                queryMethod: getCoursesDataByFilter,
-                par: [req.query]
-            }
-        )
+        Promise.allSettled([
+            getCoursesDataByFilter(req.query)
+        ])
         .then((response) => {
-            let courseData = response[0].value;
+            let courses = response[0].value;
+
             // Code img in base64 for send
-            for (const course of courseData) 
-                course['img_cover'] = BlobConvert.blobToBase64(course['img_cover']);
-            
-            // Send courses data
-            res.send(courseData);    
+            if (Array.isArray(courses)) 
+                for (const course of courses)
+                    course['img_cover'] = BlobConvert.blobToBase64(course['img_cover']);
+            else 
+                return res.sendStatus(404); // Courses data not found
+
+            res.send(courses); // Send courses data   
         })
-        .catch((err) => {
-            console.log(err);
-            res.sendStatus(500); // Server error
-        })
+        .catch(() => res.sendStatus(500))// Server error
     })
 
 router.route('/courses/:id')
-
-    // Get courses data by id
-    .get((req, res) => {
-        const id = req.params.id;
-
-        // Indirect call 
-        multiQuerysCaller(
-            { queryMethod: getCoursesDataByFilter, par: [{id_course: [id]}] }
-        )
-        .then((result) => {
-            // Take the DB answer 
-            let classData = result[0].value[0];
-            
-            // Convert img in base64
-            if(result[0].value[0]){
-                classData['img_cover'] = BlobConvert.blobToBase64(classData['img_cover']);
-                res.send(classData)
-            } else {
-                res.sendStatus(404) // Not found
-            }
-
-        })
-        .catch((err)=>{
-            console.log(err);
-            res.sendStatus(500); // Server error
-        })
-    })
     
     // Update courses data by id
     .put(AuthJWT.authenticateJWT, (req, res) => {
@@ -110,38 +80,34 @@ router.route('/courses/:id')
         const {email, role} = user;
         const id_course = req.params.id;
         
-        if (role !== "02") 
+        if (role !== 'TEACHER')
             return res.sendStatus(403);    // You aren't a prof
 
-        if (req.body?.email_creator) 
+        if (req.body?.email_creator)
             return res.sendStatus(403);  
 
         if (req.body?.img_cover)
-            req.body.img_cover = `x'${BlobConvert.base64ToHex(req.body.img_cover)}'`
-          
-        multiQuerysCaller(
-            {queryMethod: isCourseCreator, par: [email, id_course]}
-        )
-        .then((result) => {
+            req.body.img_cover = BlobConvert.base64ToBlob(req.body.img_cover)
 
+        Promise.allSettled([
+            isCourseCreator(email, +id_course)
+        ])
+        .then((result) => {
             // Check if you are the creator of course
-            if(result[0]?.value[0]['COUNT(*)'] == 0)
+            if(result[0]?.value['_count'] !== 1)
                 return Promise.reject(403);    // You aren't the tutor   
 
             // if you are a creator commit query for change course data
-            return multiQuerysCaller(
-                {queryMethod: updateCourses, par: [{id_course}, req.body]}
-            )
-            
+            return Promise.allSettled([
+                updateCourses(+id_course, req.body)
+            ])   
         })
-        .then(() => {
+        .then((result) => {
             res.sendStatus(200);
         })
         .catch((err) => {
-            if(err === 400 || err === 403)
-                res.sendStatus(err)    // Error in parameter
-            else
-                res.sendStatus(500) // Server error
+            if(err === 400 || err === 403) res.sendStatus(err)    // Error in parameter
+            else res.sendStatus(500) // Server error
         })
     })
 
@@ -151,32 +117,27 @@ router.route('/courses/:id')
         const {email, role} = user;
         const id_course = req.params.id;
         
-        if (role !== "02") 
+        if (role !== 'TEACHER') 
             return res.sendStatus(403);    // You aren't a prof   
-            
-        multiQuerysCaller(
-            {queryMethod: isCourseCreator, par: [email, id_course]}
-        )
+
+        Promise.allSettled([
+            isCourseCreator(email, +id_course)
+        ])
         .then((result) => {
 
             // Check if you are the creator of course
-            if(result[0]?.value[0]['COUNT(*)'] == 0)
+            if(result[0]?.value['_count'] !== 1)
                 return Promise.reject(403);    // You aren't the tutor   
 
             // if you are a creator commit query for delete course
-            return multiQuerysCaller({
-                queryMethod: delateCourse,
-                par: [id_course]
-            })
+            return Promise.allSettled([
+                delateCourse(+id_course)
+            ])
         })
-        .then(() => {
-            res.sendStatus(200);
-        })
+        .then(() => res.sendStatus(200))
         .catch((err) => {
-            if(err === 400 || err === 403)
-                res.sendStatus(err);    // Error in parameter
-            else
-                res.sendStatus(500); // Server error
+            if(err === 400 || err === 403) res.sendStatus(err);    // Error in parameter
+            else res.sendStatus(500); // Server error
         })
     })
 

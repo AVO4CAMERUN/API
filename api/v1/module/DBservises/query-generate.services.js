@@ -9,22 +9,29 @@ function createGET(table, selectField, filter, opLogic = ''){ // SERVE gestore
     
     // Create obj filter query
     let where = {}
-    const cast = (value, index) => {
-        if (typeof +value === 'number') filter[key][index] = +value   
-    }
 
     // Insert filter paramater
     for (const key in filter) {
-        if (!Array.isArray(filter)) {
+        if (!Array.isArray(filter[key])) {
             // forse da modificare facendo cats per possibili num
             where[key] = filter[key]
         } else {
             // Cast possible number data
-            filter[key].forEach(cast)
+            filter[key].forEach((value, index) => {
+                if (!isNaN(+value)) {
+                    filter[key][index] = +value
+                    // console.log(filter[key][index])
+                }
+            })
             where[key] = { in: filter[key] }
         }
     }
-    
+    // test ad afre dentro al ciclo
+    // console.log(where);
+    // console.log(value)
+    // console.log(+value)
+    // console.log(!isNaN(+value))
+
     // if all return fields
     if (selectField[0] === '*') return { qf: pc[table].findMany, where }
 

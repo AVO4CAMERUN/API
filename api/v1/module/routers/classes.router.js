@@ -115,7 +115,6 @@ router.route('/classes')
         .then((result) => {
             // Take the DB answer 
             let classesData = result[0].value;
-            console.log(result)
 
             // Convert img in base64
             for (const classData of classesData) 

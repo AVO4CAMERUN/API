@@ -15,14 +15,15 @@ async function subscription (email, id_course) {
 // Query for get courses subscription by filter
 async function getCoursesSubscriptionByFilter (filter) {
     const obj = createGET('courses_users', ['*'], filter)
-    const { qf, select, where} = obj
-    return await qf({ select, where })
+    const { qf, where} = obj
+    return await qf({ where })
 }
 
 // Query to delete subscription
-async function delateSubscription (email, id_course) {
+async function delateSubscription (email, id_course) {  // qui ce iìun errorone non so quale sia
+    console.log(email, id_course)
     const response = await pc.courses_users.delete({
-        where: { email, id_course }
+        where: { id_course, email  }
     })
     return response   
 }

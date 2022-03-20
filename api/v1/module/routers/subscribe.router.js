@@ -8,7 +8,6 @@ const AuthJWT = require('../utils/Auth');
 const Utils = require('../utils/Utils');
 
 // Import DBservices and deconstruct function
-   // Basicservices
 const { 
     subscription, 
     getCoursesSubscriptionByFilter,
@@ -25,21 +24,20 @@ router.route('/subscribe')
         const {email} = user;
         const {id_course} = req.body;
 
-        // console.log(user)
-        // console.log(req.headers.authorization)
-        
-        if (!id_course)
+        if (id_course === undefined)
             return res.sendStatus(400);    // id_course is not defined
 
-        multiQuerysCaller({
-            queryMethod: subscription,  // Subscription
-            par: [email, id_course]
-        })
-        .then(() => res.sendStatus(200))     // You are subscriptioned
-        .catch((err) => {
-            console.log(err);
-            res.sendStatus(500)
-        }) // Server error
+        // Subscription
+        Promise.allSettled([
+            subscription(email, +id_course)
+        ])
+        .then((result) => {
+            if (result[0].status !== 'fulfilled')
+                return res.sendStatus(400)
+            
+            res.sendStatus(200) // You are subscriptioned
+        })     
+        .catch(() => res.sendStatus(500)) // Server error
     })
 
     // Get subscribe by filter
@@ -49,11 +47,16 @@ router.route('/subscribe')
         for (const key of Object.keys(req.query)) 
             req.query[key] = Utils.strToArray(req.query[key])
 
-        multiQuerysCaller({
-                queryMethod: getCoursesSubscriptionByFilter,
-                par: [req.query]
-        })
-        .then((response) => res.send(response[0].value)) // Send subscribtions data
+        Promise.allSettled([
+            getCoursesSubscriptionByFilter(req.query)
+        ])
+        .then((response) => {
+
+            if (response[0].value?.length <= 0) 
+                return res.send(404)
+
+            res.send(response[0].value)
+        }) // Send subscribtions data
         .catch(() => res.sendStatus(500)) // Server error
     })
     
@@ -63,14 +66,17 @@ router.route('/subscribe')
         const {email} = user;
         const {id_course} = req.body;
   
-        if (!id_course)
+        if (id_course === undefined)
             return res.sendStatus(400);    // id_course is not defined
 
-        multiQuerysCaller({
-            queryMethod: delateSubscription,  // Delete subscription
-            par: [email, id_course]
-        })
-        .then(() => res.sendStatus(200))  // ok
+        // Delete subscription
+        Promise.allSettled([
+            delateSubscription(email, id_course)
+        ])
+        .then((response) => {
+            console.log(response);
+            res.sendStatus(200)
+        })  // ok
         .catch((err) => res.sendStatus(500)) // Server error
     })
 
