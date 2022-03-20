@@ -9,7 +9,6 @@ const jwt = require('jsonwebtoken');
 const AuthJWT = require('../utils/Auth'); 
 
 // Import DBservices and deconstruct function
-const {multiQuerysCaller} = require('../DBservises/basic.services');   // Basicservices
 const {  // Loginservices
     checkUsernamePassword,
     getUserInfoByUsername

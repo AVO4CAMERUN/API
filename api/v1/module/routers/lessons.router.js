@@ -8,7 +8,7 @@ const AuthJWT = require('../utils/Auth');
 const Utils = require('../utils/Utils');
 
 // Import DBservices and deconstruct function
-const {multiQuerysCaller} = require('../DBservises/basic.services');   // Basicservices       
+   // Basicservices       
 const {isCourseCreator} = require('../DBservises/courses.services');   // Coursesservices
 const {unitBelongCourse} = require('../DBservises/units.services');    // Unitsservices
 const { // Lessonsservices

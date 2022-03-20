@@ -107,7 +107,7 @@ model users {
   firstname         String?         @db.VarChar(50)
   lastname          String?         @db.VarChar(50)
   password          String          @db.VarChar(255)
-  registration_date DateTime        @db.Date
+  registration_date DateTime        @db.Date  @default(now())
   img_profile       Bytes?          @db.Blob
   id_class          Int?
   courses           courses[]
@@ -126,8 +126,8 @@ enum courses_subject {
 }
 
 enum prof_classes_role {
-  tutor
-  normal
+  TUTOR   @map("01")
+  NORMAL  @map("02")
 }
 
 enum users_role {

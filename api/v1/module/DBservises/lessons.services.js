@@ -1,34 +1,48 @@
 // Lesson DB services modules
 
-const Utils = require('../utils/Utils');
-const {genericQuery} = require('./basic.services');
-const {createPOST, createUPDATE, createGET, createDELETE} = require('./query-generate.services'); 
+const { createGET } = require('./query-generate.services')
+const prisma = require('@prisma/client')
+const pc = new prisma.PrismaClient()
 
 // Query for create lessons
-async function createLesson(id_unit, name, link_video, quiz){
-    const insert = {id_unit, name, link_video, quiz, creation_date: Utils.getDateString()}
-    return genericQuery(createPOST('lessons', insert)) 
+async function createLesson (id_unit, name, link_video, quiz) {
+    const response = await pc.lessons.create({
+        data: { id_unit, name, link_video, quiz }
+    })
+    return response
 }
 
 // Query for get lessons data by filter
-async function getLessonsDataByFilter(filterObj){
-    return genericQuery(createGET('lessons', ['*'], filterObj, 'OR'))
+async function getLessonsDataByFilter (filter) {
+    const obj = createGET('lessons', ['*'], filter)
+    const { qf, select, where} = obj
+    return await qf({ select, where })
 }
 
 // Check if lesson belong unit
-async function lessonBelongUnit(id_unit, id_lesson){
-    const filter = {id_lesson: [id_lesson], id_unit: [id_unit]}
-    return genericQuery(createGET('lessons', ['COUNT(*)'], filter, 'AND')) 
+async function lessonBelongUnit (id_unit, id_lesson) {
+    const response = await pc.lessons.aggregate({
+        where: {id_lesson, id_unit},
+        _count: true
+    })
+    return response
 }
 
 // Query for update lessons by id and option
-async function updateLessons(whereObj, putDataObj){
-    return genericQuery(createUPDATE('lessons', whereObj, putDataObj))
+async function updateLessons (id_lesson, newData) {
+    const response = await pc.lessons.update({
+        where: { id_lesson },
+        data: { ...newData }
+    })
+    return response
 }
 
 // Query for delete lessons
-async function deleteLessons(id){
-    return genericQuery(createDELETE('lessons', {id_lesson: [id]}))   
+async function deleteLessons (id_lesson) {
+    const response = await pc.lessons.delete({
+        where: { id_lesson }
+    })
+    return response 
 }
 
 // Export functions 

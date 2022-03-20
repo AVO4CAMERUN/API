@@ -1,21 +1,30 @@
 // Subscribe DB services modules
 
-const {genericQuery} = require('./basic.services');
-const {createPOST, createGET, createDELETE} = require('../DBservises/query-generate.services'); 
+const { createGET } = require('./query-generate.services')
+const prisma = require('@prisma/client')
+const pc = new prisma.PrismaClient()
 
 // Query to subscription
-async function subscription(email, id_course){
-    return genericQuery(createPOST('courses_users', {email, id_course})) 
+async function subscription (email, id_course) {
+    const response = await pc.courses_users.create({
+        data: { email, id_course }
+    })
+    return response
 }
 
 // Query for get courses subscription by filter
-async function getCoursesSubscriptionByFilter(filterObj){
-    return genericQuery(createGET('courses_users', ['*'], filterObj, 'OR'))
+async function getCoursesSubscriptionByFilter (filter) {
+    const obj = createGET('courses_users', ['*'], filter)
+    const { qf, select, where} = obj
+    return await qf({ select, where })
 }
 
 // Query to delete subscription
-async function delateSubscription(email, id_course){
-    return genericQuery(createDELETE('courses_users', {email: [email], id_course: [id_course]}, 'AND'))   
+async function delateSubscription (email, id_course) {
+    const response = await pc.courses_users.delete({
+        where: { email, id_course }
+    })
+    return response   
 }
 
 // Export functions 

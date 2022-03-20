@@ -11,7 +11,6 @@ const AuthJWT = require('../utils/Auth');
 const Utils = require('../utils/Utils');
 
 // Import DBservices and deconstruct function
-const {multiQuerysCaller} = require('../DBservises/basic.services');   // Basicservices
 const {isRegistred, isFreeUsername} = require('../DBservises/login.services');   //Loginservices;                          
 const { // Accountservices  
     updateUserInfo, 
@@ -142,9 +141,9 @@ router.route('/account')
         let {email} = user;
 
         // Delete account and account relaction
-        multiQuerysCaller(   // non necessario controllo tanto ce auth
-            {queryMethod:  delateAccount, par: [email]}
-        )
+        Promise.allSettled([ // non necessario controllo tanto ce auth
+            delateAccount(email)
+        ])
         .then(() =>  res.sendStatus(200))  // Ok
         .catch(() => res.sendStatus(500))  // Server error
     })
@@ -154,9 +153,12 @@ router.get('/account/:confirmCode', (req, res) => {
     
     // Check that suspendedUsers includes confirmCode
     let isThere, index; 
-    suspendedUsers.forEach((u, i) =>{
-        if(req.params.confirmCode === u['code']){ isThere = true; index = i;
-        } else { isThere = false }  
+    suspendedUsers.forEach((u, i) => {
+        if(req.params.confirmCode === u['code']) { 
+            isThere = true; index = i;
+        } else { 
+            isThere = false 
+        }  
     })
 
     // Confirmed code
@@ -165,10 +167,9 @@ router.get('/account/:confirmCode', (req, res) => {
     const {name, surname, username, email, password} = suspendedUsers[index];
 
     // Create account
-    multiQuerysCaller({
-        queryMethod: createAccount,
-        par: [name, surname, username, password, email, '01'] // In first time all users are student = 01
-    })
+    Promise.allSettled([
+        createAccount(name, surname, username, password, email, 'STUDENT')  // In first time all users are student = 01
+    ])
     .then(() => {
         suspendedUsers.filter(value => value !== suspendedUsers[index]);    // Remove in the suspendedUsers 
         res.sendStatus(200) // Ok 

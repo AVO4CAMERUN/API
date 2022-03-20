@@ -2,15 +2,12 @@
 
 // Dependences
 const express = require('express');
-
-// Utils servises
 const AuthJWT = require('../utils/Auth');
 
 // Import DBservices and deconstruct function
-const {multiQuerysCaller} = require('../DBservises/basic.services');     // Basicservices
 const {isParameterRole} = require('../DBservises/account.services');     // Accountservices
 const {isParameterRoleInClass, isExistClassByid} = require('../DBservises/classes.services'); // Classservices
-const { // Invitesservices
+const { // Invites services
     addClassInvite, 
     getInvitedDataByFilter,
     acceptInvitation, 
@@ -30,15 +27,15 @@ router.route('/invites')
         const {email, role} = user;
         const {class_id, students} = req.body;
         
-        if(role !== "02")
+        if(role !== 'TEACHER')
             return res.sendStatus(403);    // You aren't a prof
-        
-        multiQuerysCaller(
-            {queryMethod: isParameterRoleInClass, par: [email, class_id, "tutor"]},
-            {queryMethod: isParameterRoleInClass, par: [email, class_id, "normal"]}
-        )
+
+        Promise.allSettled([
+            isParameterRoleInClass(email, class_id, 'TUTOR'),
+            isParameterRoleInClass(email, class_id, 'NORMAL')
+        ])
         .then((result) => {
-            const isProf = result[0].value[0]["COUNT(*)"] + result[1].value[0]["COUNT(*)"];
+            const isProf = result[0].value['_count'] + result[1].value['_count'];
 
             // Check is prof in class
             if(!isProf)
@@ -50,24 +47,17 @@ router.route('/invites')
 
             // Create query for check student profile and class exist
             let checkQuerys = [];
-            checkQuerys.push({
-                queryMethod: isExistClassByid,  // Check class
-                par: [class_id]
-            })
+            checkQuerys.push(isExistClassByid(class_id)) // Check class
 
-            for (const stud of students) {
-                checkQuerys.push({
-                    queryMethod: isParameterRole,  // Check is student
-                    par: [stud, "01"]
-                })
-            }
+            for (const stud of students) 
+                checkQuerys.push(isParameterRole(stud, 'STUDENT')) // Check is student
             
             // Send dynamic querys
-            return multiQuerysCaller(...checkQuerys);
+            return Promise.allSettled(checkQuerys)
         })
         .then((result) => {
             // Sum for check that all email is register users
-            let sum = 0; result.forEach(r => {sum += r.value[0]["COUNT(*)"] });
+            let sum = 0; result.forEach(r => {sum += r.value['_count'] });
 
             // console.log(sum, result.length);
             if(sum !== result.length)
@@ -77,19 +67,15 @@ router.route('/invites')
             const queryArray = [];
             
             // Push student invitations if there are
-            for (const stud of students) {
-                queryArray.push(
-                    {queryMethod: addClassInvite, par: [stud, class_id]}
-                )
-            }
-
+            for (const stud of students)
+                queryArray.push(addClassInvite(stud, class_id))
+            
             // Send invite for class
-            return multiQuerysCaller(...queryArray) // Send dynamic querys
+            return Promise.allSettled(queryArray) // Send dynamic querys
         })
-        .then(() => {
-            res.sendStatus(200);    // You invieted students
-        })
+        .then(() => res.sendStatus(200)) // You invieted students
         .catch((err) => {
+            console.log(err);
             if(err === 400 || err === 403)res.sendStatus(err);    // Error in parameter
             else res.sendStatus(500); // Server error
         })
@@ -101,18 +87,12 @@ router.route('/invites')
         const user = AuthJWT.parseAuthorization(req.headers.authorization)
         const {email} = user;
 
-        // Indirect call 
-        multiQuerysCaller(
-            {queryMethod: getInvitedDataByFilter, par: [{email: [email]}]} 
-            // Array con un obj di filtri accompatiti per colonna
-        )
-        .then((result) => {
-            res.send(result[0].value)   // Send invites
-        })
-        .catch((err) => {
-            console.log(err);
-            res.sendStatus(500); // Server error
-        })
+        // Get own invited
+        Promise.allSettled([
+            getInvitedDataByFilter({email})
+        ])
+        .then((result) => res.send(result[0].value)) // Send invites
+        .catch(() => res.sendStatus(500)) // Server error
     })
 
 router.route('/invites/:id')
@@ -123,16 +103,10 @@ router.route('/invites/:id')
         const user = AuthJWT.parseAuthorization(req.headers.authorization)
         const {email} = user;
 
-        // Indirect call 
-        multiQuerysCaller(
-            {
-                queryMethod: getInvitedDataByFilter,
-                par: [{
-                        id :[id], 
-                        email:[email]
-                    }]
-            }
-        )
+        // Indirect call
+        Promise.allSettled([
+            getInvitedDataByFilter({id: +id, email})
+        ])
         .then((result) => {
             const class_id = result[0].value[0]?.id_class;
 
@@ -140,18 +114,14 @@ router.route('/invites/:id')
             if(class_id === undefined)
                 return res.sendStatus(400); // Error in parameter
 
-            // Accept 
-            return multiQuerysCaller(
-                {queryMethod: acceptInvitation, par: [class_id, email]},
-                {queryMethod: deleteInvitation, par: [id]}
-            ) 
+            // Accept
+            return Promise.allSettled([
+                acceptInvitation(class_id, email),
+                deleteInvitation(+id)
+            ])
         })
-        .then(() => {
-            res.sendStatus(200)   // Send ok
-        })
-        .catch(() => {
-            res.sendStatus(500); // Server error
-        })
+        .then(() => res.sendStatus(200)) // Send ok
+        .catch(() => res.sendStatus(500)) // Server error
     })
     
     // Reject invites
@@ -160,26 +130,21 @@ router.route('/invites/:id')
         const user = AuthJWT.parseAuthorization(req.headers.authorization)
         const {email} = user;
         
-        // Indirect call 
-        multiQuerysCaller(
-            {
-                queryMethod: getInvitedDataByFilter,
-                par: [{
-                        id : [id], 
-                        email: [email]
-                    }]
-            }
-        )
+        // Indirect call
+        Promise.allSettled([
+            getInvitedDataByFilter({id: +id, email})
+        ])
         .then((result) => {
+            console.log(result)
             
             // if invited exist 
             if(result[0].value[0] === undefined)
                 res.sendStatus(400); // Error in parameter
 
             // Reject
-            return multiQuerysCaller(
-                {queryMethod: deleteInvitation, par: [id]}
-            )
+            return Promise.allSettled([
+                deleteInvitation(+id)
+            ])
         })
         .then(() => res.sendStatus(200)) // ok
         .catch(() => res.sendStatus(500)) // Server Error
