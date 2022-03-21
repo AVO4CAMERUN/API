@@ -2,7 +2,9 @@
 
 const { createGET } = require('./query-generate.services')
 const prisma = require('@prisma/client')
-const pc = new prisma.PrismaClient()
+const pc = new prisma.PrismaClient({
+    log: ['query']
+})
 
 // Query for create class
 async function createClass(name, img) {
@@ -29,8 +31,8 @@ async function getClassDataByID (id) {
 }
 
 // Query for get user data by filter
-async function getClassDataByFilter(filterObj) { // modificare createGET con joinObj ----------------------------------------------
-    const obj = createGET('classes', ['id', 'name', 'img_cover', 'archived'], filterObj)
+async function getClassDataByFilter(filter) { // modificare createGET con joinObj ----------------------------------------------
+    const obj = createGET('classes', ['*'], filter)
     const { qf, select, where} = obj
     return await qf({ select, where })
 }

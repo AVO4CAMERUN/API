@@ -30,6 +30,17 @@ async function getUserDataByFilter(filterObj) {
     return await qf({ select, where })
 }
 
+// Query for get user data by filter
+async function getTeachersInClass(id_class) {
+    const response = await pc.prof_classes.findMany({
+        where: { id_class }
+    })
+    return response
+}
+/*include: {
+          author: true, // Return all fields
+        }, */
+
 // Query for update user by filter and option
 async function updateUserInfo(email, newData) {
     // hash password if exist
@@ -56,6 +67,7 @@ module.exports = {
     createAccount,
     isParameterRole,
     getUserDataByFilter,
+    getTeachersInClass,
     updateUserInfo,
     delateAccount
 };

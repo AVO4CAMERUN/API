@@ -9,9 +9,10 @@ const AuthJWT = require('../utils/Auth');
 const Utils = require('../utils/Utils');
 
 // Import DBservices and deconstruct function                    
-const { isParameterRole } = require('../DBservises/account.services');     // Accountservices 
-const { addClassInvite } = require('../DBservises/invites.services');      // Invitesservices
-const {  // Classservices
+const { isParameterRole } = require('../DBservises/account.services');     // Account services 
+const { addClassInvite } = require('../DBservises/invites.services');      // Invites services
+const { getUserDataByFilter, getTeachersInClass } = require('../DBservises/account.services');   // Account services
+const {  // Class services
     createClass, 
     addProfsClass, 
     getClassDataByFilter,
@@ -19,7 +20,8 @@ const {  // Classservices
     isParameterRoleInClass,
     updateClass,
     deleteClass
-} = require('../DBservises/classes.services');   
+} = require('../DBservises/classes.services');
+
 
 // Allocate obj
 const router = express.Router();    //Create router Object    
@@ -109,23 +111,43 @@ router.route('/classes')
         // console.log(req.query[key])      
 
         // Indirect call
-        Promise.allSettled([
-            getClassDataByFilter(req.query)
-        ])
-        .then((result) => {
-            // Take the DB answer 
-            let classesData = result[0].value;
+        let studentsQuery = [] 
+        let teachersQuery = []
+        let classes = []
+        
+        // 
+        const resolve = async (arrays) => {
+            //console.log(arrays)
+            let r = []
+            for (const query of arrays) {
+                r.push(await Promise.allSettled(query))
+            }
+            return r
+        }
 
-            // Convert img in base64
-            for (const classData of classesData) 
-                classData['img_cover'] = BlobConvert.blobToBase64(classData['img_cover']);
+        // Get classes
+        getClassDataByFilter(req.query)
+            .then((result) => {
+                classes = result    // save classes 
 
-            res.send(classesData);  // Responce 
-        })
-        .catch((err)=>{
-            console.log(err);
-            res.sendStatus(500); // Server error
-        })
+                // Convert img in base64 and query student
+                for (const c of classes) {
+                    c['img_cover'] = BlobConvert.blobToBase64(c['img_cover'])
+                    teachersQuery.push(getTeachersInClass(c.id))
+                    studentsQuery.push(getUserDataByFilter({id_class: c.id}))
+                }
+
+                return resolve([teachersQuery, studentsQuery]) // Take the DB answer
+            })
+            .then((result) => {
+                // Insert member in class data
+                classes.forEach((c, i) => {
+                    classes[i].teachers = result[0][i].value
+                    classes[i].students = result[1][i].value
+                })
+                res.send(classes)
+            })
+            .catch((err) => res.sendStatus(500))  // Server error
     })
 
 router.route('/classes/:id')
