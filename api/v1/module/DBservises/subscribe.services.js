@@ -20,10 +20,15 @@ async function getCoursesSubscriptionByFilter (filter) {
 }
 
 // Query to delete subscription
-async function delateSubscription (email, id_course) {  // qui ce iìun errorone non so quale sia
+async function deleteSubscription (email, id_course) {  // qui ce iìun errorone non so quale sia
     console.log(email, id_course)
     const response = await pc.courses_users.delete({
-        where: { id_course, email  }
+        where: { 
+            email_id_course: {
+                email,
+                id_course
+            } 
+        }
     })
     return response   
 }
@@ -32,5 +37,5 @@ async function delateSubscription (email, id_course) {  // qui ce iìun errorone
 module.exports = {
     subscription,
     getCoursesSubscriptionByFilter,
-    delateSubscription
+    deleteSubscription
 }

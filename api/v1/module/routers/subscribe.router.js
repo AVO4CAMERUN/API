@@ -11,7 +11,7 @@ const Utils = require('../utils/Utils');
 const { 
     subscription, 
     getCoursesSubscriptionByFilter,
-    delateSubscription
+    deleteSubscription
 } = require('../DBservises/subscribe.services'); // Courseservices
 
 const router = express.Router();    //Create router Object
@@ -71,7 +71,7 @@ router.route('/subscribe')
 
         // Delete subscription
         Promise.allSettled([
-            delateSubscription(email, id_course)
+            deleteSubscription(email, id_course)
         ])
         .then((response) => {
             console.log(response);
