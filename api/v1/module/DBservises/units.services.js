@@ -14,7 +14,7 @@ async function createUnit (name, description, id_course) {
 
 // Check if unit belong Course
 async function unitBelongCourse (id_course, id_unit) {
-    const response = await pc.classes.aggregate({
+    const response = await pc.units.aggregate({
         where: { id_unit, id_course },
         _count: true
     })
@@ -22,10 +22,10 @@ async function unitBelongCourse (id_course, id_unit) {
 }
 
 // Query for get units data by filter
-async function getUnitsDataByFilter (filter) {
+async function getUnitsDataByFilter (filter, include) {
     const obj = createGET('units', ['*'], filter)
     const { qf, select, where} = obj
-    return await qf({ select, where })
+    return await qf({ select, where, include})
 }
 
 // Query for update units by id and option

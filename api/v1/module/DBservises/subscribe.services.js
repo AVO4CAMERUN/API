@@ -21,7 +21,6 @@ async function getCoursesSubscriptionByFilter (filter) {
 
 // Query to delete subscription
 async function deleteSubscription (email, id_course) {  // qui ce iìun errorone non so quale sia
-    console.log(email, id_course)
     const response = await pc.courses_users.delete({
         where: { 
             email_id_course: {

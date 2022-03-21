@@ -71,7 +71,7 @@ model lessons {
   id_lesson     Int      @id @default(autoincrement())
   id_unit       Int
   name          String   @db.VarChar(50)
-  creation_date DateTime @db.Date
+  creation_date DateTime @db.Date @default(now())
   link_video    String   @db.VarChar(255)
   quiz          String   @db.Text
   units         units    @relation(fields: [id_unit], references: [id_unit], onDelete: Cascade, map: "lessons_ibfk_1")

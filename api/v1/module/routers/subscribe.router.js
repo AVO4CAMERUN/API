@@ -53,7 +53,7 @@ router.route('/subscribe')
         .then((response) => {
 
             if (response[0].value?.length <= 0) 
-                return res.send(404)
+                return res.sendStatus(404)
 
             res.send(response[0].value)
         }) // Send subscribtions data
