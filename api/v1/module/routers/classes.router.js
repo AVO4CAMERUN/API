@@ -134,7 +134,7 @@ router.route('/classes')
                 for (const c of classes) {
                     c['img_cover'] = BlobConvert.blobToBase64(c['img_cover'])
                     teachersQuery.push(getTeachersInClass(c.id))
-                    studentsQuery.push(getUserDataByFilter({id_class: c.id}))
+                    studentsQuery.push(getUserDataByFilter({id_class: c.id, role: 'STUDENT'}))
                 }
 
                 return resolve([teachersQuery, studentsQuery]) // Take the DB answer
