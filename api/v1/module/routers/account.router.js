@@ -17,20 +17,18 @@ const { // Accountservices
     getUserDataByFilter, 
     delateAccount, 
     createAccount
-} = require('../DBservises/account.services');              
+} = require('../DBservises/account.services');       
 
 // Allocate obj
 const router = express.Router();    // Create router Object
 router.use(bodyParser.json());      // Middleware for parse http req
 
 // Util Obj
-const CHARATERS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';                // Set for confirm token
-const mailSender = new MailSender(process.env.MAIL_services, process.env.MAIL_USER, process.env.MAIL_PASS);   // OBj for mails send
+const CHARATERS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'; // Set for confirm token
 
 // List for suspendedUsers --- model => {code: value, usermane: vaule, password: value role: value} 
 let suspendedUsers = [];               
 
-// Register and get all account
 router.route('/account')
 
     // Create new account
@@ -78,12 +76,15 @@ router.route('/account')
             }, 300000);  // 5 min 
             
             // All response
-            mailSender.send(email, code); // Send email to confirm account
+            MailSender.send(email, code); // Send email to confirm account
             console.log(code);
             res.sendStatus(200)
         })
         // .then(() =>  res.sendStatus(200))  // Ok
-        .catch(() => res.sendStatus(500))  // Server error
+        .catch((err) => {
+            console.log(err);
+            res.sendStatus(500)
+        })  // Server error
     })
     
     // Update user data 

@@ -25,7 +25,7 @@ async function isParameterRole(email, role) {
 
 // Query for get user data by filter
 async function getUserDataByFilter(filterObj) {
-    const obj = createGET('users', ['email', 'role', 'username', 'firstname', 'lastname', 'img_profile', 'id_class'], filterObj, 'OR')
+    const obj = createGET('users', ['email', 'role', 'username', 'firstname', 'lastname', 'img_profile', 'id_class', 'registration_date'], filterObj, 'OR')
     const { qf, select, where} = obj
     return await qf({ select, where })
 }
@@ -33,14 +33,18 @@ async function getUserDataByFilter(filterObj) {
 // Query for get user data by filter
 async function getTeachersInClass(id_class) {
     const response = await pc.prof_classes.findMany({
-        where: { id_class }
+        where: { id_class },
+        include: {
+            users: true
+        }   
     })
     return response
 }
-/*include: {
-          author: true, // Return all fields
-        }, */
+/*
+ 
+email: 'avogadro4camerun@gmail.com',
 
+*/
 // Query for update user by filter and option
 async function updateUserInfo(email, newData) {
     // hash password if exist

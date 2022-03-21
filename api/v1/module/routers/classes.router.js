@@ -110,7 +110,7 @@ router.route('/classes')
             
         // console.log(req.query[key])      
 
-        // Indirect call
+        //
         let studentsQuery = [] 
         let teachersQuery = []
         let classes = []
@@ -140,8 +140,18 @@ router.route('/classes')
                 return resolve([teachersQuery, studentsQuery]) // Take the DB answer
             })
             .then((result) => {
+                // console.log(result)
                 // Insert member in class data
                 classes.forEach((c, i) => {
+                    // console.log(result[0][i].value)
+                    for (let k = 0; k < result[0][i].value.length; k++) {
+                        console.log(result[0][i].value[k]);
+                        delete result[0][i].value[k].users.password  //
+                        delete result[0][i].value[k].users.role      //
+                        delete result[0][i].value[k].id_class        //
+                        const img = result[0][i].value[k].users.img_profile
+                        result[0][i].value[k].users.img_profile = BlobConvert.blobToBase64(img);
+                    }   // da aggiustare struttura levare users
                     classes[i].teachers = result[0][i].value
                     classes[i].students = result[1][i].value
                 })
