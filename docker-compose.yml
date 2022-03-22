@@ -9,7 +9,7 @@ services:
         depends_on:
           - mysql
         ports: 
-          - '80:80'
+          - '8082:80'
         environment:
           DB_USERNAME: $DB_USERNAME
           DB_PWD: $DB_PWD
@@ -35,4 +35,8 @@ services:
       container_name: mysql-container
       volumes: 
         - ./sql/avo4cam.sql:/docker-entrypoint-initdb.d/avo4cam.sql 
+networks:
+  default:
+    external:
+      name: avo4camerun-network
       
