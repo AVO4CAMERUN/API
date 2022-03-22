@@ -115,14 +115,31 @@ router.route('/classes')
         let teachersQuery = []
         let classes = []
         
-        // 
+        // Function for resolve multi query in array on array structure
         const resolve = async (arrays) => {
-            //console.log(arrays)
             let r = []
             for (const query of arrays) {
                 r.push(await Promise.allSettled(query))
             }
             return r
+        }
+
+        // Function for formatter teacher user data
+        const teacherFormatter = (teachers) => {
+            for (let k = 0; k < teachers.length; k++) {
+                // Delete usless data
+                delete teachers[k].users.password  //
+                delete teachers[k].users.role      //
+                delete teachers[k].id_class        //
+
+                // Flat obj in top levet
+                const obj = teachers[k].users
+                for (const key in obj) teachers[k][key] = obj[key];
+                delete teachers[k].users;
+
+                // Cast img
+                teachers[k].img_profile = BlobConvert.blobToBase64(teachers[k].img_profile);
+            }
         }
 
         // Get classes
@@ -140,24 +157,18 @@ router.route('/classes')
                 return resolve([teachersQuery, studentsQuery]) // Take the DB answer
             })
             .then((result) => {
-                // console.log(result)
                 // Insert member in class data
                 classes.forEach((c, i) => {
-                    // console.log(result[0][i].value)
-                    for (let k = 0; k < result[0][i].value.length; k++) {
-                        console.log(result[0][i].value[k]);
-                        delete result[0][i].value[k].users.password  //
-                        delete result[0][i].value[k].users.role      //
-                        delete result[0][i].value[k].id_class        //
-                        const img = result[0][i].value[k].users.img_profile
-                        result[0][i].value[k].users.img_profile = BlobConvert.blobToBase64(img);
-                    }   // da aggiustare struttura levare users
+                    teacherFormatter(result[0][i].value)    // Flat in top level
                     classes[i].teachers = result[0][i].value
                     classes[i].students = result[1][i].value
                 })
                 res.send(classes)
             })
-            .catch((err) => res.sendStatus(500))  // Server error
+            .catch((err) => {
+                console.log(err);
+                res.sendStatus(500)
+            })  // Server error
     })
 
 router.route('/classes/:id')
