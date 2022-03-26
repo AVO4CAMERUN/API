@@ -106,7 +106,8 @@ router.route('/account')
     })
 
     // Get user data 
-    .get((req, res) => { 
+    /*
+    .get(AuthJWT.authenticateJWT, (req, res) => { 
         // console.log(req.query)
         // Cast data for query
         for (const key of Object.keys(req.query)) 
@@ -123,7 +124,7 @@ router.route('/account')
 
             // Take the DB answer 
             const usersData = result[0].value;
-      
+    
             // Convert img in base64
             for (const user of usersData) 
                 user['img_profile'] = BlobConvert.blobToBase64(user['img_profile']);
@@ -132,7 +133,8 @@ router.route('/account')
             res.send(usersData)
         })
         .catch(() => res.sendStatus(500))  // Server error
-    })   
+    })
+    */
 
     // Delete account
     .delete(AuthJWT.authenticateJWT, (req, res) => {
@@ -140,11 +142,9 @@ router.route('/account')
         let {email} = user;
 
         // Delete account and account relaction
-        Promise.allSettled([ // non necessario controllo tanto ce auth
-            delateAccount(email)
-        ])
-        .then(() =>  res.sendStatus(200))  // Ok
-        .catch(() => res.sendStatus(500))  // Server error
+        delateAccount(email) // non necessario controllo tanto ce auth
+            .then(() =>  res.sendStatus(200))  // Ok
+            .catch(() => res.sendStatus(500))  // Server error
     })
 
 // Route cofirm code
@@ -163,20 +163,17 @@ router.get('/account/:confirmCode', (req, res) => {
     // Confirmed code
     if(!isThere) return res.sendStatus(401); // Unauthorized
 
-    const {name, surname, username, email, password} = suspendedUsers[index];
-
     // Create account
-    Promise.allSettled([
-        createAccount(name, surname, username, password, email, 'STUDENT')  // In first time all users are student = 01
-    ])
-    .then(() => {
-        suspendedUsers.filter(value => value !== suspendedUsers[index]);    // Remove in the suspendedUsers 
-        res.sendStatus(200) // Ok 
-    })
-    .catch((err) => {
-        console.log(err);
-        res.sendStatus(500)
-    })  // Server error
+    const {name, surname, username, email, password} = suspendedUsers[index];
+    createAccount(name, surname, username, password, email, 'STUDENT')  // In first time all users are student = 01
+        .then(() => {
+            suspendedUsers.filter(value => value !== suspendedUsers[index]);    // Remove in the suspendedUsers 
+            res.sendStatus(200) // Ok 
+        })
+        .catch((err) => {
+            console.log(err);
+            res.sendStatus(500)
+        })  // Server error
 })
 
 module.exports = router;
