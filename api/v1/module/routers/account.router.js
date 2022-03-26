@@ -105,33 +105,26 @@ router.route('/account')
             .catch(() => res.sendStatus(500))  // Server error)
     })
 
-    // Get user data  (da vedere perchè forse icapsuliamo il egt proprie info dentro in login)
+    // da discutere le restrizioni
+    // l'obitivo è farlo rimanere un po social 
+    //(da vedere perchè forse icapsuliamo il egt proprie info dentro in login)
+    // Get user data
     .get(AuthJWT.authenticateJWT, (req, res) => { 
-        // console.log(req.query)
         // Cast data for query
         for (const key of Object.keys(req.query)) 
             req.query[key] = Utils.strToArray(req.query[key])
-        
-        // console.log(req.query)
 
         // Get users data by filters
-        Promise.allSettled([
-            getUserDataByFilter(req.query)
-        ])
-        .then((result) => {
-            // console.log(result)
-
-            // Take the DB answer 
-            const usersData = result[0].value;
-    
-            // Convert img in base64
-            for (const user of usersData) 
-                user['img_profile'] = BlobConvert.blobToBase64(user['img_profile']);
-            
-            // Responce 
-            res.send(usersData)
-        })
-        .catch(() => res.sendStatus(500))  // Server error
+        getUserDataByFilter(req.query)
+            .then((usersData) => {
+                // Take the DB answer 
+                // Convert img in base64
+                for (const user of usersData) 
+                    user['img_profile'] = BlobConvert.blobToBase64(user['img_profile']);
+                
+                res.send(usersData) // Responce 
+            })
+            .catch(() => res.sendStatus(500))  // Server error
     })
 
     // Delete account
