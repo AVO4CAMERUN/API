@@ -105,8 +105,7 @@ router.route('/account')
             .catch(() => res.sendStatus(500))  // Server error)
     })
 
-    // Get user data 
-    /*
+    // Get user data  (da vedere perchè forse icapsuliamo il egt proprie info dentro in login)
     .get(AuthJWT.authenticateJWT, (req, res) => { 
         // console.log(req.query)
         // Cast data for query
@@ -134,7 +133,6 @@ router.route('/account')
         })
         .catch(() => res.sendStatus(500))  // Server error
     })
-    */
 
     // Delete account
     .delete(AuthJWT.authenticateJWT, (req, res) => {
