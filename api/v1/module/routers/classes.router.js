@@ -97,7 +97,10 @@ router.route('/classes')
         .catch((err) => {
             console.log(err)
             if(err === 400) res.sendStatus(400);    // Error in parameter
-            else res.sendStatus(500); // Server error
+            else {
+                res.sendStatus(500);
+                console.log(err);
+            }; // Server error
         })  
     })
 
