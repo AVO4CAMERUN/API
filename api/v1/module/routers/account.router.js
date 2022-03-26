@@ -100,11 +100,9 @@ router.route('/account')
             req.body.img_profile = `x'${BlobConvert.base64ToHex(req.body.img_profile)}'`
 
         // Update user info by request body
-        Promise.allSettled([
-            updateUserInfo(email, req.body)
-        ])
-        .then(() =>  res.sendStatus(200))  // Ok
-        .catch(() => res.sendStatus(500))  // Server error)
+        updateUserInfo(email, req.body)
+            .then(() =>  res.sendStatus(200))  // Ok
+            .catch(() => res.sendStatus(500))  // Server error)
     })
 
     // Get user data 

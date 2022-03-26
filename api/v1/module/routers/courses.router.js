@@ -35,21 +35,20 @@ router.route('/courses')
           
         if (role !== 'TEACHER')
             return res.sendStatus(403);    // You aren't a prof
-
-        Promise.allSettled([
-            createCourse(name, email, description, img_cover, subject) // Create courses and save id
-        ])
-        .then((result) => {
-            console.log(result);    // fare resittuire le cose dopoe le post e le put
-            res.sendStatus(200);    // You create a your new courses
-        })
-        .catch((err) => {
-            res.sendStatus(500); // Server error
-        })
+        
+        createCourse(name, email, description, img_cover, subject) // Create courses and save id
+            .then((result) => {
+                console.log(result);
+                res.sendStatus(200);    // You create a your new courses
+            })
+            .catch((err) => {
+                res.sendStatus(500); // Server error
+            })
     })
 
     // Get courses data by filter
-    .get((req, res) => {
+    .get(AuthJWT.authenticateJWT, (req, res) => {
+
         // Cast data for query
         for (const key of Object.keys(req.query)) 
             req.query[key] = Utils.strToArray(req.query[key])

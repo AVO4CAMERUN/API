@@ -48,7 +48,7 @@ router.route('/units')
     })
 
     // Get units data by filter (id corso)  // solo se sei iscritto -- cosa marginale
-    .get((req, res) => {
+    .get(AuthJWT.authenticateJWT, (req, res) => {
 
         // Cast data for query
         for (const key of Object.keys(req.query)) 

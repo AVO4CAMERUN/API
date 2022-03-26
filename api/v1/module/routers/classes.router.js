@@ -16,7 +16,6 @@ const {  // Class services
     createClass, 
     addProfsClass, 
     getClassDataByFilter,
-    getClassDataByID, 
     isParameterRoleInClass,
     updateClass,
     deleteClass
@@ -104,9 +103,8 @@ router.route('/classes')
         })  
     })
 
-    // Get class data by filter     // => da fare join per i prof e i studs 
+    // Get class data by filter
     .get((req, res) => {
-     
         // Cast data for query
         for (const key of Object.keys(req.query)) 
             req.query[key] = Utils.strToArray(req.query[key])
@@ -173,32 +171,6 @@ router.route('/classes')
     })
 
 router.route('/classes/:id')
-
-    // Get class data by id
-    .get((req, res) => {
-        const id = req.params.id;
-
-        // Indirect call
-        Promise.allSettled([
-            getClassDataByID(+id)
-        ])
-        .then((result) => {
-            // Take the DB answer 
-            let classData = result[0].value;
-
-            // Convert img in base64
-            if (result[0].value) {
-                classData['img_cover'] = BlobConvert.blobToBase64(classData['img_cover']);
-                res.send(classData)
-            } else {
-                res.sendStatus(404) // Not found
-            }
-        })
-        .catch((err) => {
-            console.log(err);
-            res.sendStatus(500)
-        })  // Server error
-    })
     
     // Update class data by id
     .put(AuthJWT.authenticateJWT, (req, res) =>{
@@ -213,25 +185,20 @@ router.route('/classes/:id')
             img_cover = BlobConvert.base64ToBlob(img_cover)
 
         //console.log(req.body)
-        Promise.allSettled([
-            isParameterRoleInClass(email, +id, 'TUTOR')
-        ])
-        .then((result) => {
-            // Check if you are the tutur of class
-            if(result[0]?.value['_count'] == 0)
-                return Promise.reject(403);    // You aren't the tutor    
-            
-            // if you are a tutor commit query for change class data
-            return Promise.allSettled([
-                updateClass(+id, req.body)
-            ])  
-        })
-        .then(() => res.sendStatus(200))  // Ok
-        .catch((err) => {
-            console.log(err);
-            if(err === 400 || err === 403) res.sendStatus(err) // Error in parameter
-            else res.sendStatus(500) // Server error
-        })
+        isParameterRoleInClass(email, +id, 'TUTOR')
+            .then((result) => {
+                // Check if you are the tutur of class
+                if(result['_count'] !== 0)
+                    return Promise.reject(403);    // You aren't the tutor    
+                
+                // if you are a tutor commit query for change class data
+                return updateClass(+id, req.body)
+            })
+            .then(() => res.sendStatus(200))  // Ok
+            .catch((err) => {
+                if(err === 400 || err === 403) res.sendStatus(err) // Error in parameter
+                else res.sendStatus(500) // Server error
+            })
     })
 
     // Delete class by id
@@ -243,24 +210,22 @@ router.route('/classes/:id')
         if (role !== 'TEACHER') 
             return res.sendStatus(403)
 
-        Promise.allSettled([
-            isParameterRoleInClass(email, +id, 'TUTOR')
-        ])
-        .then((result) => {
-            // Check if you are the tutur of class
-            if(result[0]?.value['_count'] !== 1)
-                return Promise.reject(403); // Forbidden
-                
-            // if you are a tutor commit query for delete class
-            return Promise.allSettled([
-                deleteClass(id)
-            ])
-        })
-        .then(() =>  res.sendStatus(200))  // You changed a class data
-        .catch((err) => {
-            if (err === 400 || err === 403) res.sendStatus(err);    // Error in parameter
-            else res.sendStatus(500); // Server error
-        })
+        // Check if this class is own
+        isParameterRoleInClass(email, +id, 'TUTOR')
+            .then((result) => {
+                console.log();
+                // Check if you are the tutur of class
+                if(result['_count'] !== 1)
+                    return Promise.reject(403); // Forbidden
+                    
+                // if you are a tutor commit query for delete class
+                return deleteClass(id)
+            })
+            .then(() =>  res.sendStatus(200))  // You changed a class data
+            .catch((err) => {
+                if (err === 400 || err === 403) res.sendStatus(err);    // Error in parameter
+                else res.sendStatus(500); // Server error
+            })
     })
 
 module.exports = router

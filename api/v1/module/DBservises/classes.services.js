@@ -2,9 +2,8 @@
 
 const { createGET } = require('./query-generate.services')
 const prisma = require('@prisma/client')
-const pc = new prisma.PrismaClient({
-    log: ['query']
-})
+const pc = new prisma.PrismaClient()
+// { log: ['query'] }
 
 // Query for create class
 async function createClass(name, img) {

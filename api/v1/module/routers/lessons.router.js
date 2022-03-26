@@ -57,7 +57,7 @@ router.route('/lessons')
     })
 
     // Get courses data by filter
-    .get((req, res) => {
+    .get(AuthJWT.authenticateJWT, (req, res) => {
         // Cast data for query
         for (const key of Object.keys(req.query)) 
             req.query[key] = Utils.strToArray(req.query[key])

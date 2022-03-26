@@ -41,23 +41,21 @@ router.route('/subscribe')
     })
 
     // Get subscribe by filter
-    .get((req, res) => {
+    .get(AuthJWT.authenticateJWT, (req, res) => {
 
         // Cast data for query
         for (const key of Object.keys(req.query)) 
             req.query[key] = Utils.strToArray(req.query[key])
 
-        Promise.allSettled([
-            getCoursesSubscriptionByFilter(req.query)
-        ])
-        .then((response) => {
+        getCoursesSubscriptionByFilter(req.query)
+            .then((response) => {
+                if (response.length <= 0) 
+                    return res.sendStatus(404)
 
-            if (response[0].value?.length <= 0) 
-                return res.sendStatus(404)
-
-            res.send(response[0].value)
-        }) // Send subscribtions data
-        .catch(() => res.sendStatus(500)) // Server error
+                // Send subscribtions data
+                res.send(response)
+            }) 
+            .catch(() => res.sendStatus(500)) // Server error
     })
     
     // Delete subscribe to course by id
