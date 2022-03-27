@@ -5,10 +5,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 // Utils servises
-const BlobConvert = require('../utils/BlobConvert');
-const MailSender = require('../utils/MailSender');
-const AuthJWT = require('../utils/Auth');
-const Utils = require('../utils/Utils');
+const BlobConvert = require('../Utils/BlobConvert');
+const MailSender = require('../Utils/MailSender');
+const AuthJWT = require('../Utils/Auth');
+const Utils = require('../Utils/Utils');
+const ErrorManagment = require('../Utils/DBErrorManagment');
 
 // Import DBservices and deconstruct function
 const {isRegistred, isFreeUsername} = require('../DBservises/login.services');   //Loginservices;                          

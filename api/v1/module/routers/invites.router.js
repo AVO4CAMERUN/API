@@ -2,7 +2,7 @@
 
 // Dependences
 const express = require('express');
-const AuthJWT = require('../utils/Auth');
+const AuthJWT = require('../Utils/Auth');
 
 // Import DBservices and deconstruct function
 const {isParameterRole} = require('../DBservises/account.services');     // Accountservices
