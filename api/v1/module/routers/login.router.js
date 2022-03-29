@@ -49,7 +49,10 @@ router.route('/login')
             // Send json with tokens
             res.json({accessToken, refreshToken});
         })
-        .catch(() => res.sendStatus(500))  // Server error
+        .catch(() => {
+            errorManagment('login', err) 
+            res.sendStatus(500)
+        })  // Server error
     })
 
     //Update session 

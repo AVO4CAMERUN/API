@@ -75,10 +75,10 @@ router.route('/invites')
         })
         .then(() => res.sendStatus(200)) // You invieted students
         .catch((err) => {
-            console.log(err);
-            if(err === 400 || err === 403)res.sendStatus(err);    // Error in parameter
-            else res.sendStatus(500); // Server error
-        })
+            errorManagment('invites', err)
+            if(err === 400 || err === 403) res.sendStatus(err)    // Error in parameter
+            else res.sendStatus(500) // Server error
+        }) // Server error
         
     })
 
@@ -92,7 +92,10 @@ router.route('/invites')
             getInvitedDataByFilter({email})
         ])
         .then((result) => res.send(result[0].value)) // Send invites
-        .catch(() => res.sendStatus(500)) // Server error
+        .catch((err) => {
+            errorManagment('invites', err)
+            res.sendStatus(500)
+        }) // Server error
     })
 
 router.route('/invites/:id')
@@ -121,7 +124,10 @@ router.route('/invites/:id')
             ])
         })
         .then(() => res.sendStatus(200)) // Send ok
-        .catch(() => res.sendStatus(500)) // Server error
+        .catch((err) => {
+            errorManagment('invites', err)
+            res.sendStatus(500)
+        }) // Server error
     })
     
     // Reject invites
@@ -147,7 +153,10 @@ router.route('/invites/:id')
             ])
         })
         .then(() => res.sendStatus(200)) // ok
-        .catch(() => res.sendStatus(500)) // Server Error
+        .catch((err) => {
+            errorManagment('invites', err)
+            res.sendStatus(500)
+        }) // Server error
     })
 
 module.exports = router

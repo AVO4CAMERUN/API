@@ -52,7 +52,10 @@ router.route('/lessons')
             .catch((err) => {
                 if (err === 400 || err === 403) res.sendStatus(err)  // Error in parameter
                 else if (err.code === 'P2002') res.sendStatus(400)
-                else res.sendStatus(500) // Server error
+                else { 
+                    errorManagment('lessons', err)
+                    res.sendStatus(500) // Server error
+                }
             })
     })
 
@@ -65,7 +68,10 @@ router.route('/lessons')
         // Query
         getLessonsDataByFilter(req.query)
             .then((response) => res.send(response))  // Send lessons data
-            .catch(() => res.sendStatus(500))        // Server error
+            .catch(() => {
+                errorManagment('lessons', err)
+                res.sendStatus(500)
+            })  // Server error
     })
 
 router.route('/lessons/:id')
@@ -114,7 +120,10 @@ router.route('/lessons/:id')
             .then(() => res.sendStatus(200))    // Ok
             .catch((err) => {
                 if(err === 400 || err === 403)res.sendStatus(err) // Error in parameter
-                else res.sendStatus(500) // Server error
+                else {
+                    errorManagment('lessons', err)
+                    res.sendStatus(500)
+                } // Server error
             })
     })
 
@@ -160,9 +169,11 @@ router.route('/lessons/:id')
             })
             .then(() => res.sendStatus(200)) // ok
             .catch((err) => {
-                console.log(err)
                 if(err === 400 || err === 403) res.sendStatus(err)  // Error in parameter
-                else res.sendStatus(500)                            // Server error
+                else {
+                    errorManagment('lessons', err) 
+                    res.sendStatus(500)
+                } // Server error
             })
     })
 

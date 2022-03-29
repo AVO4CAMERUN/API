@@ -7,6 +7,7 @@ const express = require('express');
 const BlobConvert = require('../utils/BlobConvert');
 const AuthJWT = require('../utils/Auth');
 const Utils = require('../utils/Utils');
+const { errorManagment } = require('../Utils/DBErrorManagment');
 
 // Import DBservices and deconstruct function                    
 const { isParameterRole } = require('../DBservises/account.services');     // Account services 
@@ -54,53 +55,48 @@ router.route('/classes')
 
         // Send dynamic querys
         Promise.allSettled(checkQuerys)
-        .then((result) => {
-            console.log(result)
-            
-            // Sum for check that only email is register users
-            let sum = 0; result.forEach(r => {sum += r.value[0]['_count'] });
+            .then((result) => {
+                // Sum for check that only email is register users
+                let sum = 0; result.forEach(r => {sum += r.value[0]['_count'] });
 
-            // somma di result
-            if(sum !== checkQuerys.length)
-                return Promise.reject(400)
+                // somma di result
+                if(sum !== checkQuerys.length)
+                    return Promise.reject(400)
 
-            return Promise.allSettled([
-                createClass(name, img_cover) // Create class and save id
-            ])       
-        })
-        .then((result) => {
-            const id = result[0].value.id; // id class
+                return Promise.allSettled([
+                    createClass(name, img_cover) // Create class and save id
+                ])       
+            })
+            .then((result) => {
+                const id = result[0].value.id; // id class
 
-            // Query array for add profs
-            const queryArray = [];
-            
-            // Push tutor
-            queryArray.push(addProfsClass(email, id, 'TUTOR'))
+                // Query array for add profs
+                const queryArray = [];
+                
+                // Push tutor
+                queryArray.push(addProfsClass(email, id, 'TUTOR'))
 
-            // Push others prof if there are
-            if(Array.isArray(profs)) {
-                for (const prof of profs)  // controllare se sono prof 
-                    queryArray.push(addProfsClass(prof, id, 'NORMAL'))
-            }
-            
-            // Push student invitations if there are
-            if (Array.isArray(students)) {
-                for (const stud of students)
-                    queryArray.push(addClassInvite(stud, id))  
-            }
+                // Push others prof if there are
+                if(Array.isArray(profs)) {
+                    for (const prof of profs)  // controllare se sono prof 
+                        queryArray.push(addProfsClass(prof, id, 'NORMAL'))
+                }
+                
+                // Push student invitations if there are
+                if (Array.isArray(students)) {
+                    for (const stud of students)
+                        queryArray.push(addClassInvite(stud, id))  
+                }
 
-            // Add relation in the class (start up student and profs) if there are
-            return Promise.allSettled(queryArray) // Send dynamic querys               
-        })
-        .then(() => res.sendStatus(200)) // You create a your new class 
-        .catch((err) => {
-            console.log(err)
-            if(err === 400) res.sendStatus(400);    // Error in parameter
-            else {
-                res.sendStatus(500);
-                console.log(err);
-            }; // Server error
-        })  
+                // Add relation in the class (start up student and profs) if there are
+                return Promise.allSettled(queryArray) // Send dynamic querys               
+            })
+            .then(() => res.sendStatus(200)) // You create a your new class 
+            .catch((err) => {
+                errorManagment('classes', err)
+                if(err === 400) res.sendStatus(400) // Error in parameter
+                else res.sendStatus(500)
+            }) // Server error
     })
 
     // Get class data by filter
@@ -165,9 +161,9 @@ router.route('/classes')
                 res.send(classes)
             })
             .catch((err) => {
-                console.log(err);
+                errorManagment('classes', err)
                 res.sendStatus(500)
-            })  // Server error
+            }) // Server error
     })
 
 router.route('/classes/:id')
@@ -196,9 +192,10 @@ router.route('/classes/:id')
             })
             .then(() => res.sendStatus(200))  // Ok
             .catch((err) => {
+                errorManagment('classes', err)
                 if(err === 400 || err === 403) res.sendStatus(err) // Error in parameter
                 else res.sendStatus(500) // Server error
-            })
+            }) // Server error
     })
 
     // Delete class by id
@@ -213,7 +210,6 @@ router.route('/classes/:id')
         // Check if this class is own
         isParameterRoleInClass(email, +id, 'TUTOR')
             .then((result) => {
-                console.log();
                 // Check if you are the tutur of class
                 if(result['_count'] !== 1)
                     return Promise.reject(403); // Forbidden
@@ -223,9 +219,10 @@ router.route('/classes/:id')
             })
             .then(() =>  res.sendStatus(200))  // You changed a class data
             .catch((err) => {
-                if (err === 400 || err === 403) res.sendStatus(err);    // Error in parameter
-                else res.sendStatus(500); // Server error
-            })
+                errorManagment('classes', err)
+                if(err === 400 || err === 403) res.sendStatus(err) // Error in parameter
+                else res.sendStatus(500) // Server error
+            }) // Server error
     })
 
 module.exports = router

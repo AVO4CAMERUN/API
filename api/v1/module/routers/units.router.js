@@ -43,7 +43,10 @@ router.route('/units')
             .then(() => res.sendStatus(200)) // Ok
             .catch((err) => {
                 if(err === 400 || err === 403) res.sendStatus(err)  // Error in parameter
-                else res.sendStatus(500) // Server error
+                else {
+                    errorManagment('units', err) 
+                    res.sendStatus(500) 
+                } // Server error
             })
     })
 
@@ -57,7 +60,10 @@ router.route('/units')
         //
         getUnitsDataByFilter(req.query, {lessons: true})
             .then((response) => res.send(response)) // Send units data
-            .catch((err) => res.sendStatus(500))    // Server error
+            .catch((err) => {
+                errorManagment('units', err) 
+                res.sendStatus(500)
+            })  // Server error
     })
 
 router.route('/units/:id')
@@ -96,9 +102,11 @@ router.route('/units/:id')
             })
             .then(() => res.sendStatus(200))
             .catch((err) => {
-                console.log(err);
                 if(err === 400 || err === 403) res.sendStatus(err);    // Error in parameter
-                else res.sendStatus(500); // Server error
+                else {
+                    errorManagment('units', err)  
+                    res.sendStatus(500); 
+                } // Server error
             })
     })
 
@@ -132,7 +140,10 @@ router.route('/units/:id')
             .then(() => res.sendStatus(200))
             .catch((err) => {
                 if(err === 400 || err === 403) res.sendStatus(err);    // Error in parameter
-                else res.sendStatus(500); // Server error
+                else {
+                    errorManagment('units', err)  
+                    res.sendStatus(500);
+                } // Server error
             })
     })
 

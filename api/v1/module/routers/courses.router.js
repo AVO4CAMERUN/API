@@ -42,8 +42,9 @@ router.route('/courses')
                 res.sendStatus(200);    // You create a your new courses
             })
             .catch((err) => {
-                res.sendStatus(500); // Server error
-            })
+                errorManagment('courses', err)
+                res.sendStatus(500) // Server error
+            }) // Server error
     })
 
     // Get courses data by filter
@@ -68,7 +69,10 @@ router.route('/courses')
 
             res.send(courses); // Send courses data   
         })
-        .catch(() => res.sendStatus(500))// Server error
+        .catch((err) => {
+            errorManagment('courses', err)
+            res.sendStatus(500)
+        }) // Server error
     })
 
 router.route('/courses/:id')
@@ -101,13 +105,12 @@ router.route('/courses/:id')
                 updateCourses(+id_course, req.body)
             ])   
         })
-        .then((result) => {
-            res.sendStatus(200);
-        })
+        .then((result) => res.sendStatus(200))
         .catch((err) => {
+            errorManagment('courses', err)
             if(err === 400 || err === 403) res.sendStatus(err)    // Error in parameter
             else res.sendStatus(500) // Server error
-        })
+        }) // Server error
     })
 
     // Delete courses by id
@@ -135,9 +138,10 @@ router.route('/courses/:id')
         })
         .then(() => res.sendStatus(200))
         .catch((err) => {
-            if(err === 400 || err === 403) res.sendStatus(err);    // Error in parameter
-            else res.sendStatus(500); // Server error
-        })
+            errorManagment('courses', err)
+            if(err === 400 || err === 403) res.sendStatus(err)    // Error in parameter
+            else res.sendStatus(500) // Server error
+        }) // Server error
     })
 
 module.exports = router

@@ -9,7 +9,7 @@ const BlobConvert = require('../Utils/BlobConvert');
 const MailSender = require('../Utils/MailSender');
 const AuthJWT = require('../Utils/Auth');
 const Utils = require('../Utils/Utils');
-const ErrorManagment = require('../Utils/DBErrorManagment');
+const { errorManagment } = require('../Utils/DBErrorManagment');
 
 // Import DBservices and deconstruct function
 const {isRegistred, isFreeUsername} = require('../DBservises/login.services');   //Loginservices;                          
@@ -79,13 +79,12 @@ router.route('/account')
             // All response
             MailSender.send(email, code); // Send email to confirm account
             console.log(code);
-            res.sendStatus(200)
         })
-        // .then(() =>  res.sendStatus(200))  // Ok
+        .then(() =>  res.sendStatus(200))  // Ok
         .catch((err) => {
-            console.log(err);
+            errorManagment('account', err)
             res.sendStatus(500)
-        })  // Server error
+        }) // Server error
     })
     
     // Update user data 
@@ -103,7 +102,10 @@ router.route('/account')
         // Update user info by request body
         updateUserInfo(email, req.body)
             .then(() =>  res.sendStatus(200))  // Ok
-            .catch(() => res.sendStatus(500))  // Server error)
+            .catch((err) => {
+                errorManagment('account', err)
+                res.sendStatus(500)
+            }) // Server error
     })
 
     // da discutere le restrizioni
@@ -123,9 +125,12 @@ router.route('/account')
                 for (const user of usersData) 
                     user['img_profile'] = BlobConvert.blobToBase64(user['img_profile']);
                 
-                res.send(usersData) // Responce 
+                res.send(usersData) // Response 
             })
-            .catch(() => res.sendStatus(500))  // Server error
+            .catch((err) => {
+                errorManagment('account', err)
+                res.sendStatus(500)
+            })  // Server error
     })
 
     // Delete account
@@ -136,7 +141,10 @@ router.route('/account')
         // Delete account and account relaction
         delateAccount(email) // non necessario controllo tanto ce auth
             .then(() =>  res.sendStatus(200))  // Ok
-            .catch(() => res.sendStatus(500))  // Server error
+            .catch((err) => {
+                errorManagment('account', err)
+                res.sendStatus(500)
+            }) // Server error
     })
 
 // Route cofirm code
@@ -163,9 +171,9 @@ router.get('/account/:confirmCode', (req, res) => {
             res.sendStatus(200) // Ok 
         })
         .catch((err) => {
-            console.log(err);
+            errorManagment('account', err)
             res.sendStatus(500)
-        })  // Server error
+        }) // Server error
 })
 
 module.exports = router;

@@ -18,11 +18,11 @@ const transporter = nodemailer.createTransport({
 });
 
 // Email sending Method
-function send(recipient, confirmCode) {
+function send(email, confirmCode) {
 
     const mailOptions = {
         from: transporter.user,
-        to: recipient,
+        to: email,
         subject: 'Sending Email using Node.js', //title
         html: `<b>http://${"127.0.0.1"}/api/v1/account/${confirmCode}</b>` //html email CAMBIARE LINK IN PAGINA CHE USA API
     }
