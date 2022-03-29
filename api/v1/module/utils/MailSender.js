@@ -8,20 +8,25 @@ const user = process.env.MAIL_USER
 const pass = process.env.MAIL_PASS
 // const htmlstream = fs.createReadStream("content.html");
 
-// console.log(services, user, pass);
+let poolConfig = `smtps://${user}:${pass}@smtp.gmail.com/?pool=true`;
 
+const transporter = nodemailer.createTransport(poolConfig)
+/*
 const transporter = nodemailer.createTransport({
     services,
     port: 587,
-    secure: true, // use SSL
+    secure: false, // use SSL
     auth: { user, pass }
 });
+*/
+// console.log(services, user, pass);
+// console.log(transporter)
 
 // Email sending Method
 function send(email, confirmCode) {
-
+    
     const mailOptions = {
-        from: transporter.user,
+        from: transporter.options.auth.user,
         to: email,
         subject: 'Sending Email using Node.js', //title
         html: `<b>http://${"127.0.0.1"}/api/v1/account/${confirmCode}</b>` //html email CAMBIARE LINK IN PAGINA CHE USA API
@@ -34,6 +39,5 @@ function send(email, confirmCode) {
 
 // Export functions
 module.exports = {
-    send,
-    services
+    send
 };
