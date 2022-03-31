@@ -9,7 +9,8 @@ const env = require('dotenv').config()
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerDocument = require('./Swagger/swagger.json');
-
+// https://www.npmjs.com/package/swagger-jsdoc
+// https://www.npmjs.com/package/swagger-ui-express
 const options = {
     swaggerOptions: {
       validatorUrl: null
