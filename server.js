@@ -1,14 +1,27 @@
 // Main server file 
 
 // Standard module import
-const express = require('express');
+const express = require('express')
 const cors = require('cors')
+const env = require('dotenv').config()
 
-require('dotenv').config();
+// Module for automatic doc
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerDocument = require('./Swagger/swagger.json');
 
+const options = {
+    swaggerOptions: {
+      validatorUrl: null
+    }
+};
+
+  
 // Create requets rooter
 const app = express();
 app.use(cors())
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options));
+
 
 // Personal module import
 const v1 = require('./api/v1/v1');
