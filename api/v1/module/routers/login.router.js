@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 
 // Utils servises
 const AuthJWT = require('../utils/Auth'); 
+const { errorManagment } = require('../Utils/DBErrorManagment');
 
 // Import DBservices and deconstruct function
 const {  // Loginservices
@@ -49,7 +50,7 @@ router.route('/login')
             // Send json with tokens
             res.json({accessToken, refreshToken});
         })
-        .catch(() => {
+        .catch((err) => {
             errorManagment('login', err) 
             res.sendStatus(500)
         })  // Server error

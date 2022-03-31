@@ -51,7 +51,7 @@ router.route('/account')
             // Result async query to check
             if(result[0]?.value['_count'] > 0 || result[1]?.value['_count'])
                 return res.sendStatus(403); // Forbidden --> hai gia profilo
-            
+
             // Generate confirm code
             let code = '', unique = true;
             do{
@@ -77,10 +77,12 @@ router.route('/account')
             }, 300000);  // 5 min 
             
             // All response
-            MailSender.send(email, code); // Send email to confirm account
-            console.log(code);
+            // MailSender.send(email, code); // Send email to confirm account
+            // console.log(code);
         })
-        .then(() =>  res.sendStatus(200))  // Ok
+        .then(() =>  {
+            // res.sendStatus(200) //Questo da errore sulla registrazione
+        })  // Ok
         .catch((err) => {
             errorManagment('account', err)
             res.sendStatus(500)

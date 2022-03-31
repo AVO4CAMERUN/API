@@ -6,6 +6,7 @@ const express = require('express');
 // Utils servises
 const AuthJWT = require('../utils/Auth');
 const Utils = require('../utils/Utils');
+const { errorManagment } = require('../Utils/DBErrorManagment');
 
 // Import DBservices and deconstruct function    
 const { isCourseCreator } = require('../DBservises/courses.services');   // Coursesservices
