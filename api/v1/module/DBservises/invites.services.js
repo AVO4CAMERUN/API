@@ -1,8 +1,6 @@
 // Invites DB services modules
 
-const { createGET } = require('./query-generate.services')
-const prisma = require('@prisma/client')
-const pc = new prisma.PrismaClient()
+const { createGET, pc } = require('./query-generate.services'); 
 
 // Query for add invite for join class 
 async function addClassInvite (email, id_class) {
@@ -14,14 +12,14 @@ async function addClassInvite (email, id_class) {
 
 // Query for get invite data by filter
 async function getInvitedDataByFilter (filter) {
-    const obj = createGET('invitations', ['*'], filter)
+    const obj = createGET('invitation', ['*'], filter)
     const { qf, where} = obj
     return await qf({ where })
 }
 
 // Accept invitations
 async function acceptInvitation (id, email) {
-    const response = await pc.users.update({
+    const response = await pc.user.update({
         where: { email },
         data: { id_class: id }
     })
@@ -30,7 +28,7 @@ async function acceptInvitation (id, email) {
 
 // Delete invitations by id
 async function deleteInvitation (id) {
-    const response = await pc.invitations.delete({
+    const response = await pc.invitation.delete({
         where: { id }
     })
     return response

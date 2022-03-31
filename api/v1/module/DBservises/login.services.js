@@ -1,12 +1,11 @@
 // Login DB services modules
 
 const sha256 = require('js-sha256');
-const prisma = require('@prisma/client')
-const pc = new prisma.PrismaClient()
+const { pc } = require('./query-generate.services'); 
 
 // Check username and password (Auth) 
 async function checkUsernamePassword(username, password){
-    const response = await pc.users.aggregate({
+    const response = await pc.user.aggregate({
         where: { 
             username,
             password: sha256(password)
@@ -18,7 +17,7 @@ async function checkUsernamePassword(username, password){
 
 // Get info for tokens    --// omologare a filtro by username
 async function getUserInfoByUsername(username){
-    const response = await pc.users.findUnique({
+    const response = await pc.user.findUnique({
         where: { username }
     })
     return response
@@ -28,7 +27,7 @@ async function getUserInfoByUsername(username){
 
 // Check registerd method  
 async function isRegistred(email){
-    const response = await pc.users.aggregate({
+    const response = await pc.user.aggregate({
         where: { email },
         _count: true
     })
@@ -37,7 +36,7 @@ async function isRegistred(email){
 
 // Check free user  
 async function isFreeUsername(username){
-    const response = await pc.users.aggregate({
+    const response = await pc.user.aggregate({
         where: { username },
         _count: true
     })

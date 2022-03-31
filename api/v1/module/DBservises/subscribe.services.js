@@ -1,8 +1,6 @@
 // Subscribe DB services modules
 
-const { createGET } = require('./query-generate.services')
-const prisma = require('@prisma/client')
-const pc = new prisma.PrismaClient()
+const { createGET, pc } = require('./query-generate.services'); 
 
 // Query to subscription
 async function subscription (email, id_course) {

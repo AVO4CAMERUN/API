@@ -44,6 +44,7 @@ function createGET(table, selectField, filter, opLogic = ''){ // SERVE gestore
 
 // Export functions
 module.exports = {
+    pc,
     createGET
 };
 

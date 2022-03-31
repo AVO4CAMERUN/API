@@ -51,6 +51,7 @@ router.route('/login')
             res.json({accessToken, refreshToken});
         })
         .catch((err) => {
+            console.log(err);
             errorManagment('login', err) 
             res.sendStatus(500)
         })  // Server error

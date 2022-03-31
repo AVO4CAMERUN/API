@@ -1,12 +1,10 @@
 // Courses DB services modules
 
-const { createGET } = require('./query-generate.services')
-const prisma = require('@prisma/client')
-const pc = new prisma.PrismaClient()
+const { createGET, pc } = require('./query-generate.services'); 
 
 // Query for create course
 async function createCourse(name, email_creator, description, img_cover = '', subject){
-    const response = await pc.courses.create({
+    const response = await pc.course.create({
         data: { name, email_creator, description, img_cover, subject }
     })
     return response
@@ -14,14 +12,14 @@ async function createCourse(name, email_creator, description, img_cover = '', su
 
 // Query for get courses data by filter
 async function getCoursesDataByFilter(filterObj) {
-    const obj = createGET('courses', ['*'], filterObj)
+    const obj = createGET('course', ['*'], filterObj)
     const { qf, where} = obj
     return await qf({ where })
 }
 
 // Query for update course by id and option
 async function updateCourses(id_course, newData){
-    const response = await pc.courses.update({
+    const response = await pc.course.update({
         where: { id_course },
         data: { ...newData }
     })
@@ -30,7 +28,7 @@ async function updateCourses(id_course, newData){
 
 // Check if the prof is a creator
 async function isCourseCreator(email_creator, id_course) {
-    const response = await pc.courses.aggregate({
+    const response = await pc.course.aggregate({
         where: { email_creator, id_course },
         _count: true
     })
@@ -39,7 +37,7 @@ async function isCourseCreator(email_creator, id_course) {
 
 // Query for delete course
 async function delateCourse(id_course) {
-    const response = await pc.courses.delete({
+    const response = await pc.course.delete({
         where: { id_course }
     })
     return response
