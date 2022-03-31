@@ -40,14 +40,31 @@ function errorManagment(routername, error) {
         Prisma.PrismaClientInitializationError,
         Prisma.PrismaClientValidationError
     ]
+
     // Add error log
-    for (const obj of errClasses) 
-        if (error instanceof obj) 
+    let flag = false
+    for (const obj of errClasses) {
+        if (error instanceof obj) {
             logger.log({
                 level: 'error',
                 routername,
                 message: new obj()[Symbol.toStringTag]
             })
+            flag = false
+        } else {
+            flag = true
+        }
+        
+    }
+
+    // if 
+    if (flag) {
+        logger.log({
+            level: 'error',
+            routername,
+            message: 'undefined error'
+        })
+    }
 }
 
 // Export functions 
