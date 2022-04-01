@@ -82,7 +82,6 @@ router.route('/login')
 
         AuthJWT.refreshTokens = AuthJWT.refreshTokens.filter(value => value !== token); //Delete token for logout
         res.sendStatus(200);  // Ok Logout successful"
-       
     })
     
 module.exports = router;

@@ -10,6 +10,7 @@ const MailSender = require('../Utils/MailSender');
 const AuthJWT = require('../Utils/Auth');
 const Utils = require('../Utils/Utils');
 const { errorManagment } = require('../Utils/DBErrorManagment');
+const Validetor = require('../Validators/account.validator');
 
 // Import DBservices and deconstruct function
 const {isRegistred, isFreeUsername} = require('../DBservises/login.services');   //Loginservices;                          
@@ -30,14 +31,16 @@ let suspendedUsers = [];  // List for suspendedUsers: model => {code: value, use
 
 router.route('/account')
 
-    .post((req, res) => {
-        const {username, email, password, name, surname} = req.body;
+    .post(Validetor.register, (req, res) => {
+        const {username, email, password, firstname, lastname} = req.body;
 
         // Check that there is not already a request
         let isThere; suspendedUsers.forEach((u, i) => { email === u['email']? isThere = true : isThere = false })
 
+        console.log(req.body)
+
         // Check if it has alredy token request 
-        if(isThere) return res.sendStatus(200); 
+        if(isThere) return res.sendStatus(401); 
 
         // Check if it is alredy registered and if the choice username is free
         Promise.allSettled([
@@ -46,9 +49,9 @@ router.route('/account')
         ])
         .then((result) => {
             // Result async query to check
-            if(result[0]?.value['_count'] > 0 || result[1]?.value['_count'])
-                return res.sendStatus(403); // Forbidden --> hai gia profilo
-
+            if(result[0]?.value['_count'] === 1 || result[1]?.value['_count'] === 1)
+                return Promise.resolve(403) // Forbidden --> hai gia profilo
+            
             // Generate confirm code
             let code = '', unique = true;
             do{
@@ -63,7 +66,7 @@ router.route('/account')
             } while(!unique)
         
             // Save code and user info
-            suspendedUsers.push({code, name, surname, email, username, password}) 
+            suspendedUsers.push({code, firstname, lastname, email, username, password}) 
 
             // Set expiration code
             setTimeout(() => {
@@ -74,18 +77,20 @@ router.route('/account')
             }, 300000);  // 5 min 
             
             // All response
+            // No funziona email
             // MailSender.send(email, code); // Send email to confirm account
             console.log(code);
         })
         .then(() => res.sendStatus(200))  // Ok //Questo da errore sulla registrazione
         .catch((err) => {
+            if (err === 403) return res.sendStatus(err)
             errorManagment('account', err)
             res.sendStatus(500)
         }) // Server error
     })
     
     // Update user data 
-    .put(AuthJWT.authenticateJWT, (req, res) => {
+    .put(AuthJWT.authenticateJWT, Validetor.updateAccount, (req, res) => {
         const user = AuthJWT.parseAuthorization(req.headers.authorization)
         const {email} = user;
 
