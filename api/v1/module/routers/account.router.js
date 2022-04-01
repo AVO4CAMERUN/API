@@ -27,12 +27,27 @@ router.use(bodyParser.json());      // Middleware for parse http req
 // Util Obj
 const CHARATERS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'; // Set for confirm token
 
-// List for suspendedUsers --- model => {code: value, usermane: vaule, password: value role: value} 
+// List for suspendedUsers 
+// model => {code: value, usermane: vaule, password: value role: value} 
 let suspendedUsers = [];               
 
 router.route('/account')
 
-    // Create new account
+    /**
+     * @swagger
+     * /api/v1/account:
+     *   post:
+     *     description: Create new account
+     *     parameters:
+     *      - name: title
+     *        description: title of the book
+     *        in: formData
+     *        required: true
+     *        type: string
+     *     responses:
+     *       201:
+     *         description: Created
+     */
     .post((req, res) => {
         const {username, email, password, name, surname} = req.body;
 
@@ -101,7 +116,13 @@ router.route('/account')
 
         // Update user info by request body
         updateUserInfo(email, req.body)
-            .then(() =>  res.sendStatus(200))  // Ok
+            .then((newData) =>  {
+                // Remove and covert data
+                delete newData.password
+                newData.img_profile = BlobConvert.blobToBase64(newData.img_profile)
+
+                res.send(newData) // Ok
+            })
             .catch((err) => {
                 errorManagment('account', err)
                 res.sendStatus(500)

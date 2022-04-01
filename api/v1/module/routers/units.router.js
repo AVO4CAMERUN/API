@@ -101,14 +101,12 @@ router.route('/units/:id')
                 // delete unit 
                 return updateUnits(+id_unit, req.body)
             })
-            .then(() => res.sendStatus(200))
+            .then((newData) => res.send(newData)) // Ok
             .catch((err) => {
-                if(err === 400 || err === 403) res.sendStatus(err);    // Error in parameter
-                else {
-                    errorManagment('units', err)  
-                    res.sendStatus(500); 
-                } // Server error
-            })
+                if(err === 400 || err === 403) return res.sendStatus(err);    // Error in parameter
+                errorManagment('units', err)  
+                res.sendStatus(500) 
+            }) // Server error
     })
 
     // Delete units by id
@@ -140,12 +138,10 @@ router.route('/units/:id')
             })
             .then(() => res.sendStatus(200))
             .catch((err) => {
-                if(err === 400 || err === 403) res.sendStatus(err);    // Error in parameter
-                else {
-                    errorManagment('units', err)  
-                    res.sendStatus(500);
-                } // Server error
-            })
+                if(err === 400 || err === 403) return res.sendStatus(err);    // Error in parameter
+                errorManagment('units', err)  
+                res.sendStatus(500); 
+            }) // Server error
     })
 
 module.exports = router

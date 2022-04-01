@@ -6,31 +6,27 @@ const cors = require('cors')
 const env = require('dotenv').config()
 
 // Module for automatic doc
-const swaggerUi = require('swagger-ui-express');
+const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
-const swaggerDocument = require('./Swagger/swagger.json');
-// https://www.npmjs.com/package/swagger-jsdoc
-// https://www.npmjs.com/package/swagger-ui-express
-const options = {
-    swaggerOptions: {
-      validatorUrl: null
-    }
-};
+const swaggerOptions = require('./api/v1/sweggerOptions');
 
-  
 // Create requets rooter
 const app = express();
 app.use(cors())
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options));
-
 
 // Personal module import
-const v1 = require('./api/v1/v1');
+const v1 = require('./api/v1/v1')
 
-// Rest-api interface v1 (Versioni non necessiarissime anche se potrebbero essere fornite alcune per inntegrazione su altri siti)
-app.use('/api/v1', v1);
+// Rest-api interface v1 and mount auto docs
+app
+  .use('/api/v1', v1)
+  .use('/api/v1/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerJsDoc(swaggerOptions)));
 
 // Start http-server port 80
 app.listen(80);
 
+
 // https://www.freecodecamp.org/news/rest-api-best-practices-rest-endpoint-design-examples/
+// https://www.npmjs.com/package/swagger-jsdoc
+// https://www.npmjs.com/package/swagger-ui-expresss
+// https://github.com/kriscfoster/express-swagger-docs/blob/master/app.js

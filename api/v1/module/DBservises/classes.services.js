@@ -53,7 +53,7 @@ async function isParameterRoleInClass(email, id_class, role) {
 
 // Query for update class by filter and option
 async function updateClass(id, newData) {
-    const response = await pc.classes.update({
+    const response = await pc.groupclass.update({
         where: { id },
         data: { ...newData }
     })

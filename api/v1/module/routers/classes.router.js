@@ -184,13 +184,16 @@ router.route('/classes/:id')
         isParameterRoleInClass(email, +id, 'TUTOR')
             .then((result) => {
                 // Check if you are the tutur of class
-                if(result['_count'] !== 0)
+                if(result['_count'] !== 1)
                     return Promise.reject(403);    // You aren't the tutor    
-                
+
                 // if you are a tutor commit query for change class data
                 return updateClass(+id, req.body)
             })
-            .then(() => res.sendStatus(200))  // Ok
+            .then((newData) =>  {
+                newData.img_cover = BlobConvert.blobToBase64(newData.img_cover)
+                res.send(newData) // Ok
+            })
             .catch((err) => {
                 errorManagment('classes', err)
                 if(err === 400 || err === 403) res.sendStatus(err) // Error in parameter

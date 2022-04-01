@@ -55,25 +55,21 @@ router.route('/courses')
         for (const key of Object.keys(req.query)) 
             req.query[key] = Utils.strToArray(req.query[key])
 
-        Promise.allSettled([
-            getCoursesDataByFilter(req.query)
-        ])
-        .then((response) => {
-            let courses = response[0].value;
+        getCoursesDataByFilter(req.query)
+            .then((courses) => {
+                // Code img in base64 for send
+                if (Array.isArray(courses)) 
+                    for (const course of courses)
+                        course['img_cover'] = BlobConvert.blobToBase64(course['img_cover']);
+                else 
+                    return res.sendStatus(404); // Courses data not found
 
-            // Code img in base64 for send
-            if (Array.isArray(courses)) 
-                for (const course of courses)
-                    course['img_cover'] = BlobConvert.blobToBase64(course['img_cover']);
-            else 
-                return res.sendStatus(404); // Courses data not found
-
-            res.send(courses); // Send courses data   
-        })
-        .catch((err) => {
-            errorManagment('courses', err)
-            res.sendStatus(500)
-        }) // Server error
+                res.send(courses); // Send courses data   
+            })
+            .catch((err) => {
+                errorManagment('courses', err)
+                res.sendStatus(500)
+            }) // Server error
     })
 
 router.route('/courses/:id')
@@ -93,25 +89,26 @@ router.route('/courses/:id')
         if (req.body?.img_cover)
             req.body.img_cover = BlobConvert.base64ToBlob(req.body.img_cover)
 
-        Promise.allSettled([
-            isCourseCreator(email, +id_course)
-        ])
-        .then((result) => {
-            // Check if you are the creator of course
-            if(result[0]?.value['_count'] !== 1)
-                return Promise.reject(403);    // You aren't the tutor   
+        
+        isCourseCreator(email, +id_course)
+            .then((result) => {
+                // Check if you are the creator of course
+                if(result['_count'] !== 1)
+                    return Promise.reject(403);    // You aren't the tutor   
 
-            // if you are a creator commit query for change course data
-            return Promise.allSettled([
-                updateCourses(+id_course, req.body)
-            ])   
-        })
-        .then((result) => res.sendStatus(200))
-        .catch((err) => {
-            errorManagment('courses', err)
-            if(err === 400 || err === 403) res.sendStatus(err)    // Error in parameter
-            else res.sendStatus(500) // Server error
-        }) // Server error
+                // if you are a creator commit query for change course data
+                return updateCourses(+id_course, req.body)    
+            })
+            .then((newData) =>  {
+                newData.img_cover = BlobConvert.blobToBase64(newData.img_cover)
+                res.send(newData) // Ok
+            })
+            .catch((err) => {
+                console.log(err);
+                errorManagment('courses', err)
+                if(err === 400 || err === 403) res.sendStatus(err)    // Error in parameter
+                else res.sendStatus(500) // Server error
+            }) // Server error
     })
 
     // Delete courses by id
@@ -123,26 +120,23 @@ router.route('/courses/:id')
         if (role !== 'TEACHER') 
             return res.sendStatus(403);    // You aren't a prof   
 
-        Promise.allSettled([
-            isCourseCreator(email, +id_course)
-        ])
-        .then((result) => {
+        
+        isCourseCreator(email, +id_course)
+            .then((result) => {
 
-            // Check if you are the creator of course
-            if(result[0]?.value['_count'] !== 1)
-                return Promise.reject(403);    // You aren't the tutor   
+                // Check if you are the creator of course
+                if(result['_count'] !== 1)
+                    return Promise.reject(403);    // You aren't the tutor   
 
-            // if you are a creator commit query for delete course
-            return Promise.allSettled([
-                delateCourse(+id_course)
-            ])
-        })
-        .then(() => res.sendStatus(200))
-        .catch((err) => {
-            errorManagment('courses', err)
-            if(err === 400 || err === 403) res.sendStatus(err)    // Error in parameter
-            else res.sendStatus(500) // Server error
-        }) // Server error
+                // if you are a creator commit query for delete course
+                return delateCourse(+id_course)
+            })
+            .then(() => res.sendStatus(200))
+            .catch((err) => {
+                errorManagment('courses', err)
+                if(err === 400 || err === 403) res.sendStatus(err)    // Error in parameter
+                else res.sendStatus(500) // Server error
+            }) // Server error
     })
 
 module.exports = router

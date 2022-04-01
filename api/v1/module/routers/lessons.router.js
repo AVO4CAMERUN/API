@@ -118,14 +118,12 @@ router.route('/lessons/:id')
                 // Delete unit
                 return updateLessons(+id_lesson, req.body)
             })
-            .then(() => res.sendStatus(200))    // Ok
+            .then((newData) =>  res.send(newData)) // Ok
             .catch((err) => {
-                if(err === 400 || err === 403)res.sendStatus(err) // Error in parameter
-                else {
-                    errorManagment('lessons', err)
-                    res.sendStatus(500)
-                } // Server error
-            })
+                if(err === 400 || err === 403) return res.sendStatus(err) // Error in parameter
+                errorManagment('lessons', err)
+                res.sendStatus(500)
+            }) // Server error
     })
 
     // Delete lessons by id

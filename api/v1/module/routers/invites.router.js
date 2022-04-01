@@ -89,14 +89,12 @@ router.route('/invites')
         const {email} = user;
 
         // Get own invited
-        Promise.allSettled([
-            getInvitedDataByFilter({email})
-        ])
-        .then((result) => res.send(result[0].value)) // Send invites
-        .catch((err) => {
-            errorManagment('invites', err)
-            res.sendStatus(500)
-        }) // Server error
+        getInvitedDataByFilter({email})
+            .then((invited) => res.send(invited)) // Send invites
+            .catch((err) => {
+                errorManagment('invites', err)
+                res.sendStatus(500)
+            }) // Server error
     })
 
 router.route('/invites/:id')
@@ -138,26 +136,20 @@ router.route('/invites/:id')
         const {email} = user;
         
         // Indirect call
-        Promise.allSettled([
-            getInvitedDataByFilter({id: +id, email})
-        ])
-        .then((result) => {
-            console.log(result)
-            
-            // if invited exist 
-            if(result[0].value[0] === undefined)
-                res.sendStatus(400); // Error in parameter
+        getInvitedDataByFilter({id: +id, email})
+            .then((result) => {
+                // if invited exist 
+                if(result === undefined)
+                    res.sendStatus(400); // Error in parameter
 
-            // Reject
-            return Promise.allSettled([
-                deleteInvitation(+id)
-            ])
-        })
-        .then(() => res.sendStatus(200)) // ok
-        .catch((err) => {
-            errorManagment('invites', err)
-            res.sendStatus(500)
-        }) // Server error
+                // Reject
+                return deleteInvitation(+id)
+            })
+            .then(() => res.sendStatus(200)) // ok
+            .catch((err) => {
+                errorManagment('invites', err)
+                res.sendStatus(500)
+            }) // Server error
     })
 
 module.exports = router
