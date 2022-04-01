@@ -34,7 +34,7 @@ async function getTeachersInClass(id_class) {
     const response = await pc.teachers_classes.findMany({
         where: { id_class },
         include: {
-            users: true
+            user: true
         }   
     })
     return response

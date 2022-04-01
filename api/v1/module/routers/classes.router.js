@@ -105,62 +105,76 @@ router.route('/classes')
         for (const key of Object.keys(req.query)) 
             req.query[key] = Utils.strToArray(req.query[key])
 
-        //
-        let studentsQuery = [] 
-        let teachersQuery = []
-        let classes = []
+        let classes = [] //
         
         // Function for resolve multi query in array on array structure
         const resolve = async (arrays) => {
             let r = []
-            for (const query of arrays) {
-                r.push(await Promise.allSettled(query))
+            // [ {teachers: [...]} {students: [...]} ...]
+            for (const objClassPeople of arrays) {
+                r.push({
+                    teachers: await objClassPeople.teachers,
+                    students: await objClassPeople.students
+                })
             }
             return r
         }
 
         // Function for formatter teacher user data
         const teacherFormatter = (teachers) => {
-            for (let k = 0; k < teachers.length; k++) {
+            let t = teachers
+            for (let k = 0; k < t.length; k++) {
                 // Delete usless data
-                delete teachers[k].users.password  //
-                delete teachers[k].users.role      //
-                delete teachers[k].id_class        //
+                delete t[k].user.password  //
+                delete t[k].user.role      //
+                delete t[k].id_class        //
 
                 // Flat obj in top levet
-                const obj = teachers[k].users
-                for (const key in obj) teachers[k][key] = obj[key];
-                delete teachers[k].users;
+                const obj = t[k].user
+                for (const key in obj) t[k][key] = obj[key];
+                delete t[k].user;
 
                 // Cast img
-                teachers[k].img_profile = BlobConvert.blobToBase64(teachers[k].img_profile);
+                t[k].img_profile = 0// BlobConvert.blobToBase64(teachers[k].img_profile);
             }
+            return t
         }
 
         // Get classes
         getClassDataByFilter(req.query)
             .then((result) => {
-                classes = result    // save classes 
+                classes = result;    // save classes
+                const classesInjectedPeopleQuery = []
 
                 // Convert img in base64 and query student
                 for (const c of classes) {
                     c['img_cover'] = BlobConvert.blobToBase64(c['img_cover'])
-                    teachersQuery.push(getTeachersInClass(c.id))
-                    studentsQuery.push(getUserDataByFilter({id_class: c.id, role: 'STUDENT'}))
-                }
 
-                return resolve([teachersQuery, studentsQuery]) // Take the DB answer
+                    // Save stryctured query
+                    const teachersQuery = getTeachersInClass(c.id)
+                    const studentsQuery = getUserDataByFilter({id_class: c.id, role: 'STUDENT'})
+
+                    // [ {teachers: [...]} {students: [...]} ...]
+                    classesInjectedPeopleQuery.push({
+                        teachers: teachersQuery,
+                        students: studentsQuery
+                    })
+                }
+                return resolve(classesInjectedPeopleQuery) // Take the DB answer
             })
             .then((result) => {
                 // Insert member in class data
                 classes.forEach((c, i) => {
-                    teacherFormatter(result[0][i].value)    // Flat in top level
-                    classes[i].teachers = result[0][i].value
-                    classes[i].students = result[1][i].value
+                    const teachers = teacherFormatter(result[i].teachers)
+                    const students = result[i].students
+                 
+                    c.teachers = teachers
+                    c.students = students
                 })
                 res.send(classes)
             })
             .catch((err) => {
+                console.log(err);
                 errorManagment('classes', err)
                 res.sendStatus(500)
             }) // Server error
@@ -180,7 +194,6 @@ router.route('/classes/:id')
         if (req.body?.img_cover !== undefined)
             img_cover = BlobConvert.base64ToBlob(img_cover)
 
-        //console.log(req.body)
         isParameterRoleInClass(email, +id, 'TUTOR')
             .then((result) => {
                 // Check if you are the tutur of class
