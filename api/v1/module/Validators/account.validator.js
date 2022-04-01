@@ -1,11 +1,6 @@
 // Module for validate account input in account router
 
-// https://express-validator.github.io/docs/check-api.html
-// https://github.com/express-validator/express-validator/issues/449
-
 const { validationResult, check } = require('express-validator');
-
-// CRUD
 
 // POST
 const register = [
@@ -59,16 +54,11 @@ const register = [
 // PUT
 const updateAccount = []
 
-//const {username, email, password, name, surname} = req.body;
-
-// GET
-
-// DELETE
-
-
-// importare validetor
 // Export validators
 module.exports = {
     register,
     updateAccount
 }
+
+// https://express-validator.github.io/docs/check-api.html
+// https://github.com/express-validator/express-validator/issues/449
