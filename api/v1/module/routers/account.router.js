@@ -26,28 +26,10 @@ router.use(bodyParser.json());      // Middleware for parse http req
 
 // Util Obj
 const CHARATERS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'; // Set for confirm token
-
-// List for suspendedUsers 
-// model => {code: value, usermane: vaule, password: value role: value} 
-let suspendedUsers = [];               
+let suspendedUsers = [];  // List for suspendedUsers: model => {code: value, usermane: vaule, password: value role: value} 
 
 router.route('/account')
 
-    /**
-     * @swagger
-     * /api/v1/account:
-     *   post:
-     *     description: Create new account
-     *     parameters:
-     *      - name: title
-     *        description: title of the book
-     *        in: formData
-     *        required: true
-     *        type: string
-     *     responses:
-     *       201:
-     *         description: Created
-     */
     .post((req, res) => {
         const {username, email, password, name, surname} = req.body;
 
@@ -198,3 +180,44 @@ router.get('/account/:confirmCode', (req, res) => {
 })
 
 module.exports = router;
+
+/**
+ * @swagger
+ * /account:
+ *  post:
+ *      summary:
+ *      description:
+ *      parameters:
+ *       - in: body
+ *         name: body
+ *         required: true
+ *         description: Body
+ *         content:
+ *          application/json:
+ *             schema:
+ *               type: 
+ *               $ref: '#/components/schemas/User'
+ *      responses:
+ *          200:
+ *           description:
+ *           content:
+ *          403:
+ *           description: 
+ *           content:
+ *          500:
+ *           description: 
+ *           content:
+ * 
+ *  put:
+ *      summary: 
+ *      description: 
+ *  get:
+ *      summary: 
+ *      description: 
+ *  delete:
+ *      summary: 
+ *      description:
+ * 
+ * /account/{confirmCode}:
+ *  get:
+ */

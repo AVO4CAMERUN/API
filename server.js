@@ -8,7 +8,7 @@ const env = require('dotenv').config()
 // Module for automatic doc
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
-const swaggerOptions = require('./api/v1/sweggerOptions');
+const swaggerOptions = require('./api/v1/Swagger/swegger.options.v1');
 
 // Create requets rooter
 const app = express();
@@ -20,13 +20,16 @@ const v1 = require('./api/v1/v1')
 // Rest-api interface v1 and mount auto docs
 app
   .use('/api/v1', v1)
-  .use('/api/v1/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerJsDoc(swaggerOptions)));
+  .use('/api/v1/docs', swaggerUI.serve, swaggerUI.setup(swaggerJsDoc(swaggerOptions)));
 
 // Start http-server port 80
 app.listen(80);
 
 
 // https://www.freecodecamp.org/news/rest-api-best-practices-rest-endpoint-design-examples/
+
+// DA VEDERE PER CHI VUOLE AIUTARMI CON SWAGGER
 // https://www.npmjs.com/package/swagger-jsdoc
 // https://www.npmjs.com/package/swagger-ui-expresss
 // https://github.com/kriscfoster/express-swagger-docs/blob/master/app.js
+// GET http://localhost/api/v1/docs (it's magic)
