@@ -200,9 +200,15 @@ module.exports = router;
  *         description: Body
  *         content:
  *          application/json:
- *             schema:
- *               type: 
- *               $ ref: '#/api/v1/Swagger/components/account.register.yaml'
+ *          schema:
+ *              type: object
+ *              properties:
+ *                  foo:
+ *                      type: string
+ *                  bar:
+ *                      type: string
+ *                  baz:
+ *                      type: string 
  *      responses:
  *          200:
  *           description:
