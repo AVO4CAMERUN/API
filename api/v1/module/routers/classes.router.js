@@ -86,6 +86,7 @@ router.route('/classes')
             })
             .then(() => res.sendStatus(200)) // You create a your new class 
             .catch((err) => {
+                console.log(err);
                 errorManagment('classes', err)
                 if(err === 400) res.sendStatus(400) // Error in parameter
                 else res.sendStatus(500)
@@ -175,7 +176,7 @@ router.route('/classes')
 router.route('/classes/:id')
     
     // Update class data by id
-    .put(AuthJWT.authenticateJWT, (req, res) =>{
+    .put(AuthJWT.authenticateJWT, Validator.putClass, (req, res) =>{
         const user = AuthJWT.parseAuthorization(req.headers.authorization)
         const {email, role} = user;
         const id = req.params.id;
@@ -184,7 +185,7 @@ router.route('/classes/:id')
             return res.sendStatus(403);
 
         if (req.body?.img_cover !== undefined)
-            img_cover = BlobConvert.base64ToBlob(img_cover)
+            req.body.img_cover = BlobConvert.base64ToBlob(req.body.img_cover)
 
         isParameterRoleInClass(email, +id, 'TUTOR')
             .then((result) => {
@@ -229,7 +230,7 @@ router.route('/classes/:id')
             .catch((err) => {
                 errorManagment('classes', err)
                 if(err === 400 || err === 403) res.sendStatus(err) // Error in parameter
-                else res.sendStatus(500) // Server error
+                else res.sendStatus(500)
             }) // Server error
     })
 

@@ -58,9 +58,10 @@ router.route('/units')
             req.query[key] = JSON.parse(req.query[key])
 
         //
-        getUnitsDataByFilter(req.query, {lessons: true})
+        getUnitsDataByFilter(req.query, {lesson: true})
             .then((response) => res.send(response)) // Send units data
             .catch((err) => {
+                console.log(err);
                 errorManagment('units', err) 
                 res.sendStatus(500)
             })  // Server error

@@ -25,11 +25,4 @@ app
 // Start http-server port 80
 app.listen(80);
 
-
 // https://www.freecodecamp.org/news/rest-api-best-practices-rest-endpoint-design-examples/
-
-// DA VEDERE PER CHI VUOLE AIUTARMI CON SWAGGER
-// https://www.npmjs.com/package/swagger-jsdoc
-// https://www.npmjs.com/package/swagger-ui-expresss
-// https://github.com/kriscfoster/express-swagger-docs/blob/master/app.js
-// GET http://localhost/api/v1/docs (it's magic)

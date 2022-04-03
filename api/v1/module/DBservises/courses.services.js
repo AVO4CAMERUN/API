@@ -3,7 +3,7 @@
 const { createGET, pc } = require('./query-generate.services'); 
 
 // Query for create course
-async function createCourse(name, email_creator, description, img_cover = '', subject){
+async function createCourse(name, email_creator, description, img_cover = '', subject) {
     const response = await pc.course.create({
         data: { name, email_creator, description, img_cover, subject }
     })

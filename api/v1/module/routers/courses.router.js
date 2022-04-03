@@ -7,6 +7,7 @@ const express = require('express');
 const BlobConvert = require('../utils/BlobConvert');
 const AuthJWT = require('../utils/Auth');
 const { errorManagment } = require('../Utils/DBErrorManagment');
+const Validator = require('../Validators/courses.validator');
 
 // Import DBservices and deconstruct function
 const {
@@ -23,13 +24,12 @@ const router = express.Router();    //Create router Object
 router.route('/courses')
 
     // Create new courses
-    .post(AuthJWT.authenticateJWT, (req, res) => {
+    .post(AuthJWT.authenticateJWT, Validator.postCourses, (req, res) => {
         const user = AuthJWT.parseAuthorization(req.headers.authorization)
         const { email, role } = user;
         const { name, description, subject } = req.body;
         let { img_cover } = req.body;
 
-        // 
         if (img_cover !== undefined) 
             img_cover = BlobConvert.base64ToBlob(img_cover)
           
@@ -37,10 +37,7 @@ router.route('/courses')
             return res.sendStatus(403);    // You aren't a prof
         
         createCourse(name, email, description, img_cover, subject) // Create courses and save id
-            .then((result) => {
-                console.log(result);
-                res.sendStatus(200);    // You create a your new courses
-            })
+            .then((result) => res.sendStatus(200))// You create a your new courses
             .catch((err) => {
                 errorManagment('courses', err)
                 res.sendStatus(500) // Server error
@@ -74,7 +71,7 @@ router.route('/courses')
 router.route('/courses/:id')
     
     // Update courses data by id
-    .put(AuthJWT.authenticateJWT, (req, res) => {
+    .put(AuthJWT.authenticateJWT, Validator.putCourses, (req, res) => {
         const user = AuthJWT.parseAuthorization(req.headers.authorization)
         const {email, role} = user;
         const id_course = req.params.id;

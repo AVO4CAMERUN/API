@@ -85,3 +85,49 @@ router.route('/login')
     })
     
 module.exports = router;
+
+
+/**
+ * @swagger
+ *  /login:
+ *  post:
+ *      tags: 
+ *      - login
+ *      summary:
+ *      description:
+ *      parameters:
+ *       - in: body
+ *         name: body
+ *         required: true
+ *         description: Body
+ *         content:
+ *          application/json:
+ *             schema:
+ *               type: 
+ *               $ ref: '#/api/v1/Swagger/components/account.register.yaml'
+ *      responses:
+ *          200:
+ *           description:
+ *           content:
+ *          403:
+ *           description: 
+ *           content:
+ *          500:
+ *           description: 
+ *           content:
+ *  put:
+ *      tags: 
+ *      - login
+ *      summary: 
+ *      description: 
+ *  delete:
+ *      tags: 
+ *      - login
+ *      summary: 
+ *      description:
+ * 
+ * /account/{confirmCode}:
+ *  get:
+ *      tags: 
+ *      - account
+ */

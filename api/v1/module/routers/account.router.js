@@ -187,8 +187,10 @@ module.exports = router;
 
 /**
  * @swagger
- * /account:
+ *  /account:
  *  post:
+ *      tags: 
+ *      - account
  *      summary:
  *      description:
  *      parameters:
@@ -200,7 +202,7 @@ module.exports = router;
  *          application/json:
  *             schema:
  *               type: 
- *               $ref: '#/components/schemas/User'
+ *               $ ref: '#/api/v1/Swagger/components/account.register.yaml'
  *      responses:
  *          200:
  *           description:
@@ -213,15 +215,23 @@ module.exports = router;
  *           content:
  * 
  *  put:
+ *      tags: 
+ *      - account
  *      summary: 
  *      description: 
  *  get:
+ *      tags: 
+ *      - account
  *      summary: 
  *      description: 
  *  delete:
+ *      tags: 
+ *      - account
  *      summary: 
  *      description:
  * 
  * /account/{confirmCode}:
  *  get:
+ *      tags: 
+ *      - account
  */

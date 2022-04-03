@@ -22,3 +22,8 @@ module.exports = {
     }],
     apis: ['./api/v1/module/Routers/*.js'] // POV server.js
 };
+
+
+// DA VEDERE PER CHI VUOLE AIUTARMI CON SWAGGER
+// https://www.npmjs.com/package/swagger-jsdoc
+// https://www.npmjs.com/package/swagger-ui-expresss
