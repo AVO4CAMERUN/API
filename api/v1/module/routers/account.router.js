@@ -8,9 +8,8 @@ const bodyParser = require('body-parser');
 const BlobConvert = require('../Utils/BlobConvert');
 const MailSender = require('../Utils/MailSender');
 const AuthJWT = require('../Utils/Auth');
-const Utils = require('../Utils/Utils');
 const { errorManagment } = require('../Utils/DBErrorManagment');
-const Validetor = require('../Validators/account.validator');
+const Validator = require('../Validators/account.validator');
 
 // Import DBservices and deconstruct function
 const {isRegistred, isFreeUsername} = require('../DBservises/login.services');   //Loginservices;                          
@@ -31,7 +30,7 @@ let suspendedUsers = [];  // List for suspendedUsers: model => {code: value, use
 
 router.route('/account')
 
-    .post(Validetor.register, (req, res) => {
+    .post(Validator.register, (req, res) => {
         const {username, email, password, firstname, lastname} = req.body;
 
         // Check that there is not already a request
@@ -90,7 +89,7 @@ router.route('/account')
     })
     
     // Update user data 
-    .put(AuthJWT.authenticateJWT, Validetor.updateAccount, (req, res) => {
+    .put(AuthJWT.authenticateJWT, Validator.updateAccount, (req, res) => {
         const user = AuthJWT.parseAuthorization(req.headers.authorization)
         const {email} = user;
 
@@ -123,7 +122,7 @@ router.route('/account')
     .get(AuthJWT.authenticateJWT, (req, res) => { 
         // Cast data for query
         for (const key of Object.keys(req.query)) 
-            req.query[key] = Utils.strToArray(req.query[key])
+            req.query[key] = JSON.parse(req.query[key])
 
         // Get users data by filters
         getUserDataByFilter(req.query)

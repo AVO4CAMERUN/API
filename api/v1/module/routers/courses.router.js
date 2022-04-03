@@ -6,7 +6,6 @@ const express = require('express');
 // Utils servises
 const BlobConvert = require('../utils/BlobConvert');
 const AuthJWT = require('../utils/Auth');
-const Utils = require('../utils/Utils');
 const { errorManagment } = require('../Utils/DBErrorManagment');
 
 // Import DBservices and deconstruct function
@@ -53,7 +52,7 @@ router.route('/courses')
 
         // Cast data for query
         for (const key of Object.keys(req.query)) 
-            req.query[key] = Utils.strToArray(req.query[key])
+            req.query[key] = JSON.parse(req.query[key])
 
         getCoursesDataByFilter(req.query)
             .then((courses) => {
@@ -80,11 +79,8 @@ router.route('/courses/:id')
         const {email, role} = user;
         const id_course = req.params.id;
         
-        if (role !== 'TEACHER')
-            return res.sendStatus(403);    // You aren't a prof
-
-        if (req.body?.email_creator)
-            return res.sendStatus(403);  
+        if (role !== 'TEACHER') return res.sendStatus(403);    // You aren't a prof
+        if (req.body?.email_creator) return res.sendStatus(403);  
 
         if (req.body?.img_cover)
             req.body.img_cover = BlobConvert.base64ToBlob(req.body.img_cover)

@@ -6,8 +6,8 @@ const express = require('express');
 // Utils servises
 const BlobConvert = require('../utils/BlobConvert');
 const AuthJWT = require('../utils/Auth');
-const Utils = require('../utils/Utils');
 const { errorManagment } = require('../Utils/DBErrorManagment');
+const Validator = require('../Validators/classes.validator');
 
 // Import DBservices and deconstruct function                    
 const { isParameterRole } = require('../DBservises/account.services');     // Account services 
@@ -22,7 +22,6 @@ const {  // Class services
     deleteClass
 } = require('../DBservises/classes.services');
 
-
 // Allocate obj
 const router = express.Router();    //Create router Object    
 
@@ -30,28 +29,28 @@ const router = express.Router();    //Create router Object
 router.route('/classes')
 
     // Create new class
-    .post(AuthJWT.authenticateJWT, (req, res) => {
+    .post(AuthJWT.authenticateJWT, Validator.postClass, (req, res) => {
         const user = AuthJWT.parseAuthorization(req.headers.authorization)
         const {email, role} = user;
-        let {name, img_cover, students, profs} = req.body;
+        let {name, img_cover, students, teachers} = req.body;
 
         if (role !== 'TEACHER')
             return res.sendStatus(403);    // You aren't a prof (conviene cosi non si fanno richieste al db)
 
-        if (img_cover !== undefined)
+        if (img_cover !== undefined) 
             img_cover = BlobConvert.base64ToBlob(img_cover)
+
+        if (teachers === undefined) teachers = []
+        if (students === undefined) students = []
 
         // Create query
         let checkQuerys = [];
-        if(Array.isArray(profs)) {
-            for (const prof of profs)
-                checkQuery.push(isParameterRole(prof, 'TEACHER'))// Check is professor
-        }
-
-        if(Array.isArray(students)) {
-            for (const stud of students)
-                checkQuerys.push(isParameterRole(stud, 'STUDENT')) // Check is student
-        }
+        
+        for (const prof of teachers)
+            checkQuery.push(isParameterRole(prof, 'TEACHER'))// Check is professor
+        
+        for (const stud of students)
+            checkQuerys.push(isParameterRole(stud, 'STUDENT')) // Check is student
 
         // Send dynamic querys
         Promise.allSettled(checkQuerys)
@@ -71,22 +70,16 @@ router.route('/classes')
                 const id = result[0].value.id; // id class
 
                 // Query array for add profs
-                const queryArray = [];
-                
-                // Push tutor
-                queryArray.push(addProfsClass(email, id, 'TUTOR'))
+                const queryArray = [addProfsClass(email, id, 'TUTOR')]; // Push tutor
 
                 // Push others prof if there are
-                if(Array.isArray(profs)) {
-                    for (const prof of profs)  // controllare se sono prof 
-                        queryArray.push(addProfsClass(prof, id, 'NORMAL'))
-                }
+                for (const prof of teachers)  // controllare se sono prof 
+                    queryArray.push(addProfsClass(prof, id, 'NORMAL'))
+                
                 
                 // Push student invitations if there are
-                if (Array.isArray(students)) {
-                    for (const stud of students)
-                        queryArray.push(addClassInvite(stud, id))  
-                }
+                for (const stud of students)
+                    queryArray.push(addClassInvite(stud, id))  
 
                 // Add relation in the class (start up student and profs) if there are
                 return Promise.allSettled(queryArray) // Send dynamic querys               
@@ -100,13 +93,11 @@ router.route('/classes')
     })
 
     // Get class data by filter
-    .get((req, res) => {
+    .get(AuthJWT.authenticateJWT, Validator.getClass, (req, res) => {
         // Cast data for query
         for (const key of Object.keys(req.query)) 
-            req.query[key] = Utils.strToArray(req.query[key])
+            req.query[key] = JSON.parse(req.query[key])
 
-        let classes = [] //
-        
         // Function for resolve multi query in array on array structure
         const resolve = async (arrays) => {
             let r = []
@@ -141,6 +132,7 @@ router.route('/classes')
         }
 
         // Get classes
+        let classes = [] //
         getClassDataByFilter(req.query)
             .then((result) => {
                 classes = result;    // save classes

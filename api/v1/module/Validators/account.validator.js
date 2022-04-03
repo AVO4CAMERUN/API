@@ -54,6 +54,9 @@ const register = [
 // PUT
 const updateAccount = []
 
+// GET
+const getAccounts = []
+
 // Export validators
 module.exports = {
     register,

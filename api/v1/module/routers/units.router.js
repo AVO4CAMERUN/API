@@ -5,7 +5,6 @@ const express = require('express');
 
 // Utils servises
 const AuthJWT = require('../utils/Auth');
-const Utils = require('../utils/Utils');
 const { errorManagment } = require('../Utils/DBErrorManagment');
 
 // Import DBservices and deconstruct function
@@ -56,7 +55,7 @@ router.route('/units')
 
         // Cast data for query
         for (const key of Object.keys(req.query)) 
-            req.query[key] = Utils.strToArray(req.query[key])
+            req.query[key] = JSON.parse(req.query[key])
 
         //
         getUnitsDataByFilter(req.query, {lessons: true})
