@@ -25,15 +25,15 @@ const postCourses = [
         .bail(),
     check('subject')
         .notEmpty()
-        .custom(value => [
-                'Mathematics',
-                'Electrical_engineering', 
-                'Informatics',
-                'English', 
-                'Statistics', 
-                'Chemistry'
-            ].includes(value)
-        )
+        .custom(value => {
+            let subject = [];
+            getCoursesSubject()
+                .then((subjects) => {
+                    for (const obj of subjects)
+                        subject.push(obj.subject) 
+                })
+            subject.includes(value)
+        })
         .withMessage('Subject') 
         .bail(),
     (req, res, next) => {
