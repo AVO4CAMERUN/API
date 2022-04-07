@@ -77,7 +77,7 @@ router.route('/account')
             
             // All response
             // No funziona email
-            // MailSender.send(email, code); // Send email to confirm account
+            MailSender.send(email, code); // Send email to confirm account
             console.log(code);
         })
         .then(() => res.sendStatus(200))  // Ok //Questo da errore sulla registrazione

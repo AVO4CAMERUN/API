@@ -25,7 +25,7 @@ router.route('/login')
     //Login / Create session
     .post((req, res) => {
         const { username, password } = req.body;
-        console.log(req.body);
+
         // Query check account
         Promise.allSettled([
             checkUsernamePassword(username, password),

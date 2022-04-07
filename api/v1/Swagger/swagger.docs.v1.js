@@ -23,6 +23,14 @@ module.exports = {
       description: 'Local server'
     }
   ],
+  components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer"    
+      }
+    }
+  },
   tags: [
     {
       name: "account",
@@ -65,75 +73,425 @@ module.exports = {
         description: "",
         consumes: ["application/json"],
         produces: ["application/json"],
-        parameters: [
-          {
-            in: "body",
-            name: "body",
-            description: "",
-            required: true,
-            schema: {
-              type: "object",
-              properties: {
-                username: {
-                  type: "string",
-                  example: "professore"
-                },
-                password: {
-                  type: "string",
-                  example: "professore123"
+        requestBody: {
+          description: "",
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  username: {
+                    type: "string",
+                    example: "professore"
+                  },
+                  password: {
+                    type: "string",
+                    example: "professore123"
+                  }
                 }
               }
             }
           }
-        ],
+        },
         responses: {
-          405: {
-            description: "Invalid input"
+          200: {
+            description: "Login successful"
+          },
+          403: {
+            description: "Login forbidden"
+          },
+          500: {
+            description: "Server error"
           }
         }
       },
       put: {
-        tags: ["login"]
+        tags: ["login"],
+        summary: "",
+        description: "",
+        consumes: ["application/json"],
+        produces: ["application/json"],
+        requestBody: {
+          description: "",
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  token: {
+                    type: "string",
+                    example: ""
+                  }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: {
+            description: "Refresh successful"
+          },
+          403: {
+            description: "Refresh forbidden"
+          },
+          500: {
+            description: "Server error"
+          }
+        }
       },
       delete: {
-        tags: ["login"]
+        tags: ["login"],
+        summary: "",
+        description: "",
+        consumes: ["application/json"],
+        produces: ["application/json"],
+        requestBody: {
+          description: "",
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  token: {
+                    type: "string",
+                    example: ""
+                  }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: {
+            description: "Logout successful"
+          },
+          500: {
+            description: "Server error"
+          }
+        }
       }
     },
     "/account": {
       post: {
-        tags: ["account"]
+        tags: ["account"],
+        summary: "",
+        description: "",
+        consumes: ["application/json"],
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        requestBody: {
+          description: "",
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  name: {
+                    type: "string",
+                    example: ""
+                  },
+                  surname: {
+                    type: "string",
+                    example: ""
+                  },
+                  username: {
+                    type: "string",
+                    example: ""
+                  },
+                  email: {
+                    type: "string",
+                    example: ""
+                  },
+                  password: {
+                    type: "string",
+                    example: ""
+                  }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: {
+            description: "OK"
+          },
+          403: {
+            description: "Forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       },
       put: {
-        tags: ["account"]
+        tags: ["account"],
+        summary: "",
+        description: "",
+        consumes: ["application/json"],
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        requestBody: {
+          description: "",
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  name: {
+                    type: "string",
+                    example: ""
+                  },
+                  surname: {
+                    type: "string",
+                    example: ""
+                  },
+                  username: {
+                    type: "string",
+                    example: ""
+                  },
+                  email: {
+                    type: "string",
+                    example: ""
+                  },
+                  password: {
+                    type: "string",
+                    example: ""
+                  }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: {
+            description: "OK"
+          },
+          403: {
+            description: "Forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       },
       get: {
         tags: ["account"],
         summary: "",
         description: "",
         produces: ["application/json"],
-        parameters: [
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        parameters: [ // rivedere parametri da utilizzare
           {
             in: "query",
+            name: "email",
             description: "",
-            required: false
+            required: false,
+            schema: {
+              type: "string",
+            }
+          },
+          {
+            in: "query",
+            name: "firstname",
+            description: "",
+            required: false,
+            schema: {
+              type: "string",
+            }
+          },
+          {
+            in: "query",
+            name: "lastname",
+            description: "",
+            required: false,
+            schema: {
+              type: "string",
+            }
+          },
+          {
+            in: "query",
+            name: "id_class",
+            description: "",
+            required: false,
+            schema: {
+              type: "string",
+            }
           }
-        ]
+        ],
+        responses: {
+          200: {
+            description: "OK"
+          },
+          403: {
+            description: "Forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       },
       delete: {
-        tags: ["account"]
+        tags: ["account"],
+        summary: "",
+        description: "",
+        consumes: ["application/json"],
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        responses: {
+          200: {
+            description: "OK"
+          },
+          403: {
+            description: "Forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       }
     },
     "/account/{confirmCode}": {
       get: {
-        tags: ["account"]
+        tags: ["account"],
+        tags: ["account"],
+        summary: "",
+        description: "",
+        consumes: ["application/json"],
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        parameters: [
+          {
+            in: "path",
+            name: "confirmCode",
+            description: "",
+            required: true,
+            schema: {
+              type: "string",
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: "OK"
+          },
+          403: {
+            description: "Forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       }
     },
     "/classes": {
       post: {
-        tags: ["classes"]
+        tags: ["classes"],
+        summary: "",
+        description: "",
+        consumes: ["application/json"],
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        requestBody: {
+          description: "",
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  name: {
+                    type: "string",
+                    example: ""
+                  },
+                  img_cover: {
+                    type: "string",
+                    example: ""
+                  },
+                  students: {
+                    type: "array",
+                    items: {
+                      type: "string"
+                    }
+                  },
+                  teachers: {
+                    type: "array",
+                    items: {
+                      type: "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: {
+            description: "OK"
+          },
+          403: {
+            description: "Forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       },
       get: {
-        tags: ["classes"]
+        tags: ["classes"],
+        summary: "",
+        description: "",
+        produces: ["application/json"],
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        parameters: [ // rivedere parametri da utilizzare
+          {
+            in: "query",
+            name: "name",
+            description: "",
+            required: false,
+            schema: {
+              type: "string",
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: "OK"
+          },
+          403: {
+            description: "Forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       }
     },
     "/classes/{id}": {
