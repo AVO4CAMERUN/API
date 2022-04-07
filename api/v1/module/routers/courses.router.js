@@ -13,9 +13,10 @@ const Validator = require('../Validators/courses.validator');
 const {
     createCourse, 
     getCoursesDataByFilter, 
+    getCoursesSubject,
     isCourseCreator, 
     updateCourses, 
-    delateCourse
+    delateCourse,
 } = require('../DBservises/courses.services'); // Courseservices
 
 // Allocate obj
@@ -130,6 +131,19 @@ router.route('/courses/:id')
                 if(err === 400 || err === 403) res.sendStatus(err)    // Error in parameter
                 else res.sendStatus(500) // Server error
             }) // Server error
+    })
+
+router.route('/courses/subject')
+
+    // Get possible subject for courses
+    .get((req, res) => {
+        getCoursesSubject()
+            .then((subjects) => {
+                let response = [];
+                for (const obj of subjects)
+                    response.push(obj.subject)
+                res.send(response)
+            })
     })
 
 module.exports = router

@@ -17,6 +17,12 @@ async function getCoursesDataByFilter(filterObj) {
     return await qf({ where })
 }
 
+// Query for get courses subject
+async function getCoursesSubject() {
+    return await pc.course_subject.findMany()
+}
+
+
 // Query for update course by id and option
 async function updateCourses(id_course, newData){
     const response = await pc.course.update({
@@ -47,6 +53,7 @@ async function delateCourse(id_course) {
 module.exports = {
     createCourse,
     getCoursesDataByFilter,
+    getCoursesSubject,
     updateCourses,
     isCourseCreator,
     delateCourse
