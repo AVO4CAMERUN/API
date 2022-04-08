@@ -21,12 +21,27 @@ model course {
   @@index([email_creator], map: "email_creator")
 }
 
-model courses_users {
-  email     String @db.VarChar(255)
-  id_course Int
+model unit {
+  id_unit     Int    @id @default(autoincrement())
+  id_course   Int
+  seqNumber   Int    
+  name        String @db.VarChar(30)
+  description String @db.Text
+  course      course @relation(fields: [id_course], references: [id_course], onDelete: Cascade, onUpdate: Restrict, map: "units_ibfk_1")
 
-  @@id([email, id_course])
-  @@index([id_course], map: "courses_users_ibfk_2")
+  @@unique([id_course, name], map: "id_course")
+  @@unique([id_unit, seqNumber])
+}
+
+model lesson {
+  id_lesson     Int      @id @default(autoincrement())
+  id_unit       Int
+  name          String   @db.VarChar(50)
+  creation_date DateTime @default(now()) @db.Date
+  link_video    String   @db.VarChar(255)
+  quiz          String   @db.Text
+
+  @@unique([id_unit, name], map: "id_unit")
 }
 
 model exercise {
@@ -35,6 +50,18 @@ model exercise {
   description String @db.VarChar(255)
   id_unit     Int
   file        Bytes  @db.Blob
+}
+
+model course_subject {
+  subject String @id
+}
+
+model courses_users {
+  email     String @db.VarChar(255)
+  id_course Int
+
+  @@id([email, id_course])
+  @@index([id_course], map: "courses_users_ibfk_2")
 }
 
 model groupclass {
@@ -54,17 +81,6 @@ model invitation {
   @@index([email], map: "email")
 }
 
-model lesson {
-  id_lesson     Int      @id @default(autoincrement())
-  id_unit       Int
-  name          String   @db.VarChar(50)
-  creation_date DateTime @default(now()) @db.Date
-  link_video    String   @db.VarChar(255)
-  quiz          String   @db.Text
-
-  @@unique([id_unit, name], map: "id_unit")
-}
-
 model teachers_classes {
   email    String                @db.VarChar(255)
   id_class Int
@@ -72,16 +88,6 @@ model teachers_classes {
 
   @@id([email, id_class])
   @@index([id_class], map: "id_class")
-}
-
-model unit {
-  id_unit     Int    @id @default(autoincrement())
-  id_course   Int
-  name        String @db.VarChar(30)
-  description String @db.Text
-  course      course @relation(fields: [id_course], references: [id_course], onDelete: Cascade, onUpdate: Restrict, map: "units_ibfk_1")
-
-  @@unique([id_course, name], map: "id_course")
 }
 
 model user {
@@ -95,10 +101,6 @@ model user {
   img_profile       Bytes?    @db.Blob
   id_class          Int?
   course            course[]
-}
-
-model course_subject {
-  subject String @id
 }
 
 enum TEACHERSCLASSESROLE {

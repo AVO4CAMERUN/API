@@ -42,6 +42,7 @@ router.route('/units')
             })
             .then(() => res.sendStatus(200)) // Ok
             .catch((err) => {
+                console.log(err);
                 if(err === 400 || err === 403) res.sendStatus(err)  // Error in parameter
                 else {
                     errorManagment('units', err) 
@@ -122,7 +123,7 @@ router.route('/units/:id')
         isCourseCreator(email, +id_course)
             .then((result) => {
                 // Check if you are the creator of course
-                if(result[0]?.value[0]['COUNT(*)'] == 0)
+                if(result['_count'] !== 1)
                     return Promise.reject(403);    // You aren't the tutor   
 
                 // if you are a creator check if unit belong course 
@@ -134,10 +135,11 @@ router.route('/units/:id')
                     return Promise.reject(403);    // You aren't the tutor   
 
                 // delete unit 
-                return deleteUnit(+id_unit)
+                return deleteUnit(+id_course, +id_unit)
             })
             .then(() => res.sendStatus(200))
             .catch((err) => {
+                console.log(err);
                 if(err === 400 || err === 403) return res.sendStatus(err);    // Error in parameter
                 errorManagment('units', err)  
                 res.sendStatus(500); 

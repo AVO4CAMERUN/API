@@ -4,10 +4,21 @@ const { createGET, pc } = require('./query-generate.services');
 
 // Query for create unit
 async function createUnit (name, description, id_course) {
-    const response = await pc.unit.create({
-        data: { name, description, id_course }
+    const units = await pc.unit.findMany({
+        where: { id_course },
+        orderBy: { seqNumber: 'asc' }
     })
-    return response
+
+    // Next unit in courses with seqNumber for order
+    let last;
+    if (units.length !== 0) last = units.at(-1).seqNumber +1;
+    else last = 1;
+
+    // Create unit
+    return await pc.unit.create({
+        data: { name, description, id_course, seqNumber: last }
+    })
+     
 }
 
 // Check if unit belong Course
@@ -36,11 +47,30 @@ async function updateUnits (id_unit, newData) {
 }
 
 // Query for delete unit
-async function deleteUnit (id_unit) {
+async function deleteUnit (id_course, id_unit) {
+    const units = await pc.unit.findMany({
+        where: { id_course },
+        orderBy: { seqNumber: 'asc' }
+    })
+
+    // Next unit in courses with seqNumber for order
+    const breakPoint = units.findIndex(unit => unit.id_unit === id_unit)
+    
+    // Delete
     const response = await pc.unit.delete({
         where: { id_unit }
     })
-    return response  
+
+    // Update seqNumber scale one
+    for (let i = breakPoint +1; i < units.length; i++) {
+        const id = units[i].id_unit;
+        const seqNumber = units[i].seqNumber -1
+        await pc.unit.update({
+            where: { id_unit: id },
+            data: { seqNumber }
+        })
+    }
+    return response
 }
 
 // Export functions 

@@ -138,12 +138,12 @@ router.route('/courses/subject')
     // Get possible subject for courses
     .get((req, res) => {
         getCoursesSubject()
-            .then((subjects) => {
-                let response = [];
-                for (const obj of subjects)
-                    response.push(obj.subject)
-                res.send(response)
-            })
+            .then((subjects) => res.send(subjects)) // Ok
+            .catch((err) => {
+                errorManagment('courses/subject', err)
+                if(err === 400 || err === 403) res.sendStatus(err)    // Error in parameter
+                else res.sendStatus(500)
+            }) // Server error
     })
 
 module.exports = router

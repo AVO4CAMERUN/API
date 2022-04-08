@@ -178,6 +178,7 @@ INSERT INTO `teachers_classes` (`email`, `id_class`, `role`) VALUES
 CREATE TABLE `unit` (
   `id_unit` int(11) NOT NULL,
   `id_course` int(11) NOT NULL,
+  `seqNumber` int(11) NOT NULL,
   `name` varchar(30) NOT NULL,
   `description` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -186,14 +187,14 @@ CREATE TABLE `unit` (
 -- Dump dei dati per la tabella `unit`
 --
 
-INSERT INTO `unit` (`id_unit`, `id_course`, `name`, `description`) VALUES
-(1, 1, 'Databases', ''),
-(2, 1, 'The Relational Model', ''),
-(3, 1, 'The Logical Data Model', ''),
-(4, 1, 'MySql Database', ''),
-(5, 2, 'Elementi di elettronica', ''),
-(6, 2, 'Trasformatori elettrici', ''),
-(7, 2, 'Componenti di potenza', '');
+INSERT INTO `unit` (`id_unit`, `id_course`, `seqNumber`, `name`, `description`) VALUES
+(1, 1, 1, 'Databases', ''),
+(2, 1, 2, 'The Relational Model', ''),
+(3, 1, 3, 'The Logical Data Model', ''),
+(4, 1, 4, 'MySql Database', ''),
+(5, 2, 1, 'Elementi di elettronica', ''),
+(6, 2, 2, 'Trasformatori elettrici', ''),
+(7, 2, 3, 'Componenti di potenza', '');
 
 -- --------------------------------------------------------
 

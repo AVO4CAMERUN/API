@@ -19,7 +19,11 @@ async function getCoursesDataByFilter(filterObj) {
 
 // Query for get courses subject
 async function getCoursesSubject() {
-    return await pc.course_subject.findMany()
+    const objs =  await pc.course_subject.findMany()
+    
+    let subjects = [];
+    for (const obj of objs) subjects.push(obj.subject)
+    return subjects
 }
 
 

@@ -2,6 +2,7 @@
 
 const { validationResult, check, query, body } = require('express-validator');
 const { customCheckArrayInGET } = require('./utils.validator');
+const { getCoursesSubject } = require('../DBservises/courses.services'); // Courseservices
 
 // POST
 const postCourses = [
@@ -26,15 +27,11 @@ const postCourses = [
     check('subject')
         .notEmpty()
         .custom(value => {
-            let subject = [];
-            getCoursesSubject()
-                .then((subjects) => {
-                    for (const obj of subjects)
-                        subject.push(obj.subject) 
-                })
-            subject.includes(value)
+            return getCoursesSubject()
+                .then((subjects) => subjects.includes(value)
+            )
         })
-        .withMessage('Subject') 
+        .withMessage('subject is not correct') 
         .bail(),
     (req, res, next) => {
         const errors = validationResult(req);
