@@ -16,8 +16,9 @@ class Auth {
             const token = authHeader.split(' ')[1];
 
             jwt.verify(token, Auth.accessTokenSecret, (err, user) => {
-                if (err) return res.sendStatus(403);
-                
+                if (err?.message === 'jwt expired')    return res.sendStatus(401);
+                if (err?.message === 'invalid token')  return res.sendStatus(403);
+
                 req.user = user;
                 next();
             });

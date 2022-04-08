@@ -41,7 +41,7 @@ router.route('/login')
             
             // Generate an access token
             const userDataToken = {email, username, role}
-            const accessToken = jwt.sign(userDataToken, AuthJWT.accessTokenSecret, { expiresIn: '20m' });
+            const accessToken = jwt.sign(userDataToken, AuthJWT.accessTokenSecret, { expiresIn: '0.5m' });
             const refreshToken = jwt.sign(userDataToken, AuthJWT.refreshTokenSecret);
 
             // Insert in activity account
