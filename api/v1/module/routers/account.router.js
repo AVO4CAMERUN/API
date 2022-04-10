@@ -36,8 +36,6 @@ router.route('/account')
         // Check that there is not already a request
         let isThere; suspendedUsers.forEach((u, i) => { email === u['email']? isThere = true : isThere = false })
 
-        console.log(req.body)
-
         // Check if it has alredy token request 
         if(isThere) return res.sendStatus(401); 
 
@@ -82,6 +80,7 @@ router.route('/account')
         })
         .then(() => res.sendStatus(200))  // Ok //Questo da errore sulla registrazione
         .catch((err) => {
+            console.log(err);
             if (err === 403) return res.sendStatus(err)
             errorManagment('account', err)
             res.sendStatus(500)

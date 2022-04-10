@@ -1,43 +1,63 @@
 // Module for send email
 
+const { google } = require('googleapis');
 const nodemailer = require('nodemailer');
 
 // Data
-const services = process.env.MAIL_SERVICE
+const service = process.env.MAIL_SERVICE
 const user = process.env.MAIL_USER
-const pass = process.env.MAIL_PASS
+
+const clientID = process.env.CLIENT_ID
+const clientSecret = process.env.CLIENT_SECRET
+const refreshToken = process.env.REFRESH_TOKEN
 // const htmlstream = fs.createReadStream("content.html");
 
-let poolConfig = `smtps://${user}:${pass}@smtp.gmail.com/?pool=true`;
+// Create OAuth2 Client
+const OAuth2 = new google.auth.OAuth2(clientID, clientSecret, 'https://developers.google.com/oauthplayground')
+OAuth2.setCredentials({ refresh_token: refreshToken });
+const accessToken = OAuth2.getAccessToken()
 
-const transporter = nodemailer.createTransport(poolConfig)
-/*
+//
 const transporter = nodemailer.createTransport({
-    services,
-    port: 587,
-    secure: false, // use SSL
-    auth: { user, pass }
+    service,
+    auth: {
+        type: 'OAuth2',
+        user,
+        clientID,
+        clientSecret,
+        refreshToken,
+        accessToken 
+    }
 });
-*/
-// console.log(services, user, pass);
-// console.log(transporter)
 
 // Email sending Method
-function send(email, confirmCode) {
-    
-    const mailOptions = {
-        from: transporter.options.auth.user,
-        to: email,
-        subject: 'Sending Email using Node.js', //title
-        html: `<b>http://${"127.0.0.1"}/api/v1/account/${confirmCode}</b>` //html email CAMBIARE LINK IN PAGINA CHE USA API
-    }
+async function send(email, confirmCode) {
+    //const mailOptions = {}
+    // <b>http://${"127.0.0.1"}/api/v1/account/${confirmCode}</b>` //html email CAMBIARE LINK IN PAGINA CHE USA API
 
-    transporter.sendMail(mailOptions, (err, info) => {
-        err ? console.log(err): console.log('Email sent: ' + info.response);
-    })
+    console.log('-------------------------------------------------------');
+    console.log(email, confirmCode);
+    console.log('-------------------------------------------------------');
+
+    // send mail with defined transport object
+    let info = await transporter.sendMail({
+        from: '"Fred Foo 👻" <foo@example.com>', // sender address
+        to: "s5779870b@studenti.itisavogadro.it", // list of receivers
+        subject: "Hello ✔", // Subject line
+        text: "Hello world?", // plain text body
+        html: "<b>Hello world?</b>", // html body
+    });
+    
+    console.log("Message sent: %s", info.messageId);
 }
 
 // Export functions
 module.exports = {
     send
 };
+
+// BIsogna usare per forza OAuth2 per motivi sia di sicurezza sia perche glia altri metodi scadono il 30 maggio
+// https://stackoverflow.com/questions/13871982/unable-to-refresh-access-token-response-is-unauthorized-client
+// https://console.cloud.google.com/getting-started?pli=1
+// https://www.npmjs.com/package/googleapis
+// https://developers.google.com/adwords/api/docs/guides/authentication
