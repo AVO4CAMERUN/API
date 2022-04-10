@@ -11,6 +11,8 @@ Alcune delle sfide che hai dovuto affrontare e le funzionalità che speri di imp
 ## How?
 
 ###  Structure
+The Structure about AVO4CAMERUN project is very simple, 
+it's consist of DBservices, Routers, Validator, Utils
 
 ### Technology
 Dillinger uses a number of open source projects to work properly:
