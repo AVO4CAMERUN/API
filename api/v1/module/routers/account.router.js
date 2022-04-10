@@ -115,9 +115,12 @@ router.route('/account')
             }) // Server error
     })
 
-    // da discutere le restrizioni
-    // l'obitivo è farlo rimanere un po social 
-    //(da vedere perchè forse icapsuliamo il egt proprie info dentro in login)
+    /*
+        Da discutere le restrizioni
+        l'obbitivo è farlo rimanere un po social 
+        lo usiamo in front end per ottenere i propri dati
+        quindi restituera solo i propri dati 🤡
+    */
     // Get user data
     .get(AuthJWT.authenticateJWT, (req, res) => { 
         // Cast data for query
