@@ -7,6 +7,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Fare ER auto
+
 model course {
   id_course     Int              @id @default(autoincrement())
   email_creator String           @db.VarChar(255)
@@ -37,6 +39,40 @@ model courses_users {
   @@index([id_course])
 }
 
+model unit {
+  id_unit     Int      @id @default(autoincrement())
+  id_course   Int
+  seqNumber   Int    
+  name        String   @db.VarChar(30)
+  description String   @db.Text
+  course      course   @relation(fields: [id_course], references: [id_course], onDelete: Cascade, onUpdate: Restrict)
+  lesson      lesson[]
+  @@unique([id_course, name], map: "id_course")
+}
+
+model lesson {
+  id_lesson     Int      @id @default(autoincrement())
+  id_unit       Int
+  seqNumber     Int
+  name          String   @db.VarChar(50)
+  creation_date DateTime @default(now()) @db.Date
+  link_video    String   @db.VarChar(255)
+  quiz          String   @db.Text
+  unit          unit     @relation(fields: [id_unit], references: [id_unit], onDelete: Cascade)
+  quizResult    quiz_result[]
+  @@unique([id_unit, name], map: "id_unit")
+}
+
+model quiz_result {
+  id            Int       @id @default(autoincrement())
+  id_lesson     Int
+  email         String    @db.VarChar(255)
+  date          DateTime  @default(now()) @db.Date
+  lesson        lesson    @relation(fields: [id_lesson], references: [id_lesson], onDelete: Cascade) 
+  user          user      @relation(fields: [email], references: [email], onDelete: Cascade)
+  @@unique([email, id_lesson, date])
+}
+
 model exercise {
   id_exercise Int    @id @default(autoincrement())
   name        String @db.VarChar(50)
@@ -65,18 +101,6 @@ model invitation {
   @@index([email], map: "email")
 }
 
-model lesson {
-  id_lesson     Int      @id @default(autoincrement())
-  id_unit       Int
-  seqNumber     Int
-  name          String   @db.VarChar(50)
-  creation_date DateTime @default(now()) @db.Date
-  link_video    String   @db.VarChar(255)
-  quiz          String   @db.Text
-  unit          unit     @relation(fields: [id_unit], references: [id_unit], onDelete: Cascade)
-  @@unique([id_unit, name], map: "id_unit")
-}
-
 model teachers_classes {
   email      String                @db.VarChar(255)
   id_class   Int
@@ -85,17 +109,6 @@ model teachers_classes {
   groupclass groupclass            @relation(fields: [id_class], references: [id], onDelete: Cascade)
   @@id([email, id_class])
   @@index([id_class], map: "id_class")
-}
-
-model unit {
-  id_unit     Int      @id @default(autoincrement())
-  id_course   Int
-  seqNumber   Int    
-  name        String   @db.VarChar(30)
-  description String   @db.Text
-  course      course   @relation(fields: [id_course], references: [id_course], onDelete: Cascade, onUpdate: Restrict)
-  lesson      lesson[]
-  @@unique([id_course, name], map: "id_course")
 }
 
 model user {
@@ -112,6 +125,7 @@ model user {
   courses_users     courses_users[]
   invitation        invitation[]
   teachers_classes  teachers_classes[]
+  quizResult        quiz_result[]
 }
 
 enum TEACHERSCLASSESROLE {
