@@ -88,7 +88,7 @@ async function updateClass(id, newData) {
 
 // Query for delete class
 async function deleteClass(id) {
-    const response = await pc.classes.delete({
+    const response = await pc.groupclass.delete({
         where: { id }
     })
     return response

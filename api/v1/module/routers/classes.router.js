@@ -282,7 +282,7 @@ router.route('/classes/:id')
                     return Promise.reject(403); // Forbidden
                     
                 // if you are a tutor commit query for delete class
-                return deleteClass(id)
+                return deleteClass(+id)
             })
             .then(() =>  res.sendStatus(200))  // You changed a class data
             .catch((err) => {
