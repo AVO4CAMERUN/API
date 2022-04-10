@@ -122,7 +122,11 @@ router.route('/account')
         quindi restituera solo i propri dati 🤡
     */
     // Get user data
-    .get(AuthJWT.authenticateJWT, (req, res) => { 
+    .get(AuthJWT.authenticateJWT, (req, res) => {
+        // const user = AuthJWT.parseAuthorization(req.headers.authorization)
+        // const {email} = user;
+        // delete req.query.email
+        
         // Cast data for query
         for (const key of Object.keys(req.query)) 
             req.query[key] = JSON.parse(req.query[key])

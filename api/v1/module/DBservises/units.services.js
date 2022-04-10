@@ -17,8 +17,7 @@ async function createUnit (name, description, id_course) {
     // Create unit
     return await pc.unit.create({
         data: { name, description, id_course, seqNumber: last }
-    })
-     
+    }) 
 }
 
 // Check if unit belong Course

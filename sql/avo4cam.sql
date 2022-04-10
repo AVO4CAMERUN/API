@@ -29,24 +29,24 @@ INSERT INTO `unit` (`id_unit`, `id_course`, `seqNumber`, `name`, `description`) 
 (7, 2, 3, 'Componenti di potenza', '');
 
 -- LESSONS
-INSERT INTO `lesson` (`id_lesson`, `id_unit`, `name`, `creation_date`, `link_video`, `quiz`) VALUES
-(1, 1, 'Archives', '2022-02-14', '8SSGiA4myck', '{\"title\":\"Archivi, Database e DBMS\",\"quiz\":[{\"type\":\"single\",\"question\":\"Cos\'è un archivio?\",\"correct_answers\":[0],\"answers\":[\"É un insieme di informazioni\",\"É un insieme di soli documenti\",\"É un software per la condivisione di file\",\"Altro\"]},{\"type\":\"single\",\"question\":\"Perché utilizzare un hard disk per la memorizzazione dei dati in un archivio?\",\"correct_answers\":[0],\"answers\":[\"Perché è un supporto duraturo e molto capiente\",\"Perché è il supporto più veloce in commercio\",\"Perché può contenere file di piccola dimensione\",\"Perché viene definito da uno standard\"]},{\"type\":\"single\",\"question\":\"Qual è il più grande vantaggio nell\'utilizzo di un database?\",\"correct_answers\":[0],\"answers\":[\"Il fatto che i dati possano essere consultati da ogni parte del mondo\",\"Il fatto che sia molto veloce\",\"Il fatto che le informazioni vengano scritte su carta\",\"Il fatto che la memorizzazione sia temporanea\"]},{\"type\":\"single\",\"question\":\"Cosa si può fare grazie a un DBMS?\",\"correct_answers\":[0],\"answers\":[\"Manipolare, Scrivere e Interrogare le informazioni contenute in un Database\",\"Si possono soltanto aggiungere le informazioni\",\"Si possono soltanto eliminare le informazioni\",\"Nessuna delle precedenti\"]}]}'),
-(2, 1, 'Types of Database', '2022-02-14', 'NEqcz2Fv4zc', ''),
-(3, 2, 'Database Planning', '2022-02-14', '', ''),
-(4, 2, 'Entity Relationship Model', '2022-02-14', 'rsqbR4IdARQ', ''),
-(5, 3, 'Logical Layer', '2022-02-14', 'oxIUrf_MVZQ', ''),
-(6, 3, 'Derivation Rules', '2022-02-14', '', ''),
-(7, 3, 'Normalization', '2022-02-14', '', ''),
-(8, 4, 'MySql Introduction', '2022-02-14', '', ''),
-(9, 4, 'XAMPP, CLI, PhpMyAdmin', '2022-02-14', '', ''),
-(10, 4, 'Data Definition Language', '2022-02-14', '', ''),
-(11, 4, 'Data Manipulation Language', '2022-02-14', '', ''),
-(12, 4, 'Data Control Language', '2022-02-14', '', ''),
-(13, 4, 'Transaction Control Language', '2022-02-14', '', ''),
-(14, 4, 'SELECT', '2022-02-14', '', ''),
-(15, 4, 'Access', '2022-02-14', '', ''),
-(17, 5, 'Corrente Elettrica', '2022-02-24', '4aI0PiWgUoo', ''),
-(18, 5, 'Resistenza Elettrica', '2022-02-24', 'GM6CnkOH2XY', '');
+INSERT INTO `lesson` (`id_lesson`, `id_unit`, `seqNumber`, `name`, `creation_date`, `link_video`, `quiz`) VALUES
+(1, 1, 1, 'Archives', '2022-02-14', '8SSGiA4myck', '{\"title\":\"Archivi, Database e DBMS\",\"quiz\":[{\"type\":\"single\",\"question\":\"Cos\'è un archivio?\",\"correct_answers\":[0],\"answers\":[\"É un insieme di informazioni\",\"É un insieme di soli documenti\",\"É un software per la condivisione di file\",\"Altro\"]},{\"type\":\"single\",\"question\":\"Perché utilizzare un hard disk per la memorizzazione dei dati in un archivio?\",\"correct_answers\":[0],\"answers\":[\"Perché è un supporto duraturo e molto capiente\",\"Perché è il supporto più veloce in commercio\",\"Perché può contenere file di piccola dimensione\",\"Perché viene definito da uno standard\"]},{\"type\":\"single\",\"question\":\"Qual è il più grande vantaggio nell\'utilizzo di un database?\",\"correct_answers\":[0],\"answers\":[\"Il fatto che i dati possano essere consultati da ogni parte del mondo\",\"Il fatto che sia molto veloce\",\"Il fatto che le informazioni vengano scritte su carta\",\"Il fatto che la memorizzazione sia temporanea\"]},{\"type\":\"single\",\"question\":\"Cosa si può fare grazie a un DBMS?\",\"correct_answers\":[0],\"answers\":[\"Manipolare, Scrivere e Interrogare le informazioni contenute in un Database\",\"Si possono soltanto aggiungere le informazioni\",\"Si possono soltanto eliminare le informazioni\",\"Nessuna delle precedenti\"]}]}'),
+(2, 1, 2,'Types of Database', '2022-02-14', 'NEqcz2Fv4zc', ''),
+(3, 2, 1,'Database Planning', '2022-02-14', '', ''),
+(4, 2, 2,'Entity Relationship Model', '2022-02-14', 'rsqbR4IdARQ', ''),
+(5, 3, 1,'Logical Layer', '2022-02-14', 'oxIUrf_MVZQ', ''),
+(6, 3, 2,'Derivation Rules', '2022-02-14', '', ''),
+(7, 3, 3,'Normalization', '2022-02-14', '', ''),
+(8, 4, 1,'MySql Introduction', '2022-02-14', '', ''),
+(9, 4, 2,'XAMPP, CLI, PhpMyAdmin', '2022-02-14', '', ''),
+(10, 4, 3,'Data Definition Language', '2022-02-14', '', ''),
+(11, 4, 4,'Data Manipulation Language', '2022-02-14', '', ''),
+(12, 4, 5,'Data Control Language', '2022-02-14', '', ''),
+(13, 4, 6,'Transaction Control Language', '2022-02-14', '', ''),
+(14, 4, 7,'SELECT', '2022-02-14', '', ''),
+(15, 4, 8,'Access', '2022-02-14', '', ''),
+(17, 5, 1,'Corrente Elettrica', '2022-02-24', '4aI0PiWgUoo', ''),
+(18, 5, 2,'Resistenza Elettrica', '2022-02-24', 'GM6CnkOH2XY', '');
 
 -- CLASSES
 INSERT INTO `groupclass` (`id`, `name`, `creation_date`, `img_cover`, `archived`) VALUES

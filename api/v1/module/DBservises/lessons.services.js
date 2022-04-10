@@ -4,8 +4,18 @@ const { createGET, pc } = require('./query-generate.services');
 
 // Query for create lessons
 async function createLesson (id_unit, name, link_video, quiz) {
+    const lessons = await pc.lesson.findMany({
+        where: { id_unit },
+        orderBy: { seqNumber: 'asc' }
+    })
+
+    // Next lesson in unit with seqNumber for order
+    let last;
+    if (lessons.length !== 0) last = lessons.at(-1).seqNumber +1;
+    else last = 1;
+
     const response = await pc.lesson.create({
-        data: { id_unit, name, link_video, quiz }
+        data: { id_unit, name, link_video, quiz, seqNumber: last }
     })
     return response
 }
@@ -37,10 +47,29 @@ async function updateLessons (id_lesson, newData) {
 
 // Query for delete lessons
 async function deleteLessons (id_lesson) {
+    const lessons = await pc.lesson.findMany({
+        where: { id_unit },
+        orderBy: { seqNumber: 'asc' }
+    })
+
+    // Next lesson in courses with seqNumber for order
+    const breakPoint = units.findIndex(unit => unit.id_unit === id_unit)
+    
+    // Delete lesson
     const response = await pc.lesson.delete({
         where: { id_lesson }
     })
-    return response 
+
+    // Update seqNumber scale one
+    for (let i = breakPoint +1; i < lessons.length; i++) {
+        const id = lessons[i].id_unit;
+        const seqNumber = lessons[i].seqNumber -1
+        await pc.lesson.update({
+            where: { id_lesson: id },
+            data: { seqNumber }
+        })
+    }
+    return response
 }
 
 // Export functions 

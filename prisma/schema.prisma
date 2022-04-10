@@ -68,6 +68,7 @@ model invitation {
 model lesson {
   id_lesson     Int      @id @default(autoincrement())
   id_unit       Int
+  seqNumber     Int
   name          String   @db.VarChar(50)
   creation_date DateTime @default(now()) @db.Date
   link_video    String   @db.VarChar(255)
