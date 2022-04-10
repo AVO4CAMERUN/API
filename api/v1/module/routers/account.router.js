@@ -115,24 +115,13 @@ router.route('/account')
             }) // Server error
     })
 
-    /*
-        Da discutere le restrizioni
-        l'obbitivo è farlo rimanere un po social 
-        lo usiamo in front end per ottenere i propri dati
-        quindi restituera solo i propri dati 🤡
-    */
     // Get user data
     .get(AuthJWT.authenticateJWT, (req, res) => {
-        // const user = AuthJWT.parseAuthorization(req.headers.authorization)
-        // const {email} = user;
-        // delete req.query.email
-        
-        // Cast data for query
-        for (const key of Object.keys(req.query)) 
-            req.query[key] = JSON.parse(req.query[key])
+        const user = AuthJWT.parseAuthorization(req.headers.authorization)
+        const {email} = user;
 
         // Get users data by filters
-        getUserDataByFilter(req.query)
+        getUserDataByFilter({email})
             .then((usersData) => {
                 // Take the DB answer 
                 // Convert img in base64
