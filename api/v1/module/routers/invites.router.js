@@ -32,7 +32,7 @@ router.route('/invites')
             return res.sendStatus(403);    // You aren't a prof
 
         Promise.allSettled([
-            isParameterRoleInClass(email, class_id, 'TUTOR'),
+            isParameterRoleInClass(email, class_id, 'CREATOR'),
             isParameterRoleInClass(email, class_id, 'NORMAL')
         ])
         .then((result) => {

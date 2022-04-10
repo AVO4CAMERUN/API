@@ -3,8 +3,6 @@
 const { createGET, pc } = require('./query-generate.services'); 
 const sha256 = require('js-sha256');
 
-// console.log(pc.);
-
 // Query for create user
 async function createAccount (firstname, lastname, username, password, email, role) {
     const response = await pc.user.create({
@@ -39,8 +37,6 @@ async function getTeachersInClass(id_class) {
     })
     return response
 }
- 
-// email: 'avogadro4camerun@gmail.com',
 
 // Query for update user by filter and option
 async function updateUserInfo(email, newData) {

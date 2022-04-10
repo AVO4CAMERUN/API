@@ -20,26 +20,52 @@ async function addProfsClass(email, id_class, role) {
 
 // Query for get data class for id
 async function getClassDataByID (id) {
-    const response = await pc.groupclass.findUnique({
+    return await pc.groupclass.findUnique({
         where: { id }
     })
-    return response
 }
 
-// Query for get user data by filter
-async function getClassDataByFilter(filter) { // modificare createGET con joinObj ----------------------------------------------
+// Query for get 
+async function getOwnClassesIDS(email, role) {
+    let results;
+    if (role === 'TEACHER') results = await pc.teachers_classes.findMany({ where: { email } })
+    if (role === 'STUDENT') results = await pc.user.findMany({ where: { email } })
+
+    // 
+    const ids = [];
+    for (const c of results) ids.push(c.id_class)
+    // console.log(results);
+    // console.log(ids);
+    return ids
+}
+
+
+// Query for get classes data by filter
+async function getClassDataByFilter(filter, email) {
+    // Add filter for only own classes + own filter
+    filter.id = getOwnClassesIDS(email, 'STUDENT')
+
+    // Create get and execute
     const obj = createGET('groupclass', ['*'], filter)
     const { qf, select, where} = obj
     return await qf({ select, where })
 }
+/*
+   const classes = await pc.teachers_classes.findMany({ where: { email } })
+
+    // Add filter for only own classes + own filter
+    const ids = [];
+    for (const c of classes) ids.push(c.id_class)
+    filter.id = getIDClasses(email)
+
+*/
 
 // Check if the class is exist
 async function isExistClassByid(class_id) {
-    const response = await pc.groupclass.aggregate({
+    return await pc.groupclass.aggregate({
         where: { id: class_id },
         _count: true
     })
-    return response
 }
 
 // Check if the prof is tutor in the class 
@@ -74,6 +100,7 @@ module.exports = {
     addProfsClass,
     getClassDataByID,
     getClassDataByFilter,
+    getOwnClassesIDS,
     isExistClassByid,
     isParameterRoleInClass,
     updateClass,

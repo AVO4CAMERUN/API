@@ -17,6 +17,8 @@ const {  // Class services
     createClass, 
     addProfsClass, 
     getClassDataByFilter,
+    getClassDataByID,
+    getOwnClassesIDS,
     isParameterRoleInClass,
     updateClass,
     deleteClass
@@ -24,6 +26,40 @@ const {  // Class services
 
 // Allocate obj
 const router = express.Router();    //Create router Object    
+
+// Functions for formatter classes data people 
+
+// Function for resolve multi query in array on array structure
+const resolve = async (arrays) => {
+    let r = []
+    // [ {teachers: [...]} {students: [...]} ...]
+    for (const objClassPeople of arrays) {
+        r.push({
+            teachers: await objClassPeople.teachers,
+            students: await objClassPeople.students
+        })
+    }
+    return r
+}
+// Function for formatter teacher user data
+const teacherFormatter = (teachers) => {
+    let t = teachers
+    for (let k = 0; k < t.length; k++) {
+        // Delete usless data
+        delete t[k].user.password  //
+        delete t[k].user.role      //
+        delete t[k].id_class        //
+
+        // Flat obj in top levet
+        const obj = t[k].user
+        for (const key in obj) t[k][key] = obj[key];
+        delete t[k].user;
+
+        // Cast img
+        t[k].img_profile = 0 // BlobConvert.blobToBase64(teachers[k].img_profile);
+    }
+    return t
+}
 
 // Routers for classes
 router.route('/classes')
@@ -70,13 +106,12 @@ router.route('/classes')
                 const id = result[0].value.id; // id class
 
                 // Query array for add profs
-                const queryArray = [addProfsClass(email, id, 'TUTOR')]; // Push tutor
+                const queryArray = [addProfsClass(email, id, 'CREATOR')]; // Push tutor
 
                 // Push others prof if there are
                 for (const prof of teachers)  // controllare se sono prof 
                     queryArray.push(addProfsClass(prof, id, 'NORMAL'))
-                
-                
+
                 // Push student invitations if there are
                 for (const stud of students)
                     queryArray.push(addClassInvite(stud, id))  
@@ -93,50 +128,20 @@ router.route('/classes')
             }) // Server error
     })
 
-    // Get class data by filter
+    // Get class data by filter (TEACHER)
     .get(AuthJWT.authenticateJWT, Validator.getClass, (req, res) => {
+        const user = AuthJWT.parseAuthorization(req.headers.authorization)
+        const {email} = user;
+
         // Cast data for query
         for (const key of Object.keys(req.query)) 
             req.query[key] = JSON.parse(req.query[key])
 
-        // Function for resolve multi query in array on array structure
-        const resolve = async (arrays) => {
-            let r = []
-            // [ {teachers: [...]} {students: [...]} ...]
-            for (const objClassPeople of arrays) {
-                r.push({
-                    teachers: await objClassPeople.teachers,
-                    students: await objClassPeople.students
-                })
-            }
-            return r
-        }
-
-        // Function for formatter teacher user data
-        const teacherFormatter = (teachers) => {
-            let t = teachers
-            for (let k = 0; k < t.length; k++) {
-                // Delete usless data
-                delete t[k].user.password  //
-                delete t[k].user.role      //
-                delete t[k].id_class        //
-
-                // Flat obj in top levet
-                const obj = t[k].user
-                for (const key in obj) t[k][key] = obj[key];
-                delete t[k].user;
-
-                // Cast img
-                t[k].img_profile = 0// BlobConvert.blobToBase64(teachers[k].img_profile);
-            }
-            return t
-        }
-
         // Get classes
-        let classes = [] //
-        getClassDataByFilter(req.query)
+        const classes = []
+        getClassDataByFilter(req.query, email)
             .then((result) => {
-                classes = result;    // save classes
+                classes.push(...result)    // save classes
                 const classesInjectedPeopleQuery = []
 
                 // Convert img in base64 and query student
@@ -175,6 +180,59 @@ router.route('/classes')
 
 router.route('/classes/:id')
     
+    // Get by id only own classes (TEACHER AND STUDENT)
+    .get(AuthJWT.authenticateJWT, (req, res) => {
+        const user = AuthJWT.parseAuthorization(req.headers.authorization)
+        const {email, role} = user;
+        const id = +req.params.id
+
+        // 
+        let ownclass;
+        getOwnClassesIDS(email, role)
+            .then((ids) => {
+                // Check is own class
+                if (!ids.includes(id)) return Promise.reject(403)
+                return getClassDataByID(id)
+            })
+            .then((result) => {
+                ownclass = [result]  // save class
+                const classesInjectedPeopleQuery = []
+
+                // Convert img in base64 and query student
+                for (const c of ownclass) {
+                    c['img_cover'] = BlobConvert.blobToBase64(c['img_cover'])
+
+                    // Save stryctured query
+                    const teachersQuery = getTeachersInClass(c.id)
+                    const studentsQuery = getUserDataByFilter({id_class: c.id, role: 'STUDENT'})
+
+                    // [ {teachers: [...]} {students: [...]} ...]
+                    classesInjectedPeopleQuery.push({
+                        teachers: teachersQuery,
+                        students: studentsQuery
+                    })
+                }
+                return resolve(classesInjectedPeopleQuery) // Take the DB answer
+            })
+            .then((result) => {
+                // Insert member in class data
+                ownclass.forEach((c, i) => {
+                    const teachers = teacherFormatter(result[i].teachers)
+                    const students = result[i].students
+                 
+                    c.teachers = teachers
+                    c.students = students
+                })
+                res.send(...ownclass)
+            })
+            .catch((err) => {
+                console.log(err);
+                errorManagment('classes', err)
+                if(err === 400 || err === 403) res.sendStatus(err) // Error in parameter
+                else res.sendStatus(500)
+            }) // Server error
+    })
+
     // Update class data by id
     .put(AuthJWT.authenticateJWT, Validator.putClass, (req, res) =>{
         const user = AuthJWT.parseAuthorization(req.headers.authorization)
@@ -187,7 +245,7 @@ router.route('/classes/:id')
         if (req.body?.img_cover !== undefined)
             req.body.img_cover = BlobConvert.base64ToBlob(req.body.img_cover)
 
-        isParameterRoleInClass(email, +id, 'TUTOR')
+        isParameterRoleInClass(email, +id, 'CREATOR')
             .then((result) => {
                 // Check if you are the tutur of class
                 if(result['_count'] !== 1)
@@ -203,7 +261,7 @@ router.route('/classes/:id')
             .catch((err) => {
                 errorManagment('classes', err)
                 if(err === 400 || err === 403) res.sendStatus(err) // Error in parameter
-                else res.sendStatus(500) // Server error
+                else res.sendStatus(500)
             }) // Server error
     })
 
@@ -217,7 +275,7 @@ router.route('/classes/:id')
             return res.sendStatus(403)
 
         // Check if this class is own
-        isParameterRoleInClass(email, +id, 'TUTOR')
+        isParameterRoleInClass(email, +id, 'CREATOR')
             .then((result) => {
                 // Check if you are the tutur of class
                 if(result['_count'] !== 1)

@@ -114,7 +114,7 @@ model user {
 }
 
 enum TEACHERSCLASSESROLE {
-  TUTOR   @map("01")
+  CREATOR @map("01")
   NORMAL  @map("02")
 }
 
