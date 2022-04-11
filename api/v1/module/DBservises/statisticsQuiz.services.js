@@ -3,13 +3,13 @@
 const { createGET, pc } = require('./query-generate.services'); 
 
 // Query for create quiz result
-async function addResult () {
+async function addResult (id_lesson, email, numCorrect, numWrong) {
     return await pc.quiz_result.create({
-        data: { }
+        data: { id_lesson, email, numCorrect, numWrong }
     })
 }
 
-// Query for
+// Query for result by filter (in class)
 async function getResultByFilter (filter) {
 
     // metter logica qui
@@ -18,10 +18,10 @@ async function getResultByFilter (filter) {
     return await qf({ where })
 }
 
-// Query for
+// Query for delete old result
 async function delateResult () {
-    return await pc.quiz_result.create({
-        data: { }
+    return await pc.quiz_result.delete({
+       where: {}
     })
 }
 

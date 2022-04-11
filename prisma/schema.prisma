@@ -68,6 +68,8 @@ model quiz_result {
   id_lesson     Int
   email         String    @db.VarChar(255)
   date          DateTime  @default(now()) @db.Date
+  numCorrect    Int
+  numWrong      Int
   lesson        lesson    @relation(fields: [id_lesson], references: [id_lesson], onDelete: Cascade) 
   user          user      @relation(fields: [email], references: [email], onDelete: Cascade)
   @@unique([email, id_lesson, date])

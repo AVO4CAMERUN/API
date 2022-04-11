@@ -21,38 +21,35 @@ router.route('/quizresult')
     .post(AuthJWT.authenticateJWT, (req, res) => {
         const user = AuthJWT.parseAuthorization(req.headers.authorization)
         const { email } = user;
-        const {} = req.body
+        const {id_lesson, numCorrect, numWrong} = req.body
 
-
-        addResult()
-            .then((result) => {
-                // Check if you are the creator of course
-                if(result['_count'] !== 1)
-                    return Promise.reject(403);    // You aren't the creator
-                
-                // if you are a creator
-                return createUnit(name, description, +id_course) 
-            })
+        // Add result
+        addResult(id_lesson, email, numCorrect, numWrong)
             .then(() => res.sendStatus(200)) // Ok
             .catch((err) => {
-                console.log(err);
-                if(err === 400 || err === 403) res.sendStatus(err)  // Error in parameter
-                else {
-                    errorManagment('POST/ quizresult', err) 
-                    res.sendStatus(500) 
-                } // Server error
+                errorManagment('POST/ quizresult', err) 
+                res.sendStatus(500) 
             })
     })
 
-    // Get
-    .get(AuthJWT.authenticateJWT, (req, res) => {})
+    // Get quiz result 
+    .get(AuthJWT.authenticateJWT, (req, res) => {
+        const user = AuthJWT.parseAuthorization(req.headers.authorization)
+        const { email } = user;
 
-router.route('/')
+        // Professore i dati dei suo corsi o classi (da decidere)
+        // Student i propri dati 
+        getResultByFilter()
+    })
 
-    // Update
-    .put(AuthJWT.authenticateJWT, (req, res) => {})
+router.route('/quizresult/:id')
 
     // Delete
-    .delete(AuthJWT.authenticateJWT, (req, res) => {})
+    .delete(AuthJWT.authenticateJWT, (req, res) => {
+
+        // Penso mai solo per evitare il sovraccarico
+        // ma non da esporre come api
+        delateResult()
+    })
 
 module.exports = router
