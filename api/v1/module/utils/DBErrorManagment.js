@@ -24,6 +24,10 @@ const logger = winston.createLogger({
     ]
 })
 
+
+function error(err) {}
+
+
 // Functions for handling app error and find problems
 // Receve prisma code and log in file
 // Type error code prisma:
@@ -31,7 +35,7 @@ const logger = winston.createLogger({
     // Prisma Client (Query Engine)             P2
     // Prisma Migrate (Migration Engine)        P3
     // prisma db pull (Introspection Engine)    P4
-function errorManagment(routername, error) {
+function errorManagment(endpoint, res, error) {
     // Prisma class error 
     const errClasses = [
         Prisma.PrismaClientKnownRequestError,
@@ -47,7 +51,7 @@ function errorManagment(routername, error) {
         if (error instanceof obj) {
             logger.log({
                 level: 'error',
-                routername,
+                endpoint,
                 message: new obj()[Symbol.toStringTag]
             })
             flag = false
@@ -57,18 +61,14 @@ function errorManagment(routername, error) {
         
     }
 
-    // if 
-    if (flag) {
-        logger.log({
-            level: 'error',
-            routername,
-            message: 'undefined error'
-        })
-    }
+    // Aggiungere timestamp
+    if (flag) logger.log({ level: 'error', endpoint, message: 'undefined error' })
+    
+    res.sendStatus(error)
+    // res.sendStatus(500)
 }
 
 // Export functions 
 module.exports = {
     errorManagment
 }
-// Aggiungere timestamp

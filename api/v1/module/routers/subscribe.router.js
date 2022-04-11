@@ -37,10 +37,7 @@ router.route('/subscribe')
             
             res.sendStatus(200) // You are subscriptioned
         })     
-        .catch((err) => {
-            errorManagment('POST subscribe', err) 
-            res.sendStatus(500)
-        }) // Server error
+        .catch((err) => errorManagment('POST subscribe', res, err)) // Server error
     })
 
     // Get subscribe by filter
@@ -58,10 +55,7 @@ router.route('/subscribe')
                 // Send subscribtions data
                 res.send(response)
             }) 
-            .catch((err) => {
-                errorManagment('GET subscribe', err) 
-                res.sendStatus(500)
-            }) // Server error
+            .catch((err) => errorManagment('GET subscribe', res, err)) // Server error
     })
     
     // Delete subscribe to course by id
@@ -81,10 +75,7 @@ router.route('/subscribe')
             console.log(response);
             res.sendStatus(200)
         })  // ok
-        .catch((err) => {
-            errorManagment('DELETE subscribe', err) 
-            res.sendStatus(500)
-        }) // Server error
+        .catch((err) => errorManagment('DELETE subscribe', res, err)) // Server error
     })
 
 module.exports = router

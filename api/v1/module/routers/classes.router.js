@@ -120,12 +120,7 @@ router.route('/classes')
                 return Promise.allSettled(queryArray) // Send dynamic querys               
             })
             .then(() => res.sendStatus(200)) // You create a your new class 
-            .catch((err) => {
-                console.log(err);
-                errorManagment('POST classes', err)
-                if(err === 400) res.sendStatus(400) // Error in parameter
-                else res.sendStatus(500)
-            }) // Server error
+            .catch((err) => errorManagment('POST classes', res, err)) // Server error
     })
 
     // Get class data by filter (TEACHER)
@@ -171,11 +166,7 @@ router.route('/classes')
                 })
                 res.send(classes)
             })
-            .catch((err) => {
-                console.log(err);
-                errorManagment('GET classes', err)
-                res.sendStatus(500)
-            }) // Server error
+            .catch((err) => errorManagment('GET classes', res, err)) // Server error
     })
 
 router.route('/classes/:id')
@@ -225,12 +216,7 @@ router.route('/classes/:id')
                 })
                 res.send(...ownclass)
             })
-            .catch((err) => {
-                console.log(err);
-                errorManagment('GET classes/id', err)
-                if(err === 400 || err === 403) res.sendStatus(err) // Error in parameter
-                else res.sendStatus(500)
-            }) // Server error
+            .catch((err) => errorManagment('GET classes/id', res, err)) // Server error
     })
 
     // Update class data by id
@@ -258,11 +244,7 @@ router.route('/classes/:id')
                 newData.img_cover = BlobConvert.blobToBase64(newData.img_cover)
                 res.send(newData) // Ok
             })
-            .catch((err) => {
-                errorManagment('PUT classes/id', err)
-                if(err === 400 || err === 403) res.sendStatus(err) // Error in parameter
-                else res.sendStatus(500)
-            }) // Server error
+            .catch((err) => errorManagment('PUT classes/id', res, err)) // Server error
     })
 
     // Delete class by id
@@ -285,11 +267,7 @@ router.route('/classes/:id')
                 return deleteClass(+id)
             })
             .then(() =>  res.sendStatus(200))  // You changed a class data
-            .catch((err) => {
-                errorManagment('DELETE classes/id', err)
-                if(err === 400 || err === 403) res.sendStatus(err) // Error in parameter
-                else res.sendStatus(500)
-            }) // Server error
+            .catch((err) => errorManagment('DELETE classes/id', res, err)) // Server error
     })
 
 module.exports = router

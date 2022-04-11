@@ -75,11 +75,7 @@ router.route('/invites')
             return Promise.allSettled(queryArray) // Send dynamic querys
         })
         .then(() => res.sendStatus(200)) // You invieted students
-        .catch((err) => {
-            errorManagment('POST invites', err)
-            if(err === 400 || err === 403) res.sendStatus(err)    // Error in parameter
-            else res.sendStatus(500)
-        }) // Server error
+        .catch((err) => errorManagment('POST invites', res, err)) // Server error
         
     })
 
@@ -91,10 +87,7 @@ router.route('/invites')
         // Get own invited
         getInvitedDataByFilter({email})
             .then((invited) => res.send(invited)) // Send invites
-            .catch((err) => {
-                errorManagment('GET invites', err)
-                res.sendStatus(500)
-            }) // Server error
+            .catch((err) => errorManagment('GET invites', res, err)) // Server error
     })
 
 router.route('/invites/:id')
@@ -123,10 +116,7 @@ router.route('/invites/:id')
             ])
         })
         .then(() => res.sendStatus(200)) // Send ok
-        .catch((err) => {
-            errorManagment('GET invites/id', err)
-            res.sendStatus(500)
-        }) // Server error
+        .catch((err) => errorManagment('GET invites/id', res, err)) // Server error
     })
     
     // Reject invites
@@ -146,10 +136,7 @@ router.route('/invites/:id')
                 return deleteInvitation(+id)
             })
             .then(() => res.sendStatus(200)) // ok
-            .catch((err) => {
-                errorManagment('DELETE invites/id', err)
-                res.sendStatus(500)
-            }) // Server error
+            .catch((err) => errorManagment('DELETE invites/id', res, err)) // Server error
     })
 
 module.exports = router

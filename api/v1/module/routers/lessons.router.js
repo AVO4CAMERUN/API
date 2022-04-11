@@ -68,10 +68,7 @@ router.route('/lessons')
         // Query
         getLessonsDataByFilter(req.query)
             .then((response) => res.send(response))  // Send lessons data
-            .catch(() => {
-                errorManagment('GET lessons', err)
-                res.sendStatus(500)
-            })  // Server error
+            .catch((err) => errorManagment('GET lessons', res, err))  // Server error
     })
 
 router.route('/lessons/:id')
@@ -118,11 +115,7 @@ router.route('/lessons/:id')
                 return updateLessons(+id_lesson, req.body)
             })
             .then((newData) =>  res.send(newData)) // Ok
-            .catch((err) => {
-                if(err === 400 || err === 403) return res.sendStatus(err) // Error in parameter
-                errorManagment('PUT lessons/id', err)
-                res.sendStatus(500)
-            }) // Server error
+            .catch((err) => errorManagment('PUT lessons/id', res, err)) // Server error
     })
 
     // Delete lessons by id
@@ -166,13 +159,7 @@ router.route('/lessons/:id')
                 return deleteLessons(+id_lesson)
             })
             .then(() => res.sendStatus(200)) // ok
-            .catch((err) => {
-                if(err === 400 || err === 403) res.sendStatus(err)  // Error in parameter
-                else {
-                    errorManagment('DELETE lessons/id', err) 
-                    res.sendStatus(500)
-                } // Server error
-            })
+            .catch((err) => errorManagment('DELETE lessons/id', err))// Server error
     })
 
 module.exports = router

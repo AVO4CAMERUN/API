@@ -41,14 +41,7 @@ router.route('/units')
                 return createUnit(name, description, +id_course) 
             })
             .then(() => res.sendStatus(200)) // Ok
-            .catch((err) => {
-                console.log(err);
-                if(err === 400 || err === 403) res.sendStatus(err)  // Error in parameter
-                else {
-                    errorManagment('POST units', err) 
-                    res.sendStatus(500) 
-                } // Server error
-            })
+            .catch((err) => errorManagment('POST units', res, err))
     })
 
     // Get units data by filter (id corso)  // solo se sei iscritto -- cosa marginale
@@ -60,11 +53,7 @@ router.route('/units')
 
         getUnitsDataByFilter(req.query, {lesson: true})
             .then((response) => res.send(response)) // Send units data
-            .catch((err) => {
-                console.log(err);
-                errorManagment('GET units', err) 
-                res.sendStatus(500)
-            })  // Server error
+            .catch((err) => errorManagment('GET units', res, err))  // Server error
     })
 
 router.route('/units/:id')
@@ -98,11 +87,7 @@ router.route('/units/:id')
                 return updateUnits(+id_unit, req.body)
             })
             .then((newData) => res.send(newData)) // Ok
-            .catch((err) => {
-                if(err === 400 || err === 403) return res.sendStatus(err);    // Error in parameter
-                errorManagment('PUT units/id', err)  
-                res.sendStatus(500) 
-            }) // Server error
+            .catch((err) => errorManagment('PUT units/id', res, err)) // Server error
     })
 
     // Delete units by id
@@ -133,12 +118,7 @@ router.route('/units/:id')
                 return deleteUnit(+id_course, +id_unit)
             })
             .then(() => res.sendStatus(200))
-            .catch((err) => {
-                console.log(err);
-                if(err === 400 || err === 403) return res.sendStatus(err);    // Error in parameter
-                errorManagment('DELETE units/id', err)  
-                res.sendStatus(500); 
-            }) // Server error
+            .catch((err) => errorManagment('DELETE units/id', err)) // Server error
     })
 
 module.exports = router

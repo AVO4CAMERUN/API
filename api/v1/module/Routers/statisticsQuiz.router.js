@@ -26,10 +26,7 @@ router.route('/quizresult')
         // Add result
         addResult(id_lesson, email, numCorrect, numWrong)
             .then(() => res.sendStatus(200)) // Ok
-            .catch((err) => {
-                errorManagment('POST/ quizresult', err) 
-                res.sendStatus(500) 
-            })
+            .catch((err) => errorManagment('POST/ quizresult', res, err))
     })
 
     // Get quiz result 

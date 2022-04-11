@@ -31,18 +31,15 @@ router.route('/courses')
         const { name, description, subject } = req.body;
         let { img_cover } = req.body;
 
-        if (img_cover !== undefined) 
-            img_cover = BlobConvert.base64ToBlob(img_cover)
-          
         if (role !== 'TEACHER')
             return res.sendStatus(403);    // You aren't a prof
+
+        if (img_cover !== undefined) 
+            img_cover = BlobConvert.base64ToBlob(img_cover)
         
-        createCourse(name, email, description, img_cover, subject) // Create courses and save id
-            .then((result) => res.sendStatus(200))// You create a your new courses
-            .catch((err) => {
-                errorManagment('POST courses', err)
-                res.sendStatus(500) // Server error
-            }) // Server error
+        createCourse(name, email, description, img_cover, subject)     // Create courses and save id
+            .then((result) => res.sendStatus(200))                     // You create a your new courses
+            .catch((err) => errorManagment('POST courses', res, err))  // Server error
     })
 
     // Get courses data by filter
@@ -58,15 +55,11 @@ router.route('/courses')
                 if (Array.isArray(courses)) 
                     for (const course of courses)
                         course['img_cover'] = BlobConvert.blobToBase64(course['img_cover']);
-                else 
-                    return res.sendStatus(404); // Courses data not found
+                else return res.sendStatus(404); // Courses data not found
 
                 res.send(courses); // Send courses data   
             })
-            .catch((err) => {
-                errorManagment('GET courses', err)
-                res.sendStatus(500)
-            }) // Server error
+            .catch((err) => errorManagment('GET courses', res, err)) // Server error
     })
 
 router.route('/courses/:id')
@@ -97,12 +90,7 @@ router.route('/courses/:id')
                 newData.img_cover = BlobConvert.blobToBase64(newData.img_cover)
                 res.send(newData) // Ok
             })
-            .catch((err) => {
-                console.log(err);
-                errorManagment('PUT courses/id', err)
-                if(err === 400 || err === 403) res.sendStatus(err)    // Error in parameter
-                else res.sendStatus(500) // Server error
-            }) // Server error
+            .catch((err) => errorManagment('PUT courses/id', res, err)) // Server error
     })
 
     // Delete courses by id
@@ -126,11 +114,7 @@ router.route('/courses/:id')
                 return delateCourse(+id_course)
             })
             .then(() => res.sendStatus(200))
-            .catch((err) => {
-                errorManagment('DELETE courses/id', err)
-                if(err === 400 || err === 403) res.sendStatus(err)    // Error in parameter
-                else res.sendStatus(500) // Server error
-            }) // Server error
+            .catch((err) => errorManagment('DELETE courses/id', res, err)) // Server error
     })
 
 router.route('/courses/subject')
@@ -139,10 +123,7 @@ router.route('/courses/subject')
     .get((req, res) => {
         getCoursesSubject()
             .then((subjects) => res.send(subjects)) // Ok
-            .catch((err) => {                       // Server error
-                errorManagment('GET courses/subject', err)
-                res.sendStatus(500)
-            })
+            .catch((err) => errorManagment('GET courses/subject', res, err)) // Server error
     })
 
 module.exports = router

@@ -79,12 +79,7 @@ router.route('/account')
             console.log(code);
         })
         .then(() => res.sendStatus(200))  // Ok //Questo da errore sulla registrazione
-        .catch((err) => {
-            console.log(err);
-            if (err === 403) return res.sendStatus(err)
-            errorManagment('POST account', err)
-            res.sendStatus(500)
-        }) // Server error
+        .catch((err) => errorManagment('POST account', res, err)) // Server error
     })
     
     // Update user data 
@@ -95,23 +90,18 @@ router.route('/account')
         // Check evil request
         if(req.body?.role) 
             return res.sendStatus(403)
-        
+
         if (req.body?.img_profile)
             req.body.img_profile = `x'${BlobConvert.base64ToHex(req.body.img_profile)}'`
 
         // Update user info by request body
         updateUserInfo(email, req.body)
             .then((newData) =>  {
-                // Remove and covert data
-                delete newData.password
+                delete newData.password // Remove and covert data
                 newData.img_profile = BlobConvert.blobToBase64(newData.img_profile)
-
                 res.send(newData) // Ok
             })
-            .catch((err) => {
-                errorManagment('PUT account', err)
-                res.sendStatus(500)
-            }) // Server error
+            .catch((err) => errorManagment('PUT account', res, err)) // Server error
     })
 
     // Get user data
@@ -129,10 +119,7 @@ router.route('/account')
                 
                 res.send(usersData) // Response 
             })
-            .catch((err) => {
-                errorManagment('GET account', err)
-                res.sendStatus(500)
-            })  // Server error
+            .catch((err) => errorManagment('GET account', res, err))  // Server error
     })
 
     // Delete account
@@ -141,12 +128,10 @@ router.route('/account')
         let {email} = user;
 
         // Delete account and account relaction
-        delateAccount(email) // non necessario controllo tanto ce auth
+        // non necessario controllo tanto ce auth
+        delateAccount(email) 
             .then(() =>  res.sendStatus(200))  // Ok
-            .catch((err) => {
-                errorManagment('DELETE account', err)
-                res.sendStatus(500)
-            }) // Server error
+            .catch((err) => errorManagment('DELETE account', res, err)) // Server error
     })
 
 // Route cofirm code
@@ -167,15 +152,12 @@ router.get('/account/:confirmCode', (req, res) => {
 
     // Create account
     const {name, surname, username, email, password} = suspendedUsers[index];
-    createAccount(name, surname, username, password, email, 'STUDENT')  // In first time all users are student = 01
+    createAccount(name, surname, username, password, email, 'STUDENT')          // In first time all users are student = 01
         .then(() => {
             suspendedUsers.filter(value => value !== suspendedUsers[index]);    // Remove in the suspendedUsers 
             res.sendStatus(200) // Ok 
         })
-        .catch((err) => {
-            errorManagment('GET account/confirmCode', err)
-            res.sendStatus(500)
-        }) // Server error
+        .catch((err) => errorManagment('GET account/confirmCode', res, err)) // Server error
 })
 
 module.exports = router;
