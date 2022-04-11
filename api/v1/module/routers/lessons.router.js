@@ -53,7 +53,7 @@ router.route('/lessons')
                 if (err === 400 || err === 403) res.sendStatus(err)  // Error in parameter
                 else if (err.code === 'P2002') res.sendStatus(400)
                 else { 
-                    errorManagment('lessons', err)
+                    errorManagment('POST lessons', err)
                     res.sendStatus(500) // Server error
                 }
             })
@@ -69,7 +69,7 @@ router.route('/lessons')
         getLessonsDataByFilter(req.query)
             .then((response) => res.send(response))  // Send lessons data
             .catch(() => {
-                errorManagment('lessons', err)
+                errorManagment('GET lessons', err)
                 res.sendStatus(500)
             })  // Server error
     })
@@ -120,7 +120,7 @@ router.route('/lessons/:id')
             .then((newData) =>  res.send(newData)) // Ok
             .catch((err) => {
                 if(err === 400 || err === 403) return res.sendStatus(err) // Error in parameter
-                errorManagment('lessons', err)
+                errorManagment('PUT lessons/id', err)
                 res.sendStatus(500)
             }) // Server error
     })
@@ -169,7 +169,7 @@ router.route('/lessons/:id')
             .catch((err) => {
                 if(err === 400 || err === 403) res.sendStatus(err)  // Error in parameter
                 else {
-                    errorManagment('lessons', err) 
+                    errorManagment('DELETE lessons/id', err) 
                     res.sendStatus(500)
                 } // Server error
             })

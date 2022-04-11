@@ -76,9 +76,9 @@ router.route('/invites')
         })
         .then(() => res.sendStatus(200)) // You invieted students
         .catch((err) => {
-            errorManagment('invites', err)
+            errorManagment('POST invites', err)
             if(err === 400 || err === 403) res.sendStatus(err)    // Error in parameter
-            else res.sendStatus(500) // Server error
+            else res.sendStatus(500)
         }) // Server error
         
     })
@@ -92,7 +92,7 @@ router.route('/invites')
         getInvitedDataByFilter({email})
             .then((invited) => res.send(invited)) // Send invites
             .catch((err) => {
-                errorManagment('invites', err)
+                errorManagment('GET invites', err)
                 res.sendStatus(500)
             }) // Server error
     })
@@ -124,7 +124,7 @@ router.route('/invites/:id')
         })
         .then(() => res.sendStatus(200)) // Send ok
         .catch((err) => {
-            errorManagment('invites', err)
+            errorManagment('GET invites/id', err)
             res.sendStatus(500)
         }) // Server error
     })
@@ -147,7 +147,7 @@ router.route('/invites/:id')
             })
             .then(() => res.sendStatus(200)) // ok
             .catch((err) => {
-                errorManagment('invites', err)
+                errorManagment('DELETE invites/id', err)
                 res.sendStatus(500)
             }) // Server error
     })

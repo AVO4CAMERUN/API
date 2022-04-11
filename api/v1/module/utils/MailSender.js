@@ -12,13 +12,14 @@ const clientSecret = process.env.CLIENT_SECRET
 const refreshToken = process.env.REFRESH_TOKEN
 // const htmlstream = fs.createReadStream("content.html");
 
+// da sistemare
 // Create OAuth2 Client
-const OAuth2 = new google.auth.OAuth2(clientID, clientSecret, 'https://developers.google.com/oauthplayground')
-OAuth2.setCredentials({ refresh_token: refreshToken });
-const accessToken = OAuth2.getAccessToken()
+// const OAuth2 = new google.auth.OAuth2(clientID, clientSecret, 'https://developers.google.com/oauthplayground')
+// OAuth2.setCredentials({ refresh_token: refreshToken });
+// const accessToken = OAuth2.getAccessToken()
 
 //
-const transporter = nodemailer.createTransport({
+/*const transporter = nodemailer.createTransport({
     service,
     auth: {
         type: 'OAuth2',
@@ -28,7 +29,7 @@ const transporter = nodemailer.createTransport({
         refreshToken,
         accessToken 
     }
-});
+});*/
 
 // Email sending Method
 async function send(email, confirmCode) {

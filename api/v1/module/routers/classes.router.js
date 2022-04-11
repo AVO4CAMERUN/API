@@ -122,7 +122,7 @@ router.route('/classes')
             .then(() => res.sendStatus(200)) // You create a your new class 
             .catch((err) => {
                 console.log(err);
-                errorManagment('classes', err)
+                errorManagment('POST classes', err)
                 if(err === 400) res.sendStatus(400) // Error in parameter
                 else res.sendStatus(500)
             }) // Server error
@@ -173,7 +173,7 @@ router.route('/classes')
             })
             .catch((err) => {
                 console.log(err);
-                errorManagment('classes', err)
+                errorManagment('GET classes', err)
                 res.sendStatus(500)
             }) // Server error
     })
@@ -227,7 +227,7 @@ router.route('/classes/:id')
             })
             .catch((err) => {
                 console.log(err);
-                errorManagment('classes', err)
+                errorManagment('GET classes/id', err)
                 if(err === 400 || err === 403) res.sendStatus(err) // Error in parameter
                 else res.sendStatus(500)
             }) // Server error
@@ -259,7 +259,7 @@ router.route('/classes/:id')
                 res.send(newData) // Ok
             })
             .catch((err) => {
-                errorManagment('classes', err)
+                errorManagment('PUT classes/id', err)
                 if(err === 400 || err === 403) res.sendStatus(err) // Error in parameter
                 else res.sendStatus(500)
             }) // Server error
@@ -286,7 +286,7 @@ router.route('/classes/:id')
             })
             .then(() =>  res.sendStatus(200))  // You changed a class data
             .catch((err) => {
-                errorManagment('classes', err)
+                errorManagment('DELETE classes/id', err)
                 if(err === 400 || err === 403) res.sendStatus(err) // Error in parameter
                 else res.sendStatus(500)
             }) // Server error

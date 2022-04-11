@@ -45,7 +45,7 @@ router.route('/units')
                 console.log(err);
                 if(err === 400 || err === 403) res.sendStatus(err)  // Error in parameter
                 else {
-                    errorManagment('units', err) 
+                    errorManagment('POST units', err) 
                     res.sendStatus(500) 
                 } // Server error
             })
@@ -58,12 +58,11 @@ router.route('/units')
         for (const key of Object.keys(req.query)) 
             req.query[key] = JSON.parse(req.query[key])
 
-        //
         getUnitsDataByFilter(req.query, {lesson: true})
             .then((response) => res.send(response)) // Send units data
             .catch((err) => {
                 console.log(err);
-                errorManagment('units', err) 
+                errorManagment('GET units', err) 
                 res.sendStatus(500)
             })  // Server error
     })
@@ -77,14 +76,10 @@ router.route('/units/:id')
         const {id_course} = req.body;
         const id_unit = req.params.id;
 
-        if (role !== 'TEACHER') 
-            return res.sendStatus(403);    // You aren't a prof   
-
-        if (!id_course || req.body?.id_unit)
-            return res.sendStatus(400);     // Bad reqest
-
-        // Get course_id on body request
-        delete req.body.id_course;
+        // Check
+        if (role !== 'TEACHER') return res.sendStatus(403);             // You aren't a prof   
+        if (!id_course || req.body?.id_unit) return res.sendStatus(400);// Bad reqest
+        delete req.body.id_course;                                      // Get course_id on body request
 
         isCourseCreator(email, +id_course)
             .then((result) => {
@@ -105,7 +100,7 @@ router.route('/units/:id')
             .then((newData) => res.send(newData)) // Ok
             .catch((err) => {
                 if(err === 400 || err === 403) return res.sendStatus(err);    // Error in parameter
-                errorManagment('units', err)  
+                errorManagment('PUT units/id', err)  
                 res.sendStatus(500) 
             }) // Server error
     })
@@ -141,7 +136,7 @@ router.route('/units/:id')
             .catch((err) => {
                 console.log(err);
                 if(err === 400 || err === 403) return res.sendStatus(err);    // Error in parameter
-                errorManagment('units', err)  
+                errorManagment('DELETE units/id', err)  
                 res.sendStatus(500); 
             }) // Server error
     })

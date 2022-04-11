@@ -52,7 +52,7 @@ router.route('/login')
         })
         .catch((err) => {
             console.log(err);
-            errorManagment('login', err) 
+            errorManagment('POST login', err) 
             res.sendStatus(500)
         })  // Server error
     })

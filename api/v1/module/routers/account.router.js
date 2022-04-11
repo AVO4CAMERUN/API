@@ -82,7 +82,7 @@ router.route('/account')
         .catch((err) => {
             console.log(err);
             if (err === 403) return res.sendStatus(err)
-            errorManagment('account', err)
+            errorManagment('POST account', err)
             res.sendStatus(500)
         }) // Server error
     })
@@ -109,7 +109,7 @@ router.route('/account')
                 res.send(newData) // Ok
             })
             .catch((err) => {
-                errorManagment('account', err)
+                errorManagment('PUT account', err)
                 res.sendStatus(500)
             }) // Server error
     })
@@ -130,7 +130,7 @@ router.route('/account')
                 res.send(usersData) // Response 
             })
             .catch((err) => {
-                errorManagment('account', err)
+                errorManagment('GET account', err)
                 res.sendStatus(500)
             })  // Server error
     })
@@ -144,7 +144,7 @@ router.route('/account')
         delateAccount(email) // non necessario controllo tanto ce auth
             .then(() =>  res.sendStatus(200))  // Ok
             .catch((err) => {
-                errorManagment('account', err)
+                errorManagment('DELETE account', err)
                 res.sendStatus(500)
             }) // Server error
     })
@@ -173,7 +173,7 @@ router.get('/account/:confirmCode', (req, res) => {
             res.sendStatus(200) // Ok 
         })
         .catch((err) => {
-            errorManagment('account', err)
+            errorManagment('GET account/confirmCode', err)
             res.sendStatus(500)
         }) // Server error
 })

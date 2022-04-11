@@ -40,7 +40,7 @@ router.route('/courses')
         createCourse(name, email, description, img_cover, subject) // Create courses and save id
             .then((result) => res.sendStatus(200))// You create a your new courses
             .catch((err) => {
-                errorManagment('courses', err)
+                errorManagment('POST courses', err)
                 res.sendStatus(500) // Server error
             }) // Server error
     })
@@ -64,7 +64,7 @@ router.route('/courses')
                 res.send(courses); // Send courses data   
             })
             .catch((err) => {
-                errorManagment('courses', err)
+                errorManagment('GET courses', err)
                 res.sendStatus(500)
             }) // Server error
     })
@@ -99,7 +99,7 @@ router.route('/courses/:id')
             })
             .catch((err) => {
                 console.log(err);
-                errorManagment('courses', err)
+                errorManagment('PUT courses/id', err)
                 if(err === 400 || err === 403) res.sendStatus(err)    // Error in parameter
                 else res.sendStatus(500) // Server error
             }) // Server error
@@ -127,7 +127,7 @@ router.route('/courses/:id')
             })
             .then(() => res.sendStatus(200))
             .catch((err) => {
-                errorManagment('courses', err)
+                errorManagment('DELETE courses/id', err)
                 if(err === 400 || err === 403) res.sendStatus(err)    // Error in parameter
                 else res.sendStatus(500) // Server error
             }) // Server error
@@ -139,11 +139,10 @@ router.route('/courses/subject')
     .get((req, res) => {
         getCoursesSubject()
             .then((subjects) => res.send(subjects)) // Ok
-            .catch((err) => {
-                errorManagment('courses/subject', err)
-                if(err === 400 || err === 403) res.sendStatus(err)    // Error in parameter
-                else res.sendStatus(500)
-            }) // Server error
+            .catch((err) => {                       // Server error
+                errorManagment('GET courses/subject', err)
+                res.sendStatus(500)
+            })
     })
 
 module.exports = router

@@ -38,7 +38,7 @@ router.route('/subscribe')
             res.sendStatus(200) // You are subscriptioned
         })     
         .catch((err) => {
-            errorManagment('subscribe', err) 
+            errorManagment('POST subscribe', err) 
             res.sendStatus(500)
         }) // Server error
     })
@@ -59,7 +59,7 @@ router.route('/subscribe')
                 res.send(response)
             }) 
             .catch((err) => {
-                errorManagment('subscribe', err) 
+                errorManagment('GET subscribe', err) 
                 res.sendStatus(500)
             }) // Server error
     })
@@ -82,7 +82,7 @@ router.route('/subscribe')
             res.sendStatus(200)
         })  // ok
         .catch((err) => {
-            errorManagment('subscribe', err) 
+            errorManagment('DELETE subscribe', err) 
             res.sendStatus(500)
         }) // Server error
     })
