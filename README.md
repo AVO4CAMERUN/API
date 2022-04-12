@@ -5,10 +5,12 @@
 Avo4Camerun is a project that aims to help a Cameroonian school by making video lessons and sharing them via the online e-learning platform we are developing.
 The project is born from a collaboration between the public technical school “Amedeo Avogadro” of Turin and the no-profit organisation “Sermig”, also in Turin.
 
----------
+
+
 Cosa fa la tua applicazione
 Alcune delle sfide che hai dovuto affrontare e le funzionalità che speri di implementare in futuro.
-    ------
+
+
 [Abstract](https://avo4camerun.notion.site/avo4camerun/Avo4Camerun-ae70fa72aac8463d94213ae11600e5a3)
 
 ## Why?
@@ -25,6 +27,7 @@ Today Sermig has four seats (two in Italy, one in Brazil and one in Jordan) and 
 Perché hai usato le tecnologie che hai usato?
 
 
+
 ## Technology
 The we app is based on a client-server structure, the server is made with node.js, the database is a SQL structured DB made with MySQL.
 The front end uses the server's exposed service via rest api endpoint.
@@ -38,6 +41,7 @@ The Structure about AVO4CAMERUN project is very simple,
 it's consist of DBservices, Routers, Validator, Utils
 continuare
 
+da constinuare 
 
 ### Modules
 These modules will be installed for the project to work properly
@@ -66,7 +70,7 @@ After installing the js node and installing mysql we will execute these commands
 3. node server.js
 
 ## Swagger docs
-
+DESCRIZIONE
 [Swagger docs](https://app.swaggerhub.com/apis/AVO4CAMERUN/all/1.0.0)
 
 ## I badge
