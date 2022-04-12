@@ -1,37 +1,22 @@
-
 // Static class for auth
 class BlobConvert {
-
     // Methods for encode Blob to Base64 
     static blobToBase64(buffer) {
-        
-        // Type check
-        if(Buffer.isBuffer(buffer)){
-            return buffer.toString('base64');
-        }
+        if(Buffer.isBuffer(buffer)) return buffer.toString('base64')  // Type check
         return null;
     }
 
     // Methods for decode Base64 to Blob 
     static base64ToBlob(base64) {
-
-        // Type check
-        if(typeof base64 === 'string'){
-            return Buffer.from(base64, 'base64');
-        }
+        if(typeof base64 === 'string') return Buffer.from(base64, 'base64'); // Type check
         return null;
     }
     
     // Methods for decode Base64 to Blob 
     static base64ToHex(base64) {
-
-        // Type check
-        if(typeof base64 === 'string'){
-            return this.base64ToBlob(base64).toString('hex');
-        }
+        if(typeof base64 === 'string')return this.base64ToBlob(base64).toString('hex');// Type check
         return null;
     }
-
 }
 
 module.exports = BlobConvert;
