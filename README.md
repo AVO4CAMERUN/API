@@ -25,8 +25,11 @@ Today Sermig has four seats (two in Italy, one in Brazil and one in Jordan) and 
 
     ![serming](/assets/img/docs/sermig.jpg#center)
 
-<img align="center" width="100" height="100" src="../assets/img/docs/sermig.jpg">
+    <img align="center" width="100" height="100" src="../assets/img/docs/sermig.jpg">
 
+<p align="center">
+  <img width="460" height="300" src="http://www.fillmurray.com/460/300">
+</p>
 ## How?
 Perché hai usato le tecnologie che hai usato?
 
