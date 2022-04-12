@@ -92,7 +92,7 @@ router.route('/account')
             return res.sendStatus(403)
 
         if (req.body?.img_profile)
-            req.body.img_profile = `x'${BlobConvert.base64ToHex(req.body.img_profile)}'`
+            req.body.img_profile = BlobConvert.base64ToBlob(req.body.img_profile)
 
         // Update user info by request body
         updateUserInfo(email, req.body)

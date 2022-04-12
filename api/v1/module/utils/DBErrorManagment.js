@@ -36,6 +36,7 @@ const logger = createLogger({
 
 // Add IP richieta e dati geografici (per retropsettive su errori)
 function errorManagment(endpoint, res, error) {
+    // console.log(error);
     // Prisma class error 
     const errClasses = [
         Prisma.PrismaClientKnownRequestError,
@@ -61,14 +62,12 @@ function errorManagment(endpoint, res, error) {
         
     }
 
-    console.log(endpoint)
     // Aggiungere timestamp
     if (flag) logger.log({ level: 'error', endpoint, message: 'undefined error' })
 
     // Error response
     if (typeof error !== 'object') res.sendStatus(error) 
     else res.sendStatus(500)
-    
 }
 
 

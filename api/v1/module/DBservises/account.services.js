@@ -22,7 +22,7 @@ async function isParameterRole(email, role) {
 
 // Query for get user data by filter
 async function getUserDataByFilter(filterObj) {
-    const obj = createGET('user', ['email', 'role', 'username', 'firstname', 'lastname', 'img_profile', 'id_class', 'registration_date'], filterObj, 'OR')
+    const obj = createGET('user', ['email', 'role', 'username', 'firstname', 'lastname', 'img_profile', 'id_class', 'registration_date'], filterObj)
     const { qf, select, where} = obj
     return await qf({ select, where })
 }
@@ -44,11 +44,10 @@ async function updateUserInfo(email, newData) {
     if (newData?.password !== undefined) 
         newData.password = sha256(newData.password)
 
-    const response = await pc.user.update({
+    return await pc.user.update({
         where: { email },
         data: { ...newData }
     })
-    return response
 }
 
 // Query for delete user and all relaction
