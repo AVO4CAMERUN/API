@@ -1,5 +1,5 @@
 # AVO4CAMERUN API BACK-END
-![logo](/assets/img/logo_esteso_white.png")
+![logo](./assets/img/logo_esteso_white.png")
 
 ## TDTR;
 
