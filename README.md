@@ -1,5 +1,5 @@
 # AVO4CAMERUN API BACK-END
-![logo](/assets/img/logo_esteso_white.png/460/300)
+![logo](/assets/img/logo_esteso_white.png)
 
 ## TDTR;
 🤡😁😁✨😭🤬😑😡✨🤑🎪✨🤑🤡😂😊🤣🤗😘😗😶‍🌫️🙄😣😫😓🤤😪😲😞😞😟😩🤯🤯🤯😞🙃
@@ -35,8 +35,9 @@ The we app is based on a client-server structure, the server is made with node.j
 The front end uses the server's exposed service via rest api endpoint.
 We also used Docker to divide in containers all the different parts that will be installed on the hosting device.
 
-![deployment diagramm](/assets/img/docs/deployment.png)
-
+<p align="center">
+ <img style="margin-block: auto;" height="500" src="/assets/img/docs/deployment.png" />
+</p>
 
 ###  Project Structure
 The Structure about AVO4CAMERUN project is very simple, 
