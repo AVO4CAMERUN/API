@@ -23,7 +23,10 @@ Sermig is a no-profit organization that helps whoever needs, it’s founded in 1
 
 Today Sermig has four seats (two in Italy, one in Brazil and one in Jordan) and its volunteers are scattered all over the world. One of the many projects that Sermig is taking on is called “ReTe” that stands for “Restituzione Tecnologica” (Technology Sharing) and its objective is to teach in less developed countries the notions that we often give for granted but that could really help them in their situation. For more info: [sermig](https://en.sermig.org/)
 
-<img style="margin-block: auto;" width="460" height="300" src="http://www.fillmurray.com/460/300" />
+<p align="center">
+ <img style="margin-block: auto;" width="460" height="300" src="/assets/img/docs/sermig.jpg" />
+</p>
+
 ## How?
 Perché hai usato le tecnologie che hai usato?
 
