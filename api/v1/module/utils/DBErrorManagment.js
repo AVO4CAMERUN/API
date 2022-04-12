@@ -1,6 +1,7 @@
 // Module for handling and logging in file
 
-const winston = require("winston");
+const { createLogger, format, transports } = require('winston');
+const { combine, timestamp, label, json } = format;
 const { Prisma } = require('@prisma/client')
 
 // Error level
@@ -12,15 +13,18 @@ const logLevels = {
 }
 
 // Object for logging error
-const logger = winston.createLogger({
+const logger = createLogger({
     levels: logLevels,
+    format: combine(
+        label(),
+        timestamp(),
+        json()    
+    ),
     transports: [
-        new winston.transports.Console(),
-        new winston.transports.File({ filename: './log/error.log', level: 'error' })
+        new transports.Console(),
+        new transports.File({ filename: './log/error.log', level: 'error'})
     ]
 })
-
-function error(err) {}
 
 // Functions for handling app error and find problems
 // Receve prisma code and log in file
@@ -55,6 +59,7 @@ function errorManagment(endpoint, res, error) {
         
     }
 
+    console.log(endpoint)
     // Aggiungere timestamp
     if (flag) logger.log({ level: 'error', endpoint, message: 'undefined error' })
 
