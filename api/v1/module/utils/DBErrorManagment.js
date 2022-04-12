@@ -1,9 +1,5 @@
 // Module for handling and logging in file
 
-// https://www.prisma.io/docs/reference/api-reference/error-reference
-// https://www.npmjs.com/package/winston
-// https://blog.appsignal.com/2021/09/01/best-practices-for-logging-in-nodejs.html
-
 const winston = require("winston");
 const { Prisma } = require('@prisma/client')
 
@@ -24,9 +20,7 @@ const logger = winston.createLogger({
     ]
 })
 
-
 function error(err) {}
-
 
 // Functions for handling app error and find problems
 // Receve prisma code and log in file
@@ -72,3 +66,7 @@ function errorManagment(endpoint, res, error) {
 module.exports = {
     errorManagment
 }
+
+// https://www.prisma.io/docs/reference/api-reference/error-reference
+// https://www.npmjs.com/package/winston
+// https://blog.appsignal.com/2021/09/01/best-practices-for-logging-in-nodejs.html
