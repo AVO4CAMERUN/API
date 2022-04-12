@@ -18,10 +18,11 @@ We are a group of electrotechnics and computer science students that, with our t
 We all study at “Amedeo Avogadro” technical high school, in Turin, our ages range from 17 to 20 and we all agreed when one of our teachers, Alfonso Carlone, offered us to take on this project. We decided to team with the “ReTe” project because we all think that knowledge should be accessible to everyone, everywhere.
 
 ### What’s Sermig and project “ReTe”?
-![serming](/assets/img/docs/sermig.jpg)
 Sermig is a no-profit organization that helps whoever needs, it’s founded in 1964 in Turin by Ernesto Olivero whose goal was to “end world hunger”, and even if nowadays that dream is still far away Sermig has grown a lot ever since. 
 
 Today Sermig has four seats (two in Italy, one in Brazil and one in Jordan) and its volunteers are scattered all over the world. One of the many projects that Sermig is taking on is called “ReTe” that stands for “Restituzione Tecnologica” (Technology Sharing) and its objective is to teach in less developed countries the notions that we often give for granted but that could really help them in their situation. For more info: [https://en.sermig.org/](https://en.sermig.org/)
+
+![serming](/assets/img/docs/sermig.jpg)
 
 ## How?
 Perché hai usato le tecnologie che hai usato?
