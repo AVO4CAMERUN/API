@@ -33,6 +33,8 @@ const logger = createLogger({
     // Prisma Client (Query Engine)             P2
     // Prisma Migrate (Migration Engine)        P3
     // prisma db pull (Introspection Engine)    P4
+
+// Add IP richieta e dati geografici (per retropsettive su errori)
 function errorManagment(endpoint, res, error) {
     // Prisma class error 
     const errClasses = [
@@ -68,6 +70,8 @@ function errorManagment(endpoint, res, error) {
     else res.sendStatus(500)
     
 }
+
+
 
 // Export functions 
 module.exports = {
