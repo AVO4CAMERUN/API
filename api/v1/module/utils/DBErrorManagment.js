@@ -57,9 +57,11 @@ function errorManagment(endpoint, res, error) {
 
     // Aggiungere timestamp
     if (flag) logger.log({ level: 'error', endpoint, message: 'undefined error' })
+
+    // Error response
+    if (typeof error !== 'object') res.sendStatus(error) 
+    else res.sendStatus(500)
     
-    res.sendStatus(error)
-    // res.sendStatus(500)
 }
 
 // Export functions 
