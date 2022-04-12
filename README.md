@@ -23,17 +23,18 @@ Sermig is a no-profit organization that helps whoever needs, it’s founded in 1
 
 Today Sermig has four seats (two in Italy, one in Brazil and one in Jordan) and its volunteers are scattered all over the world. One of the many projects that Sermig is taking on is called “ReTe” that stands for “Restituzione Tecnologica” (Technology Sharing) and its objective is to teach in less developed countries the notions that we often give for granted but that could really help them in their situation. For more info: [sermig](https://en.sermig.org/)
 
-![serming](/assets/img/docs/sermig.jpg#center)
+<center>
+    ![serming](/assets/img/docs/sermig.jpg)
+</center>
 
 ## How?
 Perché hai usato le tecnologie che hai usato?
-
-
 
 ## Technology
 The we app is based on a client-server structure, the server is made with node.js, the database is a SQL structured DB made with MySQL.
 The front end uses the server's exposed service via rest api endpoint.
 We also used Docker to divide in containers all the different parts that will be installed on the hosting device.
+
 ![deployment diagramm](/assets/img/docs/deployment.png)
 
 
