@@ -1,31 +1,31 @@
 # AVO4CAMERUN API BACK-END
-![logo](/assets/img/logo_esteso_white.png)
+![logo](/assets/img/logo_esteso_white.png/460\300")
 
 ## TDTR;
-🤡😁😁✨😭🤬😑😡✨🤑🎪✨🤑🤡😂😊🤣🤗😘😗😶‍🌫️🙄😣😫😓🤤😪😲😞😞😟😩🤯🤯🤯😞🙃
 
 ## What?
 Avo4Camerun is a project that aims to help a Cameroonian school by making video lessons and sharing them via the online e-learning platform we are developing.
 The project is born from a collaboration between the public technical school “Amedeo Avogadro” of Turin and the no-profit organisation “Sermig”, also in Turin.
 
-
-
-Cosa fa la tua applicazione
-Alcune delle sfide che hai dovuto affrontare e le funzionalità che speri di implementare in futuro.
-
+**ADD: Alcune delle sfide che hai dovuto affrontare e le funzionalità che speri di implementare in futuro.**
 
 ## Why?
 We are a group of electrotechnics and computer science students that, with our teachers’ and Sermig’s aid, decided to share with the Cameroonian students what we normally learn at school here in Italy.
-We all study at “Amedeo Avogadro” technical high school, in Turin, our ages range from 17 to 20 and we all agreed when one of our teachers, Alfonso Carlone, offered us to take on this project. We decided to team with the “ReTe” project because we all think that knowledge should be accessible to everyone, everywhere.
+
+We all study at “Amedeo Avogadro” technical high school, in Turin, our ages range from 17 to 20 and we all agreed when one of our teachers, Alfonso Carlone, offered us to take on this project. 
+
+We decided to team with the “ReTe” project because we all think that knowledge should be accessible to everyone, everywhere.
 
 ### What’s Sermig and project “ReTe”?
+Sermig is a no-profit organization that helps whoever needs, it’s founded in 1964 in Turin by Ernesto Olivero whose goal was to “end world hunger”, and even if nowadays that dream is still far away Sermig has grown a lot ever since.
+
 <p align="center">
  <img style="margin-block: auto;" width="460" height="300" src="/assets/img/docs/sermig.jpg" />
 </p>
 
-Sermig is a no-profit organization that helps whoever needs, it’s founded in 1964 in Turin by Ernesto Olivero whose goal was to “end world hunger”, and even if nowadays that dream is still far away Sermig has grown a lot ever since. 
- 
-Today Sermig has four seats (two in Italy, one in Brazil and one in Jordan) and its volunteers are scattered all over the world. One of the many projects that Sermig is taking on is called “ReTe” that stands for “Restituzione Tecnologica” (Technology Sharing) and its objective is to teach in less developed countries the notions that we often give for granted but that could really help them in their situation. For more info: [sermig](https://en.sermig.org/)
+Today Sermig has four seats (two in Italy, one in Brazil and one in Jordan) and its volunteers are scattered all over the world. 
+One of the many projects that Sermig is taking on is called “ReTe” that stands for “Restituzione Tecnologica” (Technology Sharing) and its objective is to teach in less developed countries the notions that we often give for granted but that could really help them in their situation. 
+For more info: [sermig](https://en.sermig.org/)
 
 ## How?
 Perché hai usato le tecnologie che hai usato?
@@ -35,19 +35,15 @@ The we app is based on a client-server structure, the server is made with node.j
 The front end uses the server's exposed service via rest api endpoint.
 We also used Docker to divide in containers all the different parts that will be installed on the hosting device.
 
-<p align="center">
- <img style="margin-block: auto;" height="500" src="/assets/img/docs/deployment.png" />
-</p>
+![deployment diagramm](/assets/img/docs/deployment.png)
 
 ###  Project Structure
-The Structure about AVO4CAMERUN project is very simple, 
-it's consist of DBservices, Routers, Validator, Utils
-continuare
-
-da constinuare 
+The Structure about AVO4CAMERUN project is very simple, it's consist of DBservices, Routers, Validator, Utils.
+The main file is server.js, it call whole app and listen http request.
+To find out more, consult the files in repo😁.
 
 ### Modules
-These modules will be installed for the project to work properly
+These modules will be installed for the project to work properly:
 
 - [node.js](https://nodejs.org/en/)                                         - evented I/O for the backend
 - [express](https://expressjs.com/)                                         - fast node.js network app framework
@@ -73,10 +69,11 @@ After installing the js node and installing mysql we will execute these commands
 3. node server.js
 
 ## Swagger docs
-DESCRIZIONE
+The api design is here:
 [Swagger docs](https://app.swaggerhub.com/apis/AVO4CAMERUN/all/1.0.0)
 
 ## I badge
 
 ## References
 [Abstract](https://avo4camerun.notion.site/avo4camerun/Avo4Camerun-ae70fa72aac8463d94213ae11600e5a3)
+[PM Teams](https://www.google.com/url?sa=i&url=https%3A%2F%2Fanimalcrossing.fandom.com%2Fwiki%2FPietro&psig=AOvVaw2pddyWrd7AelO70VQwvIxv&ust=1649862741955000&source=images&cd=vfe&ved=0CAoQjRxqFwoTCLiGov3njvcCFQAAAAAdAAAAABAD)
