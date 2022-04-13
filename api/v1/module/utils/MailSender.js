@@ -39,17 +39,17 @@ async function send(email, confirmCode) {
 
         // Send mail with defined transport object
         const mailOptions = {
-            from: '"s Foo 👻" <foo@example.com>', // sender address
-            to: "s5779870b@studenti.itisavogadro.it", // list of receivers
-            subject: "Hello ✔", // Subject line
-            text: "Hello world?", // plain text body
-            html: "<b>Hello world?</b>", // html body
+            from: USER,
+            to: email,
+            subject: 'Subscribe 📖',
+            text: `/${confirmCode}`
+            // html: "<b>Hello world?</b>",
+            // fare email html carina
         }
 
         const info = await transporter.sendMail(mailOptions) // Sending email
         // console.log(info)
     } catch (error) {
-        console.log(error);
         return error
     }
 }
