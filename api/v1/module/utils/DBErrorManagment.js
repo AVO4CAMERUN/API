@@ -36,7 +36,7 @@ const logger = createLogger({
 
 // Add IP richieta e dati geografici (per retropsettive su errori)
 function errorManagment(endpoint, res, error) {
-    // console.log(error);
+    console.log(error);
     // Prisma class error 
     const errClasses = [
         Prisma.PrismaClientKnownRequestError,
