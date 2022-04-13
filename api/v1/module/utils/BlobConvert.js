@@ -8,7 +8,7 @@ class BlobConvert {
 
     // Methods for decode Base64 to Blob 
     static base64ToBlob(base64) {
-        if(typeof base64 === 'string') return Buffer.from(base64, 'base64'); // Type check
+        if(typeof base64 === 'string' && base64 !== '') return Buffer.from(base64, 'base64'); // Type check
         return null;
     }
     

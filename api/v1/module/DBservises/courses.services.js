@@ -28,7 +28,7 @@ async function getCoursesSubject() {
 
 
 // Query for update course by id and option
-async function updateCourses(id_course, newData){
+async function updateCourses(id_course, newData) {
     const response = await pc.course.update({
         where: { id_course },
         data: { ...newData }

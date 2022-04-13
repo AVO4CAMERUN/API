@@ -44,12 +44,13 @@ async function send(email, confirmCode) {
             subject: 'Subscribe 📖',
             text: `/${confirmCode}`
             // html: "<b>Hello world?</b>",
-            // fare email html carina
+            // fare email html carina 
         }
 
         const info = await transporter.sendMail(mailOptions) // Sending email
         // console.log(info)
     } catch (error) {
+        console.log(error);
         return error
     }
 }

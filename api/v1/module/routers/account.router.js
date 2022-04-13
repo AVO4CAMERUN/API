@@ -91,7 +91,7 @@ router.route('/account')
         if(req.body?.role) 
             return res.sendStatus(403)
 
-        if (req.body?.img_profile)
+        if (req.body?.img_profile  !== undefined)
             req.body.img_profile = BlobConvert.base64ToBlob(req.body.img_profile)
 
         // Update user info by request body

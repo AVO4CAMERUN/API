@@ -73,10 +73,9 @@ router.route('/courses/:id')
         if (role !== 'TEACHER') return res.sendStatus(403);    // You aren't a prof
         if (req.body?.email_creator) return res.sendStatus(403);  
 
-        if (req.body?.img_cover)
+        if (req.body?.img_cover !== undefined)
             req.body.img_cover = BlobConvert.base64ToBlob(req.body.img_cover)
 
-        
         isCourseCreator(email, +id_course)
             .then((result) => {
                 // Check if you are the creator of course
