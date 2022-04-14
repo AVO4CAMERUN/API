@@ -10,18 +10,13 @@ const CLIENT_ID     = process.env.CLIENT_ID
 const CLEINT_SECRET = process.env.CLIENT_SECRET
 const REDIRECT_URI  = process.env.REDIRECT_URI
 const REFRESH_TOKEN = process.env.REFRESH_TOKEN
-// const htmlstream = fs.createReadStream("content.html");
 
 // Create OAuth2 Client
 const OAuth2 = new google.auth.OAuth2(CLIENT_ID, CLEINT_SECRET, REDIRECT_URI)
 OAuth2.setCredentials({ refresh_token: REFRESH_TOKEN });
 
-// Email sending Method
-async function send(email, confirmCode) {
-    // html email CAMBIARE LINK IN PAGINA CHE USA API
-    // console.log(email, confirmCode);
-
-    //
+// Email sending function
+async function send(options) {
     try {
         // Set up auth email
         const accessToken = await OAuth2.getAccessToken() 
@@ -37,27 +32,35 @@ async function send(email, confirmCode) {
             }
         })
 
-        // Send mail with defined transport object
-        const mailOptions = {
-            from: USER,
-            to: email,
-            subject: 'Subscribe 📖',
-            text: `/${confirmCode}`
-            // html: "<b>Hello world?</b>",
-            // fare email html carina 
-        }
-
-        const info = await transporter.sendMail(mailOptions) // Sending email
-        // console.log(info)
+        // Sending email
+        await transporter.sendMail(options)
     } catch (error) {
-        console.log(error);
         return error
     }
 }
 
+// Subscribe email sending function
+async function subscribe(email, confirmCode) {
+    // const htmlstream = fs.createReadStream("content.html");
+    // html email CAMBIARE LINK IN PAGINA CHE USA API
+    // console.log(email, confirmCode);
+
+    // Send mail with defined transport object
+    const options = {
+        from: USER,
+        to: email,
+        subject: 'Subscribe 📖',
+        text: `http://localhost/api/v1/account/${confirmCode}`
+        // html: "<b>Hello world?</b>",
+        // fare email html carina 
+    }
+    await send(options)
+}
+
 // Export functions
 module.exports = {
-    send
+    send,
+    subscribe
 };
 
 // Bisogna usare per forza OAuth2 per motivi sia di sicurezza sia perche glia altri metodi scadono il 30 maggio
