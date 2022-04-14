@@ -27,38 +27,27 @@ async function getClassDataByID (id) {
 
 // Query for get 
 async function getOwnClassesIDS(email, role) {
+    console.log(role)
     let results;
     if (role === 'TEACHER') results = await pc.teachers_classes.findMany({ where: { email } })
     if (role === 'STUDENT') results = await pc.user.findMany({ where: { email } })
-
+    
     // 
     const ids = [];
     for (const c of results) ids.push(c.id_class)
-    // console.log(results);
-    // console.log(ids);
     return ids
 }
 
-
 // Query for get classes data by filter
-async function getClassDataByFilter(filter, email) {
+async function getClassDataByFilter(filter, email, role) {
     // Add filter for only own classes + own filter
-    filter.id = getOwnClassesIDS(email, 'STUDENT')
+    filter.id = await getOwnClassesIDS(email, role)
 
     // Create get and execute
     const obj = createGET('groupclass', ['*'], filter)
     const { qf, select, where} = obj
     return await qf({ select, where })
 }
-/*
-   const classes = await pc.teachers_classes.findMany({ where: { email } })
-
-    // Add filter for only own classes + own filter
-    const ids = [];
-    for (const c of classes) ids.push(c.id_class)
-    filter.id = getIDClasses(email)
-
-*/
 
 // Check if the class is exist
 async function isExistClassByid(class_id) {

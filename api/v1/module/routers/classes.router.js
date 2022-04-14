@@ -126,15 +126,16 @@ router.route('/classes')
     // Get class data by filter (TEACHER)
     .get(AuthJWT.authenticateJWT, Validator.getClass, (req, res) => {
         const user = AuthJWT.parseAuthorization(req.headers.authorization)
-        const {email} = user;
+        const {email, role} = user;
 
         // Cast data for query
-        for (const key of Object.keys(req.query)) 
-            req.query[key] = JSON.parse(req.query[key])
+        if (role !== 'STUDENT') 
+            for (const key of Object.keys(req.query)) 
+                req.query[key] = JSON.parse(req.query[key])
 
         // Get classes
         const classes = []
-        getClassDataByFilter(req.query, email)
+        getClassDataByFilter(req.query, email, role)
             .then((result) => {
                 classes.push(...result)    // save classes
                 const classesInjectedPeopleQuery = []

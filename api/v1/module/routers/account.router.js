@@ -67,7 +67,7 @@ router.route('/account')
 
             // Set expiration code
             setTimeout(() => {
-                suspendedUsers.forEach( (suspendUser, index) => {
+                suspendedUsers.forEach((suspendUser, index) => {
                     if(code === suspendUser['code']) 
                         suspendedUsers.splice(index, 1);     // Delete suspendUser with expired codes
                 })
@@ -78,7 +78,7 @@ router.route('/account')
             MailSender.subscribe(email, code); // Send email to confirm account
             console.log(code);
         })
-        .then(() => res.sendStatus(200))  // Ok //Questo da errore sulla registrazione
+        .then(() => res.sendStatus(200))  // Ok
         .catch((err) => errorManagment('POST account', res, err)) // Server error
     })
     
