@@ -74,7 +74,7 @@ const putCourses = [
             if(value !== undefined)
                 return [
                     'Mathematics',
-                    'Electrical_engineering', 
+                    'Electrical Engineering', 
                     'Informatics',
                     'English', 
                     'Statistics', 
@@ -82,7 +82,7 @@ const putCourses = [
                 ].includes(value)
             return true
         })
-        .withMessage('Insert one: Mathematics, Electrical engineering, Informatics, English, Statistics, Chemistry') 
+        .withMessage('Insert one: Mathematics, Electrical Engineering, Informatics, English, Statistics, Chemistry') 
         .bail(),
     (req, res, next) => {
         const errors = validationResult(req);
