@@ -129,7 +129,7 @@ router.route('/classes')
         const {email, role} = user;
 
         // Cast data for query
-        if (role !== 'STUDENT') 
+        if (role !== 'STUDENT')
             for (const key of Object.keys(req.query)) 
                 req.query[key] = JSON.parse(req.query[key])
 
@@ -172,7 +172,7 @@ router.route('/classes')
 
 router.route('/classes/:id')
     
-    // Get by id only own classes (TEACHER AND STUDENT)
+    // Get by id only own classes (TEACHER AND STUDENT) // forse da togliere
     .get(AuthJWT.authenticateJWT, (req, res) => {
         const user = AuthJWT.parseAuthorization(req.headers.authorization)
         const {email, role} = user;

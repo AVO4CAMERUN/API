@@ -470,7 +470,16 @@ module.exports = {
             bearerAuth: []
           }
         ],
-        parameters: [ // rivedere parametri da utilizzare
+        parameters: [
+          {
+            in: "query",
+            name: "id",
+            description: "",
+            required: false,
+            schema: {
+              type: "integer",
+            }
+          },
           {
             in: "query",
             name: "name",
@@ -478,6 +487,24 @@ module.exports = {
             required: false,
             schema: {
               type: "string",
+            }
+          },
+          {
+            in: "query",
+            name: "creation_date",
+            description: "",
+            required: false,
+            schema: {
+              type: "string",
+            }
+          },
+          {
+            in: "query",
+            name: "archived",
+            description: "",
+            required: false,
+            schema: {
+              type: "boolean",
             }
           }
         ],
@@ -496,7 +523,59 @@ module.exports = {
     },
     "/classes/{id}": {
       put: {
-        tags: ["classes"]
+        tags: ["classes"],
+        summary: "",
+        description: "",
+        produces: ["application/json"],
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        requestBody: {
+          description: "",
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  name: {
+                    type: "string",
+                    example: ""
+                  },
+                  img_cover: {
+                    type: "string",
+                    example: ""
+                  },
+                  students: {
+                    type: "array",
+                    items: {
+                      type: "string"
+                    }
+                  },
+                  teachers: {
+                    type: "array",
+                    items: {
+                      type: "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: {
+            description: "OK"
+          },
+          403: {
+            description: "Forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       },
       delete: {
         tags: ["classes"]
