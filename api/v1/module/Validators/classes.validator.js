@@ -48,18 +48,6 @@ const putClass = [
         .isEmpty()
         .withMessage('You don\t change id')
         .bail(),
-    check('name')
-        .trim()
-        .escape()
-        .notEmpty()
-        .withMessage('Name can not be empty!')
-        .bail()
-        .isLength({min: 3})
-        .withMessage('Minimum 3 characters required!')
-        .bail()
-        .isLength({max: 50})
-        .withMessage('Maximum 3 characters required!') 
-        .bail(),
     check('img_cover')
         .isBase64()
         .withMessage('Cover be must base64')

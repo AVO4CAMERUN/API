@@ -221,7 +221,7 @@ router.route('/classes/:id')
     })
 
     // Update class data by id
-    .put(AuthJWT.authenticateJWT, Validator.putClass, (req, res) =>{
+    .put(AuthJWT.authenticateJWT, /*Validator.putClass,*/ (req, res) =>{
         const user = AuthJWT.parseAuthorization(req.headers.authorization)
         const {email, role} = user;
         const id = req.params.id;

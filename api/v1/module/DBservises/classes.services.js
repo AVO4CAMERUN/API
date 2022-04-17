@@ -27,7 +27,6 @@ async function getClassDataByID (id) {
 
 // Query for get 
 async function getOwnClassesIDS(email, role) {
-    console.log(role)
     let results;
     if (role === 'TEACHER') results = await pc.teachers_classes.findMany({ where: { email } })
     if (role === 'STUDENT') results = await pc.user.findMany({ where: { email } })

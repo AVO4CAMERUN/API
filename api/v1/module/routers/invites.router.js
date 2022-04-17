@@ -39,12 +39,10 @@ router.route('/invites')
             const isProf = result[0].value['_count'] + result[1].value['_count'];
 
             // Check is prof in class
-            if(!isProf)
-                return Promise.reject(403);    // You aren't a prof in class
+            if(!isProf) return Promise.reject(403);    // You aren't a prof in class
 
             // Check students is iterable
-            if(!Array.isArray(students))
-                return Promise.reject(400); // Error in parameter
+            if(!Array.isArray(students)) return Promise.reject(400); // Error in parameter
 
             // Create query for check student profile and class exist
             let checkQuerys = [];
@@ -74,7 +72,7 @@ router.route('/invites')
             // Send invite for class
             return Promise.allSettled(queryArray) // Send dynamic querys
         })
-        .then(() => res.sendStatus(200)) // You invieted students
+        .then((ww) => res.sendStatus(200)) // You invieted students
         .catch((err) => errorManagment('POST invites', res, err)) // Server error
         
     })

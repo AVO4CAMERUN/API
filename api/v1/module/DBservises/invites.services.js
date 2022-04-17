@@ -4,7 +4,7 @@ const { createGET, pc } = require('./query-generate.services');
 
 // Query for add invite for join class 
 async function addClassInvite (email, id_class) {
-    const response = await pc.invitations.create({
+    const response = await pc.invitation.create({
         data: { email, id_class }
     })
     return response
