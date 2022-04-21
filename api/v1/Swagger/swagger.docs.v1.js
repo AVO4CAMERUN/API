@@ -66,7 +66,7 @@ module.exports = {
     }
   ],
   paths: {
-    "/login": {
+    "/login": { // Works
       post: {
         tags: ["login"],
         summary: "",
@@ -175,7 +175,7 @@ module.exports = {
       }
     },
     "/account": {
-      post: {
+      post: { // Works
         tags: ["account"],
         summary: "",
         description: "",
@@ -193,11 +193,11 @@ module.exports = {
               schema: {
                 type: "object",
                 properties: {
-                  name: {
+                  firstname: {
                     type: "string",
                     example: ""
                   },
-                  surname: {
+                  lastname: {
                     type: "string",
                     example: ""
                   },
@@ -521,7 +521,7 @@ module.exports = {
         }
       }
     },
-    "/classes/{id}": {
+    "/classes/{id}": { // Works
       put: {
         tags: ["classes"],
         summary: "",
@@ -530,6 +530,17 @@ module.exports = {
         security: [
           {
             bearerAuth: []
+          }
+        ],
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "",
+            required: true,
+            schema: {
+              type: "integer",
+            }
           }
         ],
         requestBody: {
@@ -578,23 +589,173 @@ module.exports = {
         }
       },
       delete: {
-        tags: ["classes"]
+        tags: ["classes"],
+        summary: "",
+        produces: ["application/json"],
+        description: "",
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "",
+            required: true,
+            schema: {
+              type: "integer",
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: "OK"
+          },
+          403: {
+            description: "Forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       }
     },
-    "/invites": {
-      post: {
-        tags: ["invites"]
+    "/invites": { // Works
+      post: { 
+        tags: ["invites"],
+        summary: "",
+        description: "",
+        consumes: ["application/json"],
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        requestBody: {
+          description: "",
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  class_id: {
+                    type: "integer"
+                  },
+                  students: {
+                    type: "array",
+                    items: {
+                      type: "string",
+                      example: ""
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: {
+            description: "OK"
+          },
+          403: {
+            description: "Forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       },
       get: {
-        tags: ["invites"]
+        tags: ["invites"],
+        summary: "",
+        description: "",
+        produces: ["application/json"],
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        responses: {
+          200: {
+            description: "OK"
+          },
+          403: {
+            description: "Forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       }
     },
     "/invites/{id}": {
       get: {
-        tags: ["invites"]
+        tags: ["invites"],
+        summary: "Accept Invite",
+        produces: ["application/json"],
+        description: "",
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "",
+            required: true,
+            schema: {
+              type: "integer",
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: "OK"
+          },
+          403: {
+            description: "Forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       },
       delete: {
-        tags: ["invites"]
+        tags: ["invites"],
+        summary: "Reject Invite",
+        description: "",
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "",
+            required: true,
+            schema: {
+              type: "integer",
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: "OK"
+          },
+          403: {
+            description: "Forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       }
     },
     "/courses": {
