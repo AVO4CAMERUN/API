@@ -56,9 +56,15 @@ const teacherFormatter = (teachers) => {
         delete t[k].user;
 
         // Cast img
-        t[k].img_profile = 0 // BlobConvert.blobToBase64(teachers[k].img_profile);
+        t[k].img_profile = BlobConvert.blobToBase64(teachers[k].img_profile);
     }
     return t
+}
+
+const userFormatter = (users) => {
+    for (const user of users)
+        user.img_profile = BlobConvert.blobToBase64(user.img_profile);
+    return users
 }
 
 // Routers for classes
@@ -160,8 +166,10 @@ router.route('/classes')
                 // Insert member in class data
                 classes.forEach((c, i) => {
                     const teachers = teacherFormatter(result[i].teachers)
-                    const students = result[i].students
-                 
+                    const students = userFormatter(result[i].students)
+
+                    console.log(students)
+
                     c.teachers = teachers
                     c.students = students
                 })

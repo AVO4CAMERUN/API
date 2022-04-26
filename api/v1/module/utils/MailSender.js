@@ -33,7 +33,7 @@ async function send(options) {
         })
 
         // Sending email
-        await transporter.sendMail(options)
+        return await transporter.sendMail(options)
     } catch (error) {
         return error
     }
@@ -54,7 +54,8 @@ async function subscribe(email, confirmCode) {
         // html: "<b>Hello world?</b>",
         // fare email html carina 
     }
-    await send(options)
+    const l = await send(options)
+    console.log(l);
 }
 
 // Export functions

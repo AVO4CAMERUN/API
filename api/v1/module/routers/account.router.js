@@ -30,7 +30,7 @@ let suspendedUsers = [];  // List for suspendedUsers: model => {code: value, use
 
 router.route('/account')
 
-    .post(Validator.register, (req, res) => {
+    .post((req, res) => {
         const {username, email, password, firstname, lastname} = req.body;
 
         // Check that there is not already a request

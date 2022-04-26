@@ -24,7 +24,9 @@ async function isParameterRole(email, role) {
 async function getUserDataByFilter(filterObj) {
     const obj = createGET('user', ['email', 'role', 'username', 'firstname', 'lastname', 'img_profile', 'id_class', 'registration_date'], filterObj)
     const { qf, select, where} = obj
-    return await qf({ select, where })
+    const a = await qf({ select, where })
+    // console.log(a);
+    return a
 }
 
 // Query for get user data by filter
