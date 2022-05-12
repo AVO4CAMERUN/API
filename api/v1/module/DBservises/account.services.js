@@ -5,6 +5,8 @@ const sha256 = require('js-sha256');
 
 // Query for create user
 async function createAccount (firstname, lastname, username, password, email, role) {
+    console.log(firstname);
+    console.log(lastname);
     const response = await pc.user.create({
         data: { firstname, lastname, username, password: sha256(password), email, role}
     })

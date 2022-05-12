@@ -33,6 +33,9 @@ router.route('/account')
     .post((req, res) => {
         const {username, email, password, firstname, lastname} = req.body;
 
+        console.log(firstname);
+        console.log(lastname);
+
         // Check that there is not already a request
         let isThere; suspendedUsers.forEach((u, i) => { email === u['email']? isThere = true : isThere = false })
 
@@ -150,9 +153,10 @@ router.get('/account/:confirmCode', (req, res) => {
     // Confirmed code
     if(!isThere) return res.sendStatus(401); // Unauthorized
 
+    console.log(suspendedUsers[index]);
     // Create account
-    const {name, surname, username, email, password} = suspendedUsers[index];
-    createAccount(name, surname, username, password, email, 'STUDENT')          // In first time all users are student = 01
+    const {firstname, lastname, username, email, password} = suspendedUsers[index];
+    createAccount(firstname, lastname, username, password, email, 'STUDENT')          // In first time all users are student = 01
         .then(() => {
             suspendedUsers.filter(value => value !== suspendedUsers[index]);    // Remove in the suspendedUsers 
             res.sendStatus(200) // Ok 
