@@ -1,15 +1,16 @@
 // Options for version 1
-
 module.exports = {
+
+  //START
   openapi: '3.0.1',
   info: {
     title: "AVO4CAMERUN API",
     version: '1.0.0',
-    description: 'The best api in the world',
+    description: 'API that manages all the services and contents for the web-app Avo4Camerun',
     termsOfService: '',
     contact: {
-        name: '',
-        email: '',
+        name: 'Avo4Cam',
+        email: 'avogadro4camerun@gmail.com',
         url: ''
     },
     license: {
@@ -21,6 +22,10 @@ module.exports = {
     {
       url: 'http://localhost/api/v1',
       description: 'Local server'
+    },
+    {
+      url: 'https://app.avo4camerun.kirinsecurity.com/',
+      description: 'Public server'
     }
   ],
   components: {
@@ -34,43 +39,45 @@ module.exports = {
   tags: [
     {
       name: "account",
-      description: "Servises users management"
+      description: "Services users management"
     },
     {
       name: "login",
-      description: "Authentication servises"
+      description: "Authentication services"
     },
     {
       name: "classes",
-      description: ""
+      description: "Groups with teachers and students"
     },
     {
       name: "invites",
-      description: ""
+      description: "Invites made by the teacher to the students"
     },
     {
       name: "courses",
-      description: ""
+      description: "Contains units with lessons"
     },
     {
       name: "units",
-      description: ""
+      description: "Sections of the course"
     },
     {
       name: "lessons",
-      description: ""
+      description: "Video-lessons"
     },
     {
       name: "subscribe",
-      description: ""
+      description: "Subscription to a course"
     }
   ],
   paths: {
-    "/login": { // Works
+
+  //LOGIN  
+    "/login": {
       post: {
         tags: ["login"],
-        summary: "",
-        description: "",
+        summary: "account access",
+        description: "Manages the access for registered users",
         consumes: ["application/json"],
         produces: ["application/json"],
         requestBody: {
@@ -143,8 +150,8 @@ module.exports = {
       },
       delete: {
         tags: ["login"],
-        summary: "",
-        description: "",
+        summary: "Logout account",
+        description: "Logout from the account",
         consumes: ["application/json"],
         produces: ["application/json"],
         requestBody: {
@@ -174,11 +181,13 @@ module.exports = {
         }
       }
     },
+
+    //ACCOUNT
     "/account": {
-      post: { // Works
+      post: {
         tags: ["account"],
-        summary: "",
-        description: "",
+        summary: "Creates new account",
+        description: "Creation of a new account by giving user's data",
         consumes: ["application/json"],
         security: [
           {
@@ -195,23 +204,23 @@ module.exports = {
                 properties: {
                   firstname: {
                     type: "string",
-                    example: ""
+                    example: "Kingsley"
                   },
                   lastname: {
                     type: "string",
-                    example: ""
+                    example: "Bouba"
                   },
                   username: {
                     type: "string",
-                    example: ""
+                    example: "kigbo"
                   },
                   email: {
                     type: "string",
-                    example: ""
+                    example: "kigbo@gmail.com"
                   },
                   password: {
                     type: "string",
-                    example: ""
+                    example: "Password123"
                   }
                 }
               }
@@ -220,10 +229,10 @@ module.exports = {
         },
         responses: {
           200: {
-            description: "OK"
+            description: "Account created"
           },
           403: {
-            description: "Forbidden"
+            description: "Account creation Forbidden"
           },
           500: {
             description: "Server Error"
@@ -232,8 +241,8 @@ module.exports = {
       },
       put: {
         tags: ["account"],
-        summary: "",
-        description: "",
+        summary: "Modifies account's data",
+        description: "Change username or password of the account",
         consumes: ["application/json"],
         security: [
           {
@@ -248,25 +257,13 @@ module.exports = {
               schema: {
                 type: "object",
                 properties: {
-                  name: {
-                    type: "string",
-                    example: ""
-                  },
-                  surname: {
-                    type: "string",
-                    example: ""
-                  },
                   username: {
                     type: "string",
-                    example: ""
-                  },
-                  email: {
-                    type: "string",
-                    example: ""
+                    example: "kigBou"
                   },
                   password: {
                     type: "string",
-                    example: ""
+                    example: "Password123!"
                   }
                 }
               }
@@ -275,10 +272,10 @@ module.exports = {
         },
         responses: {
           200: {
-            description: "OK"
+            description: "Modification successful"
           },
           403: {
-            description: "Forbidden"
+            description: "Modification Forbidden"
           },
           500: {
             description: "Server Error"
@@ -287,50 +284,12 @@ module.exports = {
       },
       get: {
         tags: ["account"],
-        summary: "",
-        description: "",
+        summary: "Returns account's details",
+        description: "returns the informations about user's account",
         produces: ["application/json"],
         security: [
           {
             bearerAuth: []
-          }
-        ],
-        parameters: [ // rivedere parametri da utilizzare
-          {
-            in: "query",
-            name: "email",
-            description: "",
-            required: false,
-            schema: {
-              type: "string",
-            }
-          },
-          {
-            in: "query",
-            name: "firstname",
-            description: "",
-            required: false,
-            schema: {
-              type: "string",
-            }
-          },
-          {
-            in: "query",
-            name: "lastname",
-            description: "",
-            required: false,
-            schema: {
-              type: "string",
-            }
-          },
-          {
-            in: "query",
-            name: "id_class",
-            description: "",
-            required: false,
-            schema: {
-              type: "string",
-            }
           }
         ],
         responses: {
@@ -347,8 +306,8 @@ module.exports = {
       },
       delete: {
         tags: ["account"],
-        summary: "",
-        description: "",
+        summary: "deletes account",
+        description: "destroy the account",
         consumes: ["application/json"],
         security: [
           {
@@ -357,10 +316,10 @@ module.exports = {
         ],
         responses: {
           200: {
-            description: "OK"
+            description: "Elimination successful"
           },
           403: {
-            description: "Forbidden"
+            description: "Elimination forbidden"
           },
           500: {
             description: "Server Error"
@@ -371,9 +330,8 @@ module.exports = {
     "/account/{confirmCode}": {
       get: {
         tags: ["account"],
-        tags: ["account"],
-        summary: "",
-        description: "",
+        summary: "confirm code",
+        description: "sends the confirm code via email",
         consumes: ["application/json"],
         security: [
           {
@@ -393,10 +351,10 @@ module.exports = {
         ],
         responses: {
           200: {
-            description: "OK"
+            description: "Confirmation successful"
           },
           403: {
-            description: "Forbidden"
+            description: "Confirmation forbidden"
           },
           500: {
             description: "Server Error"
@@ -404,11 +362,13 @@ module.exports = {
         }
       }
     },
+
+    //CLASSES
     "/classes": {
       post: {
         tags: ["classes"],
-        summary: "",
-        description: "",
+        summary: "Creates classroom",
+        description: "Creates a new classroom",
         consumes: ["application/json"],
         security: [
           {
@@ -425,11 +385,11 @@ module.exports = {
                 properties: {
                   name: {
                     type: "string",
-                    example: ""
+                    example: "New_class"
                   },
                   img_cover: {
                     type: "string",
-                    example: ""
+                    example: "" //string of an image or empty
                   },
                   students: {
                     type: "array",
@@ -450,10 +410,10 @@ module.exports = {
         },
         responses: {
           200: {
-            description: "OK"
+            description: "Class created"
           },
           403: {
-            description: "Forbidden"
+            description: "Class creation forbidden"
           },
           500: {
             description: "Server Error"
@@ -462,8 +422,46 @@ module.exports = {
       },
       get: {
         tags: ["classes"],
-        summary: "",
-        description: "",
+        summary: "Returns classes",
+        description: "Returns classes by giving id",
+        produces: ["application/json"],
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        parameters: [
+          {
+            in: "query",
+            name: "id",
+            description: "",
+            required: false,
+            schema: {
+              type: "array",
+              items: {
+                type: "integer"
+              }
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: "Classes found"
+          },
+          403: {
+            description: "Classes research forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
+      }
+    },
+    "/classes/{id}": {
+      get: {
+        tags: ["classes"],
+        summary: "Returns classes",
+        description: "Returns classes by giving id",
         produces: ["application/json"],
         security: [
           {
@@ -479,53 +477,24 @@ module.exports = {
             schema: {
               type: "integer",
             }
-          },
-          {
-            in: "query",
-            name: "name",
-            description: "",
-            required: false,
-            schema: {
-              type: "string",
-            }
-          },
-          {
-            in: "query",
-            name: "creation_date",
-            description: "",
-            required: false,
-            schema: {
-              type: "string",
-            }
-          },
-          {
-            in: "query",
-            name: "archived",
-            description: "",
-            required: false,
-            schema: {
-              type: "boolean",
-            }
           }
         ],
         responses: {
           200: {
-            description: "OK"
+            description: "Class found"
           },
           403: {
-            description: "Forbidden"
+            description: "Class research forbidden"
           },
           500: {
             description: "Server Error"
           }
         }
-      }
-    },
-    "/classes/{id}": { // Works
+      },
       put: {
         tags: ["classes"],
-        summary: "",
-        description: "",
+        summary: "Update class",
+        description: "Change class details",
         produces: ["application/json"],
         security: [
           {
@@ -560,16 +529,8 @@ module.exports = {
                     example: ""
                   },
                   students: {
-                    type: "array",
-                    items: {
-                      type: "string"
-                    }
-                  },
-                  teachers: {
-                    type: "array",
-                    items: {
-                      type: "string"
-                    }
+                    type: "boolean",
+                    example: false
                   }
                 }
               }
@@ -578,10 +539,10 @@ module.exports = {
         },
         responses: {
           200: {
-            description: "OK"
+            description: "Class modified"
           },
           403: {
-            description: "Forbidden"
+            description: "Modification forbidden"
           },
           500: {
             description: "Server Error"
@@ -590,7 +551,8 @@ module.exports = {
       },
       delete: {
         tags: ["classes"],
-        summary: "",
+        summary: "Drops the class",
+        description: "Deletes the chosen class by its id",
         produces: ["application/json"],
         description: "",
         security: [
@@ -611,10 +573,10 @@ module.exports = {
         ],
         responses: {
           200: {
-            description: "OK"
+            description: "Class deleted"
           },
           403: {
-            description: "Forbidden"
+            description: "Deletion forbidden"
           },
           500: {
             description: "Server Error"
@@ -622,11 +584,13 @@ module.exports = {
         }
       }
     },
-    "/invites": { // Works
+
+    //INVITES
+    "/invites": {
       post: { 
         tags: ["invites"],
-        summary: "",
-        description: "",
+        summary: "Sends invites",
+        description: "Sends a new invitation made by a teacher to the students",
         consumes: ["application/json"],
         security: [
           {
@@ -642,7 +606,8 @@ module.exports = {
                 type: "object",
                 properties: {
                   class_id: {
-                    type: "integer"
+                    type: "integer",
+                    example: "1"
                   },
                   students: {
                     type: "array",
@@ -658,10 +623,10 @@ module.exports = {
         },
         responses: {
           200: {
-            description: "OK"
+            description: "Invites sent"
           },
           403: {
-            description: "Forbidden"
+            description: "Invites forbidden"
           },
           500: {
             description: "Server Error"
@@ -696,7 +661,7 @@ module.exports = {
         tags: ["invites"],
         summary: "Accept Invite",
         produces: ["application/json"],
-        description: "",
+        description: "Returns invites by id",
         security: [
           {
             bearerAuth: []
@@ -747,6 +712,84 @@ module.exports = {
         ],
         responses: {
           200: {
+            description: "Invite rejected"
+          },
+          403: {
+            description: "Refusal forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
+      }
+    },
+
+    //COURSES
+    "/courses": {
+      post: {
+        tags: ["courses"],
+        summary: "Create course",
+        description: "create a new course",
+        consumes: ["application/json"],
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        requestBody: {
+          description: "",
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  name: {
+                    type: "string",
+                    example: "Database"
+                  },
+                  description: {
+                    type: "string",
+                    example: "How databases works? Installation, configuration and first stepguide"
+                  },
+                  img_cover: {
+                    type: "string",
+                    example: "" //empty
+                  },
+                  subject: {
+                    type: "string",
+                    example: "Informatics"
+                  }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: {
+            description: "Course created"
+          },
+          403: {
+            description: "Course creation forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
+      },
+      get: {
+        tags: ["courses"],
+        summary: "returns courses",
+        description: "returns data about courses",
+        produces: ["application/json"],
+        //No paramethers
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        responses: {
+          200: {
             description: "OK"
           },
           403: {
@@ -758,68 +801,603 @@ module.exports = {
         }
       }
     },
-    "/courses": {
-      post: {
-        tags: ["courses"]
-      },
-      get: {
-        tags: ["courses"]
-      }
-    },
     "/courses/{id}": {
       put: {
-        tags: ["courses"]
+        tags: ["courses"],
+        summary: "Modify course",
+        description: "Change the subject of the course by giving course's id",
+        produces: ["application/json"],
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "",
+            required: true,
+            schema: {
+              type: "integer",
+            }
+          }
+        ],
+        requestBody: {
+          description: "",
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  name: {
+                    type: "string",
+                    example: "change"
+                  },
+                  subject: {
+                    type: "string",
+                    example: "Statistics"
+                  }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: {
+            description: "Course updated"
+          },
+          403: {
+            description: "Course update forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       },
       delete: {
-        tags: ["courses"]
+        tags: ["courses"],
+        summary: "Drop course",
+        description: "Unsuscribe from the course by giving its id",
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "id of the course",
+            required: true,
+            schema: {
+              type: "integer",
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: "Course deleted"
+          },
+          403: {
+            description: "Elimination Forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       }
     }, 
+
+    //UNITS
     "/units": {
       post: {
-        tags: ["units"]
+        tags: ["units"],
+        summary: "Create the unit",
+        description: "Create a new unit in the course",
+        consumes: ["application/json"],
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        requestBody: {
+          description: "",
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  name: {
+                    type: "string",
+                    example: "Unit 1"
+                  },
+                  description: {
+                    type: "string",
+                    example: "This unit will teach you all about GPUs and CPUs"
+                  },
+                  id_course: {
+                    type: "integer",
+                    example: "8"
+                  }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: {
+            description: "Unit created"
+          },
+          403: {
+            description: "Unit creation forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       },
       get: {
-        tags: ["units"]
+        tags: ["units"],
+        summary: "Returns units",
+        description: "Gives the units by giving ",
+        produces: ["application/json"],
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        parameters: [
+          {
+            in: "query",
+            name: "id_course",
+            description: "id that references to a course",
+            required: true,
+            schema: {
+              type: "integer",
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: "OK"
+          },
+          403: {
+            description: "Forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       }
     },
     "/units/{id}": {
       put: {
-        tags: ["units"]
+        tags: ["units"],
+        summary: "Changes unit",
+        description: "Alters the unit by gave elements",
+        produces: ["application/json"],
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "unit's id",
+            required: true,
+            schema: {
+              type: "integer",
+            }
+          }
+        ],
+        requestBody: {
+          description: "",
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  id_course: {
+                    type: "integer",
+                    example: "3"
+                  },
+                  seq_number: {
+                    type: "integer",
+                    example: "3"
+                  }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: {
+            description: "Unit updated"
+          },
+          403: {
+            description: "Unit update forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       },
       delete: {
-        tags: ["units"]
+        tags: ["units"],
+        summary: "Deletes the unit",
+        produces: ["application/json"],
+        description: "Deletes the unit by giving its id",
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "",
+            required: true,
+            schema: {
+              type: "integer",
+            }
+          }
+        ],
+        requestBody: {
+          description: "",
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  id_course: {
+                    type: "integer",
+                    example: "8"
+                  }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: {
+            description: "Unit deleted"
+          },
+          403: {
+            description: "Unit elimination forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       }
     },
     "/lessons": {
       post: {
-        tags: ["lessons"]
+        tags: ["lessons"],
+        summary: "Create lesson",
+        description: "Create a new lesson with quiz and a video",
+        consumes: ["application/json"],
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        requestBody: {
+          description: "",
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  id_course: {
+                    type: "integer",
+                    example: "8"
+                  },
+                  id_unit: {
+                    type: "integer",
+                    example: "8"
+                  },
+                  name: {
+                    type: "lesson 1",
+                    example: "This lesson talks about GPUs."
+                  },
+                  link_video: {
+                    type: "string",
+                    example: "https://www.youtube.com/watch?v=_bCPuhqS4u8"
+                  },
+                  quiz: {
+                    type: "array",
+                    items: {
+                      type: "string",
+                      example: ""
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: {
+            description: "Lesson created"
+          },
+          403: {
+            description: "Lesson creation forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       },
       get: {
-        tags: ["lessons"]
+        tags: ["lessons"],
+        summary: "Returns lessons",
+        description: "Gives the lessons by giving the id_unit",
+        produces: ["application/json"],
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        parameters: [
+          {
+            in: "query",
+            name: "id_unit",
+            description: "id that references to a unit",
+            required: true,
+            schema: {
+              type: "integer",
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: "OK"
+          },
+          403: {
+            description: "Forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       }
     },
     "/lessons/{id}": {
       put: {
-        tags: ["lessons"]
+        tags: ["lessons"],
+        summary: "changes the lesson",
+        description: "Alters the lesson by gave elements",
+        produces: ["application/json"],
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "lesson's id",
+            required: true,
+            schema: {
+              type: "integer",
+            }
+          }
+        ],
+        requestBody: {
+          description: "",
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  id_course: {
+                    type: "integer",
+                    example: "8"
+                  },
+                  id_unit: {
+                    type: "integer",
+                    example: "8"
+                  },
+                  name: {
+                    type: "string",
+                    example: "updated lesson"
+                  }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: {
+            description: "Lesson updated"
+          },
+          403: {
+            description: "Lesson update forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       },
       delete: {
-        tags: ["lessons"]
+        tags: ["lessons"],
+        summary: "Deletes the selected lesson",
+        produces: ["application/json"],
+        description: "deletes the lesson by giving its id",
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            description: "",
+            required: true,
+            schema: {
+              type: "integer",
+            }
+          }
+        ],
+        requestBody: {
+          description: "",
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  id_course: {
+                    type: "integer",
+                    example: "1"
+                  },
+                  id_unit: {
+                    type: "integer",
+                    example: "1"
+                  }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: {
+            description: "Lesson deleted"
+          },
+          403: {
+            description: "Lesson elimination forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       }
     },
     "/subscribe": {
       post: {
-        tags: ["subscribe"]
+        tags: ["subscribe"],
+        summary: "Subscription to a course",
+        description: "Subscription made by a student to a course by giving its id",
+        consumes: ["application/json"],
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        requestBody: {
+          description: "",
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  id_course: {
+                    type: "integer",
+                    example: "1"
+                  }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: {
+            description: "Subscription successful"
+          },
+          403: {
+            description: "Subscription forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       },
       get: {
-        tags: ["subscribe"]
+        tags: ["subscribe"],
+        summary: "Returns the subscription",
+        description: "Gives the subscription by giving teacher's email",
+        produces: ["application/json"],
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        parameters: [
+          {
+            in: "query",
+            name: "email",
+            description: "teacher's email",
+            required: true,
+            schema: {
+              type: "string",
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: "OK"
+          },
+          403: {
+            description: "Forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       },
       delete: {
-        tags: ["subscribe"]
+        tags: ["subscribe"],
+        summary: "Deletes subscription",
+        produces: ["application/json"],
+        description: "Cancels the subscription to a course",
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        requestBody: {
+          description: "",
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  id_course: {
+                    type: "integer",
+                    example: "1"
+                  }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: {
+            description: "Subscription deleted"
+          },
+          403: {
+            description: "Unsubscription forbidden"
+          },
+          500: {
+            description: "Server Error"
+          }
+        }
       }
     }
   }
 }
-
-// DA VEDERE PER CHI VUOLE AIUTARMI CON SWAGGER
-// https://www.npmjs.com/package/swagger-jsdoc
-// https://www.npmjs.com/package/swagger-ui-expresss
