@@ -49,14 +49,7 @@ router.route('/lessons')
                 return createLesson(+id_unit, name, link_video, quiz) // aggiungere data
             })
             .then(() => res.sendStatus(200))
-            .catch((err) => {
-                if (err === 400 || err === 403) res.sendStatus(err)  // Error in parameter
-                else if (err.code === 'P2002') res.sendStatus(400)
-                else { 
-                    errorManagment('POST lessons', err)
-                    res.sendStatus(500) // Server error
-                }
-            })
+            .catch((err) => errorManagment('POST lessons', res, err))
     })
 
     // Get courses data by filter
@@ -130,7 +123,7 @@ router.route('/lessons/:id')
         const id_lesson = +req.params.id;
         const id_course = +req.body.id_course;
         const id_unit =   +req.body.id_unit;
-        
+
         // Check data
         if (isNaN(id_course) || isNaN(id_unit) || isNaN(id_lesson)) 
             return res.sendStatus(400);
@@ -156,10 +149,10 @@ router.route('/lessons/:id')
                     return Promise.reject(403);    // 
 
                 // delete unit 
-                return deleteLessons(+id_lesson)
+                return deleteLessons(+id_lesson, +id_unit)
             })
             .then(() => res.sendStatus(200)) // ok
-            .catch((err) => errorManagment('DELETE lessons/id', err))// Server error
+            .catch((err) => errorManagment('DELETE lessons/id', res, err))// Server error
     })
 
 module.exports = router

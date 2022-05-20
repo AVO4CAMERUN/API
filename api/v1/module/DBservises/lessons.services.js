@@ -46,14 +46,14 @@ async function updateLessons (id_lesson, newData) {
 }
 
 // Query for delete lessons
-async function deleteLessons (id_lesson) {
+async function deleteLessons (id_lesson, id_unit) {
     const lessons = await pc.lesson.findMany({
         where: { id_unit },
         orderBy: { seqNumber: 'asc' }
     })
 
     // Next lesson in courses with seqNumber for order
-    const breakPoint = units.findIndex(unit => unit.id_unit === id_unit)
+    const breakPoint = lessons.findIndex(lesson => lesson.id_lesson === id_lesson)
     
     // Delete lesson
     const response = await pc.lesson.delete({
