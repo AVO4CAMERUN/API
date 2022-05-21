@@ -62,7 +62,7 @@ async function deleteLessons (id_lesson, id_unit) {
 
     // Update seqNumber scale one
     for (let i = breakPoint +1; i < lessons.length; i++) {
-        const id = lessons[i].id_unit;
+        const id = lessons[i].id_lesson;
         const seqNumber = lessons[i].seqNumber -1
         await pc.lesson.update({
             where: { id_lesson: id },
