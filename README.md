@@ -70,7 +70,7 @@ After installing the js node and installing mysql we will execute these commands
 
 ## Swagger docs
 The api design is here:
-[Swagger docs](https://app.swaggerhub.com/apis/AVO4CAMERUN/all/1.0.0)
+[Swagger docs](https://api.avo4camerun.kirinsecurity.com/api/v1/docs/)
 
 ## I badge
 
