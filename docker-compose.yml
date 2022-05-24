@@ -9,7 +9,7 @@ services:
         depends_on:
           - mysql
         ports: 
-          - '8082:80'
+          - '8080:80'
         environment:
           DB_USERNAME: $DB_USERNAME
           DB_PWD: $DB_PWD
@@ -18,8 +18,13 @@ services:
           JWT_SECRET: $JWT_SECRET
           JWT_SECRET_REFRESH: $JWT_SECRET_REFRESH
           MAIL_SERVICE: $MAIL_SERVICE
-          MAIL_USER: $MAIL_USER@gmail.com
+          MAIL_USER: $MAIL_USER
           MAIL_PASS: $MAIL_PASS
+          DATABASE_URL: $DATABASE_URL
+          CLIENT_ID: $CLIENT_ID
+          CLIENT_SECRET: $CLIENT_SECRET
+          REDIRECT_URI: $REDIRECT_URI
+          REFRESH_TOKEN: $REFRESH_TOKEN
         stdin_open: true
         tty: true
     mysql:
@@ -29,12 +34,12 @@ services:
       env_file: ./.env
       environment:
         MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
-        MYSQL_DATABASE: $MYSQL_ROOT_PASSWORD
-        MYSQL_USER: $MYSQL_ROOT_PASSWORD
-        MYSQL_PASSWORD: $MYSQL_ROOT_PASSWORD
+        MYSQL_DATABASE: $MYSQL_DATABASE
+        MYSQL_USER: $MYSQL_USER
+        MYSQL_PASSWORD: $MYSQL_PASSWORD
       container_name: mysql-container
-      volumes: 
-        - ./sql/avo4cam.sql:/docker-entrypoint-initdb.d/avo4cam.sql 
+      #volumes: 
+      #  - ./sql/avo4cam.sql:/docker-entrypoint-initdb.d/avo4cam.sql 
 networks:
   default:
     external:

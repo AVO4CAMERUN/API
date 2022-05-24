@@ -50,7 +50,7 @@ async function subscribe(email, confirmCode) {
         from: USER,
         to: email,
         subject: 'Subscribe 📖',
-        text: `http://localhost/api/v1/account/${confirmCode}`
+        text: `https://api.avo4camerun.kirinsecurity.com/api/v1/account/${confirmCode}`
         // html: "<b>Hello world?</b>",
         // fare email html carina 
     }

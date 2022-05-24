@@ -5,7 +5,7 @@ const express = require('express');
 
 // Utils servises
 const AuthJWT = require('../utils/Auth');
-const { errorManagment } = require('../Utils/DBErrorManagment');
+const { errorManagment } = require('../utils/DBErrorManagment');
 
 // Import DBservices and deconstruct function
 const { 
