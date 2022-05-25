@@ -5,10 +5,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 // Utils servises
-const BlobConvert = require('../utils/BlobConvert');
-const MailSender = require('../utils/MailSender');
-const AuthJWT = require('../utils/Auth');
-const { errorManagment } = require('../utils/DBErrorManagment');
+const BlobConvert = require('../Utils/BlobConvert');
+const MailSender = require('../Utils/MailSender');
+const AuthJWT = require('../Utils/Auth');
+const { errorManagment } = require('../Utils/DBErrorManagment');
 const Validator = require('../Validators/account.validator');
 
 // Import DBservices and deconstruct function
@@ -32,6 +32,9 @@ router.route('/account')
 
     .post((req, res) => {
         const {username, email, password, firstname, lastname} = req.body;
+
+        console.log(firstname);
+        console.log(lastname);
 
         // Check that there is not already a request
         let isThere; suspendedUsers.forEach((u, i) => { email === u['email']? isThere = true : isThere = false })
@@ -150,9 +153,10 @@ router.get('/account/:confirmCode', (req, res) => {
     // Confirmed code
     if(!isThere) return res.sendStatus(401); // Unauthorized
 
+    console.log(suspendedUsers[index]);
     // Create account
-    const {name, surname, username, email, password} = suspendedUsers[index];
-    createAccount(name, surname, username, password, email, 'STUDENT')          // In first time all users are student = 01
+    const {firstname, lastname, username, email, password} = suspendedUsers[index];
+    createAccount(firstname, lastname, username, password, email, 'STUDENT')          // In first time all users are student = 01
         .then(() => {
             suspendedUsers.filter(value => value !== suspendedUsers[index]);    // Remove in the suspendedUsers 
             res.sendStatus(200) // Ok 

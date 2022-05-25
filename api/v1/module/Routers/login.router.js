@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 
 // Utils servises
 const AuthJWT = require('../utils/Auth'); 
-const { errorManagment } = require('../utils/DBErrorManagment');
+const { errorManagment } = require('../Utils/DBErrorManagment');
 
 // Import DBservices and deconstruct function
 const {  // Loginservices
@@ -32,7 +32,6 @@ router.route('/login')
             getUserInfoByUsername(username)
         ])
         .then((result) => {
-	    console.log(result);
             if(result[0]?.value['_count'] != 1)
                 return res.sendStatus(403); // Forbiden
 

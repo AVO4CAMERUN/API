@@ -89,7 +89,7 @@ router.route('/classes')
         let checkQuerys = [];
         
         for (const prof of teachers)
-            checkQuery.push(isParameterRole(prof, 'TEACHER'))// Check is professor
+            checkQuerys.push(isParameterRole(prof, 'TEACHER'))// Check is professor
         
         for (const stud of students)
             checkQuerys.push(isParameterRole(stud, 'STUDENT')) // Check is student
@@ -98,7 +98,7 @@ router.route('/classes')
         Promise.allSettled(checkQuerys)
             .then((result) => {
                 // Sum for check that only email is register users
-                let sum = 0; result.forEach(r => {sum += r.value[0]['_count'] });
+                let sum = 0; result.forEach(r => {sum += r.value._count });
 
                 // somma di result
                 if(sum !== checkQuerys.length)

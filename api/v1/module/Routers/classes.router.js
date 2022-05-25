@@ -6,7 +6,7 @@ const express = require('express');
 // Utils servises
 const BlobConvert = require('../utils/BlobConvert');
 const AuthJWT = require('../utils/Auth');
-const { errorManagment } = require('../utils/DBErrorManagment');
+const { errorManagment } = require('../Utils/DBErrorManagment');
 const Validator = require('../Validators/classes.validator');
 
 // Import DBservices and deconstruct function                    
@@ -56,9 +56,15 @@ const teacherFormatter = (teachers) => {
         delete t[k].user;
 
         // Cast img
-        t[k].img_profile = 0 // BlobConvert.blobToBase64(teachers[k].img_profile);
+        t[k].img_profile = BlobConvert.blobToBase64(teachers[k].img_profile);
     }
     return t
+}
+
+const userFormatter = (users) => {
+    for (const user of users)
+        user.img_profile = BlobConvert.blobToBase64(user.img_profile);
+    return users
 }
 
 // Routers for classes
@@ -83,7 +89,7 @@ router.route('/classes')
         let checkQuerys = [];
         
         for (const prof of teachers)
-            checkQuery.push(isParameterRole(prof, 'TEACHER'))// Check is professor
+            checkQuerys.push(isParameterRole(prof, 'TEACHER'))// Check is professor
         
         for (const stud of students)
             checkQuerys.push(isParameterRole(stud, 'STUDENT')) // Check is student
@@ -92,7 +98,7 @@ router.route('/classes')
         Promise.allSettled(checkQuerys)
             .then((result) => {
                 // Sum for check that only email is register users
-                let sum = 0; result.forEach(r => {sum += r.value[0]['_count'] });
+                let sum = 0; result.forEach(r => {sum += r.value._count });
 
                 // somma di result
                 if(sum !== checkQuerys.length)
@@ -160,8 +166,10 @@ router.route('/classes')
                 // Insert member in class data
                 classes.forEach((c, i) => {
                     const teachers = teacherFormatter(result[i].teachers)
-                    const students = result[i].students
-                 
+                    const students = userFormatter(result[i].students)
+
+                    console.log(students)
+
                     c.teachers = teachers
                     c.students = students
                 })

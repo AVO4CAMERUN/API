@@ -24,7 +24,7 @@ module.exports = {
       description: 'Local server'
     },
     {
-      url: 'https://app.avo4camerun.kirinsecurity.com/',
+      url: 'https://api.avo4camerun.kirinsecurity.com/api/v1',
       description: 'Public server'
     }
   ],
@@ -77,11 +77,11 @@ module.exports = {
       post: {
         tags: ["login"],
         summary: "account access",
-        description: "Manages the access for registered users",
+        description: "Manages the access for registered users. You have to put your username and password, then the API will give you an access token in order to use all the other functions of the API.",
         consumes: ["application/json"],
         produces: ["application/json"],
         requestBody: {
-          description: "",
+          description: "Insert your username and password.",
           required: true,
           content: {
             "application/json": {
@@ -115,8 +115,8 @@ module.exports = {
       },
       put: {
         tags: ["login"],
-        summary: "",
-        description: "",
+        summary: "Refresh token",
+        description: "By this request the API will give you another token in case the other one is expired. You have to put the refresh token so you will receive a new access token",
         consumes: ["application/json"],
         produces: ["application/json"],
         requestBody: {
@@ -151,7 +151,7 @@ module.exports = {
       delete: {
         tags: ["login"],
         summary: "Logout account",
-        description: "Logout from the account",
+        description: "This method will allow you to logout from your account by giving the refresh token.",
         consumes: ["application/json"],
         produces: ["application/json"],
         requestBody: {
@@ -187,7 +187,7 @@ module.exports = {
       post: {
         tags: ["account"],
         summary: "Creates new account",
-        description: "Creation of a new account by giving user's data",
+        description: "Creation of a new account by giving your firstname, lastname, username, email and password. After that you will receive a confirm code to ensure that you are the correct user.",
         consumes: ["application/json"],
         security: [
           {
@@ -232,7 +232,7 @@ module.exports = {
             description: "Account created"
           },
           403: {
-            description: "Account creation Forbidden"
+            description: "Account creation forbidden"
           },
           500: {
             description: "Server Error"
@@ -242,7 +242,7 @@ module.exports = {
       put: {
         tags: ["account"],
         summary: "Modifies account's data",
-        description: "Change username or password of the account",
+        description: "You can change the username or password associated to your account.",
         consumes: ["application/json"],
         security: [
           {
@@ -285,7 +285,7 @@ module.exports = {
       get: {
         tags: ["account"],
         summary: "Returns account's details",
-        description: "returns the informations about user's account",
+        description: "Returns the parameters (email, role, username, firstname, lastname, profile image, class that you joined and registration date) about your personal account.",
         produces: ["application/json"],
         security: [
           {
@@ -306,8 +306,8 @@ module.exports = {
       },
       delete: {
         tags: ["account"],
-        summary: "deletes account",
-        description: "destroy the account",
+        summary: "Deletes account",
+        description: "Deletes your account from the platform.",
         consumes: ["application/json"],
         security: [
           {
@@ -330,8 +330,8 @@ module.exports = {
     "/account/{confirmCode}": {
       get: {
         tags: ["account"],
-        summary: "confirm code",
-        description: "sends the confirm code via email",
+        summary: "Confirm code",
+        description: "Allows you to insert your confirm code in order to activate your account.",
         consumes: ["application/json"],
         security: [
           {
@@ -368,7 +368,7 @@ module.exports = {
       post: {
         tags: ["classes"],
         summary: "Creates classroom",
-        description: "Creates a new classroom",
+        description: "Creates a new classroom with a name, an image cover (if you don't put it, there will be a sample image), the emails of the students of the classroom and the teachers that created them.",
         consumes: ["application/json"],
         security: [
           {
@@ -389,18 +389,20 @@ module.exports = {
                   },
                   img_cover: {
                     type: "string",
-                    example: "" //string of an image or empty
+                    example: ""
                   },
                   students: {
                     type: "array",
                     items: {
-                      type: "string"
+                      type: "string",
+                      example:"studente1@gmail.com"
                     }
                   },
                   teachers: {
                     type: "array",
                     items: {
-                      type: "string"
+                      type: "string",
+                      example:"professore@gmail.com"
                     }
                   }
                 }
@@ -423,25 +425,11 @@ module.exports = {
       get: {
         tags: ["classes"],
         summary: "Returns classes",
-        description: "Returns classes by giving id",
+        description: "Returns information about the classes (id, name, creation date, cover image, if is archived or not, teachers and students data) where the user is subscribed.",
         produces: ["application/json"],
         security: [
           {
             bearerAuth: []
-          }
-        ],
-        parameters: [
-          {
-            in: "query",
-            name: "id",
-            description: "",
-            required: false,
-            schema: {
-              type: "array",
-              items: {
-                type: "integer"
-              }
-            }
           }
         ],
         responses: {
@@ -461,7 +449,7 @@ module.exports = {
       get: {
         tags: ["classes"],
         summary: "Returns classes",
-        description: "Returns classes by giving id",
+        description: "Returns informations(id, name, creation date, cover image, if is archived or not, teachers and students data) about the class by giving its id.",
         produces: ["application/json"],
         security: [
           {
@@ -494,7 +482,7 @@ module.exports = {
       put: {
         tags: ["classes"],
         summary: "Update class",
-        description: "Change class details",
+        description: "Changes class details (name, cover image and the students list) by giving its id.",
         produces: ["application/json"],
         security: [
           {
@@ -528,7 +516,7 @@ module.exports = {
                     type: "string",
                     example: ""
                   },
-                  students: {
+                  archived: {
                     type: "boolean",
                     example: false
                   }
@@ -552,7 +540,7 @@ module.exports = {
       delete: {
         tags: ["classes"],
         summary: "Drops the class",
-        description: "Deletes the chosen class by its id",
+        description: "Deletes the chosen class by its id from your classes",
         produces: ["application/json"],
         description: "",
         security: [
@@ -590,7 +578,7 @@ module.exports = {
       post: { 
         tags: ["invites"],
         summary: "Sends invites",
-        description: "Sends a new invitation made by a teacher to the students",
+        description: "Sends the invites to subscribe at one specific class by giving its id and students' email (the invites are sent by the teacher).",
         consumes: ["application/json"],
         security: [
           {
@@ -635,8 +623,8 @@ module.exports = {
       },
       get: {
         tags: ["invites"],
-        summary: "",
-        description: "",
+        summary: "Returns invites",
+        description: "Returns the list of invites sent by the user.",
         produces: ["application/json"],
         security: [
           {
@@ -661,7 +649,7 @@ module.exports = {
         tags: ["invites"],
         summary: "Accept Invite",
         produces: ["application/json"],
-        description: "Returns invites by id",
+        description: "Accepts the invite to the classroom by giving its id.",
         security: [
           {
             bearerAuth: []
@@ -693,7 +681,7 @@ module.exports = {
       delete: {
         tags: ["invites"],
         summary: "Reject Invite",
-        description: "",
+        description: "Rejects the invite by giving its id.",
         security: [
           {
             bearerAuth: []
@@ -729,7 +717,7 @@ module.exports = {
       post: {
         tags: ["courses"],
         summary: "Create course",
-        description: "create a new course",
+        description: "create a new course with a name, a short description, a cover image (it's not mandatory) and the subject that the course talks about (Chemistry, Electrical engineering, English, Informatics, mathematics and statistics).",
         consumes: ["application/json"],
         security: [
           {
@@ -758,6 +746,7 @@ module.exports = {
                   },
                   subject: {
                     type: "string",
+                    enum:["Chemistry", "Electrical engineering", "English", "Informatics", "Mathematics", "Statistics"],
                     example: "Informatics"
                   }
                 }
@@ -780,7 +769,7 @@ module.exports = {
       get: {
         tags: ["courses"],
         summary: "returns courses",
-        description: "returns data about courses",
+        description: "Returns data about courses in which the user partecipates",
         produces: ["application/json"],
         //No paramethers
         security: [
@@ -805,7 +794,7 @@ module.exports = {
       put: {
         tags: ["courses"],
         summary: "Modify course",
-        description: "Change the subject of the course by giving course's id",
+        description: "Changes the name and/or the subject of the course by giving its id.",
         produces: ["application/json"],
         security: [
           {
@@ -837,6 +826,7 @@ module.exports = {
                   },
                   subject: {
                     type: "string",
+                    enum:["Chemistry", "Electrical engineering", "English", "Informatics", "Mathematics", "Statistics"],
                     example: "Statistics"
                   }
                 }
@@ -859,7 +849,7 @@ module.exports = {
       delete: {
         tags: ["courses"],
         summary: "Drop course",
-        description: "Unsuscribe from the course by giving its id",
+        description: "Deletes the course by giving its id.",
         security: [
           {
             bearerAuth: []
@@ -895,7 +885,7 @@ module.exports = {
       post: {
         tags: ["units"],
         summary: "Create the unit",
-        description: "Create a new unit in the course",
+        description: "Create a new unit in the specified course with a name and a description by giving the course id.",
         consumes: ["application/json"],
         security: [
           {
@@ -942,7 +932,7 @@ module.exports = {
       get: {
         tags: ["units"],
         summary: "Returns units",
-        description: "Gives the units by giving ",
+        description: "Gives the units information (id, course id, sequence number, course name, description and informations about lessons ) of the specified course by giving its id.",
         produces: ["application/json"],
         security: [
           {
@@ -977,7 +967,7 @@ module.exports = {
       put: {
         tags: ["units"],
         summary: "Changes unit",
-        description: "Alters the unit by gave elements",
+        description: "Alters the specified unit with a new course id and sequence number",
         produces: ["application/json"],
         security: [
           {
@@ -988,7 +978,7 @@ module.exports = {
           {
             in: "path",
             name: "id",
-            description: "unit's id",
+            description: "unit id",
             required: true,
             schema: {
               type: "integer",
@@ -1007,7 +997,7 @@ module.exports = {
                     type: "integer",
                     example: "3"
                   },
-                  seq_number: {
+                  seqNumber: {
                     type: "integer",
                     example: "3"
                   }
@@ -1032,7 +1022,7 @@ module.exports = {
         tags: ["units"],
         summary: "Deletes the unit",
         produces: ["application/json"],
-        description: "Deletes the unit by giving its id",
+        description: "Deletes the unit by giving its id and the course id that contains the unit.",
         security: [
           {
             bearerAuth: []
@@ -1079,11 +1069,13 @@ module.exports = {
         }
       }
     },
+
+    //LESSONS
     "/lessons": {
       post: {
         tags: ["lessons"],
         summary: "Create lesson",
-        description: "Create a new lesson with quiz and a video",
+        description: "Create a new lesson with the course id that contains it, the unit id, name, video link on youtube and the quiz.",
         consumes: ["application/json"],
         security: [
           {
@@ -1115,11 +1107,8 @@ module.exports = {
                     example: "https://www.youtube.com/watch?v=_bCPuhqS4u8"
                   },
                   quiz: {
-                    type: "array",
-                    items: {
-                      type: "string",
-                      example: ""
-                    }
+                    type: "string",
+                    example: ""
                   }
                 }
               }
@@ -1141,7 +1130,7 @@ module.exports = {
       get: {
         tags: ["lessons"],
         summary: "Returns lessons",
-        description: "Gives the lessons by giving the id_unit",
+        description: "Gives lessons informations (lesson id, unit id, sequence number, name, creation date, video link and quiz) about the specified lesson by giving the unit id.",
         produces: ["application/json"],
         security: [
           {
@@ -1175,8 +1164,8 @@ module.exports = {
     "/lessons/{id}": {
       put: {
         tags: ["lessons"],
-        summary: "changes the lesson",
-        description: "Alters the lesson by gave elements",
+        summary: "Changes the lesson",
+        description: "Alters lesson parameters (course id, unit id and name) by giving the lesson id.",
         produces: ["application/json"],
         security: [
           {
@@ -1187,7 +1176,7 @@ module.exports = {
           {
             in: "path",
             name: "id",
-            description: "lesson's id",
+            description: "lesson id",
             required: true,
             schema: {
               type: "integer",
@@ -1235,7 +1224,7 @@ module.exports = {
         tags: ["lessons"],
         summary: "Deletes the selected lesson",
         produces: ["application/json"],
-        description: "deletes the lesson by giving its id",
+        description: "Deletes the lesson by giving its id and unit id.",
         security: [
           {
             bearerAuth: []
@@ -1286,11 +1275,13 @@ module.exports = {
         }
       }
     },
+
+    //SUBSCRIBE
     "/subscribe": {
       post: {
         tags: ["subscribe"],
         summary: "Subscription to a course",
-        description: "Subscription made by a student to a course by giving its id",
+        description: "Subscription made by a user to a course by giving course id.",
         consumes: ["application/json"],
         security: [
           {
@@ -1329,22 +1320,11 @@ module.exports = {
       get: {
         tags: ["subscribe"],
         summary: "Returns the subscription",
-        description: "Gives the subscription by giving teacher's email",
+        description: "Gives the subscription by giving email",
         produces: ["application/json"],
         security: [
           {
             bearerAuth: []
-          }
-        ],
-        parameters: [
-          {
-            in: "query",
-            name: "email",
-            description: "teacher's email",
-            required: true,
-            schema: {
-              type: "string",
-            }
           }
         ],
         responses: {
@@ -1361,9 +1341,9 @@ module.exports = {
       },
       delete: {
         tags: ["subscribe"],
-        summary: "Deletes subscription",
         produces: ["application/json"],
-        description: "Cancels the subscription to a course",
+        summary: "Deletes subscription",
+        description: "Cancels the subscription to the specified course by giving its id.",
         security: [
           {
             bearerAuth: []

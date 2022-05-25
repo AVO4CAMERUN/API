@@ -6,7 +6,7 @@ const express = require('express');
 // Utils servises
 const BlobConvert = require('../utils/BlobConvert');
 const AuthJWT = require('../utils/Auth');
-const { errorManagment } = require('../utils/DBErrorManagment');
+const { errorManagment } = require('../Utils/DBErrorManagment');
 const Validator = require('../Validators/courses.validator');
 
 // Import DBservices and deconstruct function
