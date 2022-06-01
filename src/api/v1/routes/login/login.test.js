@@ -1,17 +1,16 @@
 // Login test file
-
 import { jest } from '@jest/globals';
 import "dotenv/config";
-import { setupDB } from "../../utils/test.setup"
+import { setupTest } from "../../utils/test.setup"
 import app from "../../../../app"
 import request from "supertest"
 
 //
 const TEST_ENDPOINT = "/api/v1/login";
 
-setupDB()
+setupTest()
 
-describe(`POST ${TEST_ENDPOINT}`, () => {
+describe(`POST ${TEST_ENDPOINT}`, async () => {
     jest.setTimeout(10000)
 
     it("return 200 if", async () => {
