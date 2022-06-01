@@ -1,5 +1,5 @@
 // Subscribe DB services modules
-import { createGET, pc } from '../../utils/query-generate.services.js'
+import { createGET, pc } from '../../utils/main.services.js'
 
 // Query to subscription
 async function subscription (email, id_course) {

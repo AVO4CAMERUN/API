@@ -5,13 +5,24 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "test": "npx jest",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "start": "cls & node src/server.js",
     "generate:prisma": "npx prisma db push",
     "start:prod": "npm run generate:prisma && node server.js"
   },
   "prisma": {
     "schema": "src/prisma/schema.prisma"
+  },
+  "jest": {
+    "testEnvironment": "jest-environment-node",
+    "transform": {}
+  },
+  "env": {
+    "test": {
+      "plugins": [
+        "@babel/plugin-transform-modules-commonjs"
+      ]
+    }
   },
   "keywords": [],
   "author": "",
@@ -27,11 +38,13 @@
     "js-sha256": "^0.9.0",
     "jsonwebtoken": "^8.5.1",
     "nodemailer": "^6.7.3",
+    "supertest": "^6.2.3",
     "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.3.0",
     "winston": "^3.6.0"
   },
   "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.18.2",
     "@mermaid-js/mermaid-cli": "^8.14.0",
     "jest": "^28.1.0",
     "prisma": "^3.11.0"

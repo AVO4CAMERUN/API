@@ -1,6 +1,10 @@
 // Generic DB services modules
 import prisma from '@prisma/client'
-const pc = new prisma.PrismaClient()
+
+// Start DB function
+function startDB() {
+    return new prisma.PrismaClient()
+}
 
 // ADD like regex se no sono un pagliaccio 🤡
 // Generic function generate GET request
@@ -41,6 +45,8 @@ function createGET(table, selectField, filter, opLogic = ''){ // SERVE gestore
     return { qf: pc[table].findMany, select, where } // fare la ricerca non containece
 }
 
+const pc = startDB()
+
 // Export functions
-export { pc, createGET }
+export { pc, startDB, createGET }
 

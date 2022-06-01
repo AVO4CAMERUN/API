@@ -1,5 +1,5 @@
 // Invites DB services modules
-import { createGET, pc } from '../../utils/query-generate.services.js'
+import { createGET, pc } from '../../utils/main.services.js'
 
 // Query for add invite for join class 
 async function addClassInvite (email, id_class) {

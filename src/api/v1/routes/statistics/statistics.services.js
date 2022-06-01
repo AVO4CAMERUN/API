@@ -1,5 +1,5 @@
 // Statistics DB services modules
-import { createGET, pc } from "../../utils/query-generate.services.js"
+import { createGET, pc } from "../../utils/main.services.js"
 
 // Query for create quiz result
 async function addResult (id_lesson, email, numCorrect, numWrong) {
