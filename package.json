@@ -1,13 +1,17 @@
 {
-  "name": "Avo4cum-Backend",
+  "name": "avo4cum-backend",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
+    "test": "npx jest",
+    "start": "cls & node src/server.js",
     "generate:prisma": "npx prisma db push",
     "start:prod": "npm run generate:prisma && node server.js"
+  },
+  "prisma": {
+    "schema": "src/prisma/schema.prisma"
   },
   "keywords": [],
   "author": "",
@@ -29,6 +33,7 @@
   },
   "devDependencies": {
     "@mermaid-js/mermaid-cli": "^8.14.0",
+    "jest": "^28.1.0",
     "prisma": "^3.11.0"
   }
 }
