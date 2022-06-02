@@ -5,8 +5,9 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test": "npx prisma db push & node --experimental-vm-modules --no-warnings node_modules/jest/bin/jest.js",
     "start": "cls & node src/server.js",
+    "prova": "cls & node prova.js",
     "generate:prisma": "npx prisma db push",
     "start:prod": "npm run generate:prisma && node server.js"
   },

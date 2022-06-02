@@ -1,11 +1,10 @@
-// Login test file
+// Courses test file
 import { jest } from '@jest/globals';
-import setupTest from "../../utils/test.setup"
+import setupTest  from "../../utils/test.setup"
 import app from "../../../../app"
 import request from "supertest"
 
-//
-const TEST_ENDPOINT = "/api/v1/login";
+const TEST_ENDPOINT = "/api/v1/courses";
 
 setupTest()
 
@@ -19,6 +18,4 @@ describe(`POST ${TEST_ENDPOINT}`, () => {
 
         expect(200).toBe(200);
     });
-
-    
 })

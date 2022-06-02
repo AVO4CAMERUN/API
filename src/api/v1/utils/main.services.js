@@ -4,12 +4,13 @@ import prisma from '@prisma/client'
 // Start DB function
 function startDB() {
     return new prisma.PrismaClient()
+    // { log: ['query']}
 }
 
 // ADD like regex se no sono un pagliaccio 🤡
 // Generic function generate GET request
-function createGET(table, selectField, filter, opLogic = ''){ // SERVE gestore
-    
+function createGET(table, selectField, filter, opLogic = '') { // SERVE gestore
+
     // Create obj filter query
     let where = {}
 
@@ -39,14 +40,13 @@ function createGET(table, selectField, filter, opLogic = ''){ // SERVE gestore
     if (selectField[0] === '*') return { qf: pc[table].findMany, where }
 
     // else return specific fields
-    let select = {}; 
+    let select = {};
     for (const iterator of selectField) select[iterator] = true
-    
+
     return { qf: pc[table].findMany, select, where } // fare la ricerca non containece
 }
 
-const pc = startDB()
-
 // Export functions
+const pc = startDB() // default connection
 export { pc, startDB, createGET }
 
