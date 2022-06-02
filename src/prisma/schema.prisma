@@ -7,8 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Fare ER auto
-
 model course {
   id_course     Int              @id @default(autoincrement())
   email_creator String           @db.VarChar(255)

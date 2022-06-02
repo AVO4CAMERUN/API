@@ -1,6 +1,6 @@
 // Login test file
 import { jest } from '@jest/globals';
-import setupTest from "../../utils/test.setup"
+import setupTest  from "../../test.setup"
 import app from "../../../../app"
 import request from "supertest"
 

@@ -1,6 +1,6 @@
 // Setup test in singole file
 import "dotenv/config"
-import { startDB } from "./main.services"
+import { startDB } from "./utils/main.services"
 
 // Const env
 const DB = process.env.DATABASE_NAME

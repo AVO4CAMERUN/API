@@ -1,5 +1,5 @@
 // Classes DB services modules
-import { createGET, pc } from '../../utils/main.services.js'
+import { pc, createGET } from '../../utils/main.services.js'
 
 // Query for create class
 async function createClass(name, img) {

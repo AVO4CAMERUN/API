@@ -1,5 +1,5 @@
 // Lesson DB services modules
-import { createGET, pc } from '../../utils/main.services.js' 
+import { pc, createGET } from '../../utils/main.services.js' 
 
 // Query for create lessons
 async function createLesson (id_unit, name, link_video, quiz) {

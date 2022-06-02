@@ -30,7 +30,7 @@ import {
 // Allocate obj
 const router = express.Router()
 
-// Functions for formatter classes data people 
+
 
 // Function for resolve multi query in array on array structure
 const resolve = async (arrays) => {
@@ -64,6 +64,7 @@ const teacherFormatter = (teachers) => {
     return t
 }
 
+// Function for formatter user user data
 const userFormatter = (users) => {
     for (const user of users)
         user.img_profile = BlobConvert.blobToBase64(user.img_profile);
@@ -191,12 +192,7 @@ router.route('/classes/:id')
 
         // 
         let ownclass;
-        getOwnClassesIDS(email, role)
-            .then((ids) => {
-                // Check is own class
-                if (!ids.includes(id)) return Promise.reject(403)
-                return getClassDataByID(id)
-            })
+        getClassDataByID(id)
             .then((result) => {
                 ownclass = [result]  // save class
                 const classesInjectedPeopleQuery = []
