@@ -1,6 +1,6 @@
 // Module for validate courses input in courses router
 import { validationResult, check, query, body } from "express-validator"
-import { customCheckArrayInGET } from "../../utils/utils.validator.js"
+import { customCheckArrayInGET } from '../../utils.validator.js'
 import { getCoursesSubject } from "../courses/courses.services.js"
 
 // POST

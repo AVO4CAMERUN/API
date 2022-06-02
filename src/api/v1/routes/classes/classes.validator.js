@@ -1,6 +1,6 @@
 // Module for validate classes input in classes router
 import { validationResult, check, query, body } from 'express-validator'
-import { customCheckArrayInGET } from '../../utils/utils.validator.js'
+import { customCheckArrayInGET } from '../../utils.validator.js'
 
 // POST
 const postClass = [
