@@ -85,7 +85,7 @@ router.route('/classes')
 
         if (img_cover !== undefined) 
             img_cover = BlobConvert.base64ToBlob(img_cover)
-
+        
         if (teachers === undefined) teachers = []
         if (students === undefined) students = []
 

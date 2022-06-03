@@ -1,8 +1,8 @@
 // Lesson DB services modules
-import { createGET, pc } from "../../base/main.services.js" 
+import { createGET, pc } from "../../base/connection.services.js" 
 
 // Query for create lessons
-async function createLesson (id_unit, name, link_video, quiz) {
+export async function createLesson (id_unit, name, link_video, quiz) {
     const lessons = await pc.lesson.findMany({
         where: { id_unit },
         orderBy: { seqNumber: 'asc' }
@@ -19,14 +19,14 @@ async function createLesson (id_unit, name, link_video, quiz) {
 }
 
 // Query for get lessons data by filter
-async function getLessonsDataByFilter (filter) {
+export async function getLessonsDataByFilter (filter) {
     const obj = createGET('lesson', ['*'], filter)
     const { qf, select, where} = obj
     return await qf({ select, where })
 }
 
 // Check if lesson belong unit
-async function lessonBelongUnit (id_unit, id_lesson) {
+export async function lessonBelongUnit (id_unit, id_lesson) {
     return await pc.lesson.aggregate({
         where: {id_lesson, id_unit},
         _count: true
@@ -34,7 +34,7 @@ async function lessonBelongUnit (id_unit, id_lesson) {
 }
 
 // Query for update lessons by id and option
-async function updateLessons (id_lesson, newData) {
+export async function updateLessons (id_lesson, newData) {
     return await pc.lesson.update({
         where: { id_lesson },
         data: { ...newData }
@@ -42,7 +42,7 @@ async function updateLessons (id_lesson, newData) {
 }
 
 // Query for delete lessons
-async function deleteLessons (id_lesson, id_unit) {
+export async function deleteLessons (id_lesson, id_unit) {
     const lessons = await pc.lesson.findMany({
         where: { id_unit },
         orderBy: { seqNumber: 'asc' }
@@ -66,13 +66,4 @@ async function deleteLessons (id_lesson, id_unit) {
         })
     }
     return response
-}
-
-// Export functions 
-export {
-    createLesson,
-    getLessonsDataByFilter,
-    lessonBelongUnit,
-    updateLessons,
-    deleteLessons
 }

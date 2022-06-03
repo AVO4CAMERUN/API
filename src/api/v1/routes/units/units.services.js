@@ -1,9 +1,8 @@
 // Units DB services modules
-
-import { createGET, pc } from "../../base/main.services.js" 
+import { createGET, pc } from "../../base/connection.services.js" 
 
 // Query for create unit
-async function createUnit (name, description, id_course) {
+export async function createUnit (name, description, id_course) {
     const units = await pc.unit.findMany({
         where: { id_course },
         orderBy: { seqNumber: 'asc' }
@@ -21,7 +20,7 @@ async function createUnit (name, description, id_course) {
 }
 
 // Check if unit belong Course
-async function unitBelongCourse (id_course, id_unit) {
+export async function unitBelongCourse (id_course, id_unit) {
     return await pc.unit.aggregate({
         where: { id_unit, id_course },
         _count: true
@@ -29,14 +28,14 @@ async function unitBelongCourse (id_course, id_unit) {
 }
 
 // Query for get units data by filter
-async function getUnitsDataByFilter (filter, include) {
+export async function getUnitsDataByFilter (filter, include) {
     const obj = createGET('unit', ['*'], filter)
     const { qf, select, where} = obj
     return await qf({ select, where, include})
 }
 
 // Query for update units by id and option
-async function updateUnits (id_unit, newData) {
+export async function updateUnits (id_unit, newData) {
     return await pc.unit.update({
         where: { id_unit },
         data: { ...newData }
@@ -44,7 +43,7 @@ async function updateUnits (id_unit, newData) {
 }
 
 // Query for delete unit
-async function deleteUnit (id_course, id_unit) {
+export async function deleteUnit (id_course, id_unit) {
     const units = await pc.unit.findMany({
         where: { id_course },
         orderBy: { seqNumber: 'asc' }
@@ -68,13 +67,4 @@ async function deleteUnit (id_course, id_unit) {
         })
     }
     return response
-}
-
-// Export functions 
-export {
-    createUnit,
-    unitBelongCourse,
-    getUnitsDataByFilter,
-    updateUnits,
-    deleteUnit
 }

@@ -1,9 +1,9 @@
 // Login DB services modules
 import sha256 from "js-sha256"
-import { createGET, pc } from "../../base/main.services.js"
+import { createGET, pc } from "../../base/connection.services.js"
 
 // Check username and password (Auth) 
-async function checkUsernamePassword(username, password){
+export async function checkUsernamePassword(username, password){
     return await pc.user.aggregate({
         where: { 
             username,
@@ -14,14 +14,14 @@ async function checkUsernamePassword(username, password){
 }
 
 // Get info for tokens
-async function getUserInfoByUsername(username){
+export async function getUserInfoByUsername(username){
     return await pc.user.findUnique({
         where: { username }
     })
 }
 
 // Check registerd method  
-async function isRegistred(email){
+export async function isRegistred(email){
     return await pc.user.aggregate({
         where: { email },
         _count: true
@@ -29,19 +29,11 @@ async function isRegistred(email){
 }
 
 // Check free user  
-async function isFreeUsername(username){
+export async function isFreeUsername(username){
     return await pc.user.aggregate({
         where: { username },
         _count: true
     })
-}
-
-// Export functions
-export {
-    checkUsernamePassword,
-    getUserInfoByUsername,
-    isFreeUsername,
-    isRegistred
 }
 
 // isRegistred e isFreeUsername da unire

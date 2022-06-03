@@ -1,6 +1,9 @@
 // Generic DB services modules
 import prisma from '@prisma/client'
 
+// Default connection
+const pc = new prisma.PrismaClient()
+
 // Start DB function
 function startDB() {
     return new prisma.PrismaClient()
@@ -47,6 +50,4 @@ function createGET(table, selectField, filter, opLogic = '') { // SERVE gestore
 }
 
 // Export functions
-const pc = startDB() // default connection
 export { pc, startDB, createGET }
-

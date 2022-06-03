@@ -1,45 +1,23 @@
 // Setup test in singole file
 import "dotenv/config"
-import { pc, startDB } from "./main.services"
+import { pc } from "./connection.services"
+import { jest } from '@jest/globals';
+import { mockDeep, mockReset } from 'jest-mock-extended'
 
-// Const env
-const DB = process.env.DATABASE_NAME
 
-// Get list name tables
-async function getTableNames(connection) {
-    return (await connection.$queryRaw`SHOW TABLES`).map(o => o[`Tables_in_${DB}`])
-}
-
-// Delete all record on tables
-async function clearAllTables(connection) {
-    (await getTableNames(connection))
-        .forEach(async table => await connection[table].deleteMany({}));
-}
-
+/*jest.mock('./main.services', () => ({
+    __esModule: true,
+    default: mockDeep()
+}))
+*/
 // SetupDB to jest test 
 function setupTest() {
 
-    // Setup models
-    let connection;
+    // Drop mock each test
+    //beforeEach(() => {
+        // mockReset(pc)
+    // })
 
-    // Connect to connection
-    beforeAll(async () => {
-        // console.log("start DB");
-        connection = startDB()
-        //connection = pc
-    })
-
-    // Cleans up database between each test
-    afterEach(async () => {
-        // console.log("clear DB");
-        await clearAllTables(connection)
-    })
-
-    // Disconnect connection
-    afterAll(async () => {
-        // console.log("end DB");
-        connection.$disconnect()
-    })
 }
 
 export { setupTest }
