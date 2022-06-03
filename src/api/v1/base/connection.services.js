@@ -51,3 +51,4 @@ function createGET(table, selectField, filter, opLogic = '') { // SERVE gestore
 
 // Export functions
 export { pc, startDB, createGET }
+export default pc
