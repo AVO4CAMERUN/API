@@ -1,6 +1,6 @@
 // Units DB services modules
 
-import { createGET, pc } from "../../main.services.js" 
+import { createGET, pc } from "../../base/main.services.js" 
 
 // Query for create unit
 async function createUnit (name, description, id_course) {

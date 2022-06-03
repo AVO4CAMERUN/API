@@ -1,5 +1,5 @@
 // Courses DB services modules
-import { createGET, pc } from "../../main.services.js"
+import { createGET, pc } from "../../base/main.services.js"
 
 // Query for create course
 async function createCourse(name, email_creator, description, img_cover = '', subject) {

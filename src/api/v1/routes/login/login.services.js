@@ -1,6 +1,6 @@
 // Login DB services modules
 import sha256 from "js-sha256"
-import { createGET, pc } from "../../main.services.js"
+import { createGET, pc } from "../../base/main.services.js"
 
 // Check username and password (Auth) 
 async function checkUsernamePassword(username, password){

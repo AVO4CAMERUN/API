@@ -1,6 +1,6 @@
 // Accounts DB services modules
 import sha256 from "js-sha256"
-import { createGET, pc } from "../../main.services.js"
+import { createGET, pc } from "../../base/main.services.js"
 
 // Query for create user
 async function createAccount (firstname, lastname, username, password, email, role) {
