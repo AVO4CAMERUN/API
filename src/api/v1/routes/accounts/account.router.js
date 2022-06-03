@@ -23,7 +23,7 @@ const router = express.Router()
     .use(bodyParser.json());
 
 // Util Obj
-const CHARATERS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"; // Set for confirm token
+const CHARATERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"; // Set for confirm token
 let suspendedUsers = [];  // List for suspendedUsers: model => {code: value, usermane: vaule, password: value role: value} 
 
 router.route("/account")
@@ -144,14 +144,12 @@ router.route("/account")
 
     // Delete account
     .delete(AuthJWT.authenticateJWT, (req, res) => {
-        const user = AuthJWT.parseAuthorization(req.headers.authorization)
-        let { email } = user;
+        const { email } = AuthJWT.parseAuthorization(req.headers.authorization)
 
         // Delete account and account relaction
-        // non necessario controllo tanto ce auth
         delateAccount(email)
-            .then(() => res.sendStatus(200))  // Ok
-            .catch((err) => errorManagment("DELETE account", res, err)) // Server error
+            .then(() => res.sendStatus(200))
+            .catch((err) => errorManagment("DELETE account", res, err))
     })
 
 // Route cofirm code

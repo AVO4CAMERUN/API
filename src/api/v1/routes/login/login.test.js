@@ -22,7 +22,7 @@ describe(`POST ${TEST_ENDPOINT}`, () => {
     })
     
     it("return 200 if username and password are correct", async () => {
-        await createAccount(
+        const r = await createAccount(
             "firstname", 
             "lastname", 
             "username", 
@@ -30,12 +30,14 @@ describe(`POST ${TEST_ENDPOINT}`, () => {
             "email@email.com", 
             "STUDENT"
         )
+
         const res = await request(app)
             .post(TEST_ENDPOINT)
             .send({ username: "username", password: "password"})
 
-        expect("accessToken" in res.body).toBeTruthy();
-        expect("refreshToken" in res.body).toBeTruthy();
+        const { body } = res
+        expect("accessToken" in body).toBeTruthy();
+        expect("refreshToken" in body).toBeTruthy();
         expect(res.statusCode).toBe(200);
     })   
 })
@@ -75,8 +77,6 @@ describe(`PUT ${TEST_ENDPOINT}`, () => {
             .put(TEST_ENDPOINT)
             .send({ token: body.refreshToken})
         
-
-        expect("accessToken" in res.body).toBeTruthy();
         expect(res.statusCode).toBe(200);
     })
 })
@@ -103,8 +103,9 @@ describe(`DELETE ${TEST_ENDPOINT}`, () => {
         const { body } = await request(app)
             .post(TEST_ENDPOINT)
             .send({ username: "username", password: "password"})
-  
+        
         const { refreshToken } = body
+
         const res = await request(app)
             .delete(TEST_ENDPOINT)
             .send({ token: refreshToken })

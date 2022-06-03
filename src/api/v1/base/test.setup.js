@@ -1,6 +1,6 @@
 // Setup test in singole file
 import "dotenv/config"
-import { startDB } from "./main.services"
+import { pc, startDB } from "./main.services"
 
 // Const env
 const DB = process.env.DATABASE_NAME
@@ -23,13 +23,23 @@ function setupTest() {
     let connection;
 
     // Connect to connection
-    beforeAll(async () => connection = startDB())
+    beforeAll(async () => {
+        // console.log("start DB");
+        connection = startDB()
+        //connection = pc
+    })
 
     // Cleans up database between each test
-    afterEach(async () => await clearAllTables(connection))
+    afterEach(async () => {
+        // console.log("clear DB");
+        await clearAllTables(connection)
+    })
 
     // Disconnect connection
-    afterAll(async () => connection.$disconnect())
+    afterAll(async () => {
+        // console.log("end DB");
+        connection.$disconnect()
+    })
 }
 
 export { setupTest }
