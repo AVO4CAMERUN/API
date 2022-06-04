@@ -458,7 +458,7 @@ export default {
         ],
         parameters: [
           {
-            in: "query",
+            in: "path",
             name: "id",
             description: "",
             required: false,
