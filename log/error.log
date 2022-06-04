@@ -1,0 +1,79 @@
+{"endpoint":"POST login","level":"error","message":"undefined error","timestamp":"2022-04-12T11:02:25.909Z"}
+{"endpoint":"PUT account","level":"error","message":"PrismaClientValidationError","timestamp":"2022-04-12T15:42:36.689Z"}
+{"endpoint":"PUT account","level":"error","message":"PrismaClientValidationError","timestamp":"2022-04-12T15:45:41.147Z"}
+{"endpoint":"PUT account","level":"error","message":"PrismaClientValidationError","timestamp":"2022-04-12T15:46:25.712Z"}
+{"endpoint":"PUT account","level":"error","message":"PrismaClientValidationError","timestamp":"2022-04-12T15:47:05.790Z"}
+{"endpoint":"PUT account","level":"error","message":"PrismaClientValidationError","timestamp":"2022-04-12T15:47:32.006Z"}
+{"endpoint":"PUT account","level":"error","message":"PrismaClientValidationError","timestamp":"2022-04-12T15:47:39.514Z"}
+{"endpoint":"PUT account","level":"error","message":"PrismaClientValidationError","timestamp":"2022-04-12T15:52:26.193Z"}
+{"endpoint":"PUT account","level":"error","message":"PrismaClientValidationError","timestamp":"2022-04-12T15:52:44.041Z"}
+{"endpoint":"PUT account","level":"error","message":"PrismaClientValidationError","timestamp":"2022-04-12T15:54:59.691Z"}
+{"endpoint":"PUT account","level":"error","message":"PrismaClientValidationError","timestamp":"2022-04-12T15:55:46.620Z"}
+{"endpoint":"PUT account","level":"error","message":"PrismaClientValidationError","timestamp":"2022-04-12T15:56:08.103Z"}
+{"endpoint":"PUT account","level":"error","message":"PrismaClientValidationError","timestamp":"2022-04-12T15:57:35.685Z"}
+{"endpoint":"PUT account","level":"error","message":"PrismaClientValidationError","timestamp":"2022-04-12T16:00:41.519Z"}
+{"endpoint":"POST account","level":"error","message":"undefined error","timestamp":"2022-04-13T09:54:14.471Z"}
+{"endpoint":"POST account","level":"error","message":"undefined error","timestamp":"2022-04-13T09:54:44.746Z"}
+{"endpoint":"PUT courses/id","level":"error","message":"PrismaClientValidationError","timestamp":"2022-04-13T12:50:03.481Z"}
+{"endpoint":"PUT courses/id","level":"error","message":"PrismaClientValidationError","timestamp":"2022-04-13T12:53:12.707Z"}
+{"endpoint":"PUT courses/id","level":"error","message":"PrismaClientValidationError","timestamp":"2022-04-13T12:53:20.064Z"}
+{"endpoint":"PUT courses/id","level":"error","message":"PrismaClientValidationError","timestamp":"2022-04-13T12:54:27.686Z"}
+{"endpoint":"PUT courses/id","level":"error","message":"PrismaClientValidationError","timestamp":"2022-04-13T12:54:56.493Z"}
+{"endpoint":"PUT courses/id","level":"error","message":"PrismaClientValidationError","timestamp":"2022-04-13T12:55:22.323Z"}
+{"endpoint":"PUT courses/id","level":"error","message":"PrismaClientValidationError","timestamp":"2022-04-13T12:55:30.679Z"}
+{"endpoint":"PUT courses/id","level":"error","message":"PrismaClientValidationError","timestamp":"2022-04-13T12:56:12.335Z"}
+{"endpoint":"PUT courses/id","level":"error","message":"PrismaClientValidationError","timestamp":"2022-04-13T12:56:22.706Z"}
+{"endpoint":"PUT courses/id","level":"error","message":"PrismaClientValidationError","timestamp":"2022-04-13T12:57:36.002Z"}
+{"endpoint":"PUT courses/id","level":"error","message":"PrismaClientValidationError","timestamp":"2022-04-13T13:03:24.729Z"}
+{"endpoint":"PUT courses/id","level":"error","message":"PrismaClientValidationError","timestamp":"2022-04-13T13:05:17.350Z"}
+{"endpoint":"POST account","level":"error","message":"undefined error","timestamp":"2022-04-14T10:40:18.870Z"}
+{"endpoint":"GET classes","level":"error","message":"undefined error","timestamp":"2022-04-14T15:25:23.017Z"}
+{"endpoint":"GET classes","level":"error","message":"undefined error","timestamp":"2022-04-14T15:25:48.755Z"}
+{"endpoint":"POST invites","level":"error","message":"undefined error","timestamp":"2022-04-17T22:37:59.576Z"}
+{"endpoint":"POST invites","level":"error","message":"undefined error","timestamp":"2022-04-17T22:38:30.271Z"}
+{"endpoint":"GET account/confirmCode","level":"error","message":"undefined error","timestamp":"2022-05-05T11:39:30.538Z"}
+{"endpoint":"POST login","level":"error","message":"undefined error","timestamp":"2022-05-16T19:22:21.489Z"}
+{"endpoint":"POST login","level":"error","message":"undefined error","timestamp":"2022-06-01T20:20:51.894Z"}
+{"endpoint":"POST login","level":"error","message":"undefined error","timestamp":"2022-06-02T10:18:37.978Z"}
+{"endpoint":"POST login","level":"error","message":"undefined error","timestamp":"2022-06-02T11:04:36.267Z"}
+{"endpoint":"POST login","level":"error","message":"undefined error","timestamp":"2022-06-02T11:05:12.182Z"}
+{"endpoint":"POST login","level":"error","message":"undefined error","timestamp":"2022-06-02T11:11:37.465Z"}
+{"endpoint":"POST login","level":"error","message":"undefined error","timestamp":"2022-06-02T11:52:30.986Z"}
+{"endpoint":"POST login","level":"error","message":"undefined error","timestamp":"2022-06-02T12:05:18.841Z"}
+{"endpoint":"POST login","level":"error","message":"undefined error","timestamp":"2022-06-02T12:15:28.880Z"}
+{"endpoint":"POST login","level":"error","message":"undefined error","timestamp":"2022-06-02T12:16:00.123Z"}
+{"endpoint":"PUT account","level":"error","message":"PrismaClientValidationError","timestamp":"2022-06-02T15:49:42.866Z"}
+{"endpoint":"PUT account","level":"error","message":"PrismaClientValidationError","timestamp":"2022-06-02T15:49:56.612Z"}
+{"endpoint":"PUT account","level":"error","message":"undefined error","timestamp":"2022-06-02T15:51:03.052Z"}
+{"endpoint":"PUT account","level":"error","message":"undefined error","timestamp":"2022-06-02T15:53:44.037Z"}
+{"endpoint":"PUT account","level":"error","message":"undefined error","timestamp":"2022-06-02T15:54:25.078Z"}
+{"endpoint":"PUT account","level":"error","message":"undefined error","timestamp":"2022-06-02T15:56:21.289Z"}
+{"endpoint":"PUT account","level":"error","message":"undefined error","timestamp":"2022-06-02T15:56:41.261Z"}
+{"endpoint":"PUT account","level":"error","message":"undefined error","timestamp":"2022-06-02T15:59:44.481Z"}
+{"endpoint":"PUT account","level":"error","message":"undefined error","timestamp":"2022-06-02T16:01:21.852Z"}
+{"endpoint":"PUT account","level":"error","message":"undefined error","timestamp":"2022-06-02T16:05:58.534Z"}
+{"endpoint":"PUT account","level":"error","message":"undefined error","timestamp":"2022-06-02T16:07:09.347Z"}
+{"endpoint":"PUT account","level":"error","message":"undefined error","timestamp":"2022-06-02T16:08:05.941Z"}
+{"endpoint":"PUT account","level":"error","message":"undefined error","timestamp":"2022-06-02T16:08:37.451Z"}
+{"endpoint":"PUT account","level":"error","message":"undefined error","timestamp":"2022-06-02T16:09:17.503Z"}
+{"endpoint":"PUT account","level":"error","message":"undefined error","timestamp":"2022-06-02T16:09:23.951Z"}
+{"endpoint":"PUT account","level":"error","message":"undefined error","timestamp":"2022-06-02T16:10:17.037Z"}
+{"endpoint":"PUT account","level":"error","message":"undefined error","timestamp":"2022-06-02T16:11:10.742Z"}
+{"endpoint":"POST login","level":"error","message":"undefined error","timestamp":"2022-06-03T14:02:27.039Z"}
+{"endpoint":"POST login","level":"error","message":"undefined error","timestamp":"2022-06-03T14:02:55.805Z"}
+{"endpoint":"DELETE account","level":"error","message":"PrismaClientKnownRequestError","timestamp":"2022-06-03T14:46:13.806Z"}
+{"endpoint":"DELETE account","level":"error","message":"undefined error","timestamp":"2022-06-03T14:46:13.809Z"}
+{"endpoint":"POST login","level":"error","message":"undefined error","timestamp":"2022-06-03T14:46:58.231Z"}
+{"endpoint":"DELETE account","level":"error","message":"PrismaClientKnownRequestError","timestamp":"2022-06-03T15:07:20.795Z"}
+{"endpoint":"DELETE account","level":"error","message":"undefined error","timestamp":"2022-06-03T15:07:20.799Z"}
+{"endpoint":"DELETE account","level":"error","message":"PrismaClientKnownRequestError","timestamp":"2022-06-03T15:08:43.723Z"}
+{"endpoint":"DELETE account","level":"error","message":"undefined error","timestamp":"2022-06-03T15:08:43.727Z"}
+{"endpoint":"DELETE account","level":"error","message":"PrismaClientKnownRequestError","timestamp":"2022-06-03T15:10:45.392Z"}
+{"endpoint":"DELETE account","level":"error","message":"undefined error","timestamp":"2022-06-03T15:10:45.399Z"}
+{"endpoint":"POST login","level":"error","message":"undefined error","timestamp":"2022-06-03T15:18:54.740Z"}
+{"endpoint":"DELETE account","level":"error","message":"PrismaClientKnownRequestError","timestamp":"2022-06-03T15:19:32.633Z"}
+{"endpoint":"DELETE account","level":"error","message":"undefined error","timestamp":"2022-06-03T15:19:32.638Z"}
+{"endpoint":"DELETE account","level":"error","message":"PrismaClientKnownRequestError","timestamp":"2022-06-03T15:39:47.638Z"}
+{"endpoint":"DELETE account","level":"error","message":"undefined error","timestamp":"2022-06-03T15:39:47.643Z"}
+{"endpoint":"DELETE account","level":"error","message":"PrismaClientKnownRequestError","timestamp":"2022-06-03T15:43:12.760Z"}
+{"endpoint":"DELETE account","level":"error","message":"undefined error","timestamp":"2022-06-03T15:43:12.763Z"}
