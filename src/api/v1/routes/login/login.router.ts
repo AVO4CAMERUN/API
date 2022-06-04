@@ -7,7 +7,7 @@ import { errorManagment } from "../../utils/DBErrorManagment"
 import { checkUsernamePassword, getUserInfoByUsername } from "./login.services"
 
 const router = express.Router()
-    .use(bodyParser.json())   
+    .use(bodyParser.json())
 
 // Login
 router.route('/login')
@@ -21,18 +21,18 @@ router.route('/login')
 
             // Fetch user data
             const user = await getUserInfoByUsername(req.body)
-            const {email, username, role} = user;
+            const { email, username, role } = user;
 
             // Generate an access token
-            const userDataToken = {email, username, role}
+            const userDataToken = { email, username, role }
             const accessToken = jwt.sign(userDataToken, AuthJWT.accessTokenSecret, { expiresIn: '20m' });
             const refreshToken = jwt.sign(userDataToken, AuthJWT.refreshTokenSecret);
 
             // Insert in activity account
             AuthJWT.refreshTokens.push(refreshToken);
-            
+
             // Send json with tokens
-            res.json({accessToken, refreshToken});
+            res.json({ accessToken, refreshToken });
         } catch (error) {
             errorManagment('POST login', res, error)
         }
@@ -40,29 +40,39 @@ router.route('/login')
 
     // Update session 
     .put((req, res) => {
-        const { token } = req.body;
+        try {
+            const { token } = req.body;
 
-        if (!token) return res.sendStatus(401); 
-        if (!AuthJWT.refreshTokens.includes(token)) return res.sendStatus(403);
-    
-        jwt.verify(token, AuthJWT.refreshTokenSecret, (err) => {
-            if (err) return res.sendStatus(403); 
+            // Check token is, Check autenticate token 
+            if (!token) return res.sendStatus(401);
+            if (!AuthJWT.refreshTokens.includes(token)) return res.sendStatus(403);
 
-            let user = AuthJWT.jwtToObj(token);  //Extract js obj
-            const accessToken = jwt.sign({ username: user.username, role: user.role }, AuthJWT.accessTokenSecret, { expiresIn: '20m' });
-            res.json({accessToken});
-        });
+            jwt.verify(token, AuthJWT.refreshTokenSecret, (err) => {
+                if (err) return res.sendStatus(403);
+
+                // Send token
+                const { username, role } = AuthJWT.jwtToObj(token);
+                const accessToken = jwt.sign({ username, role }, AuthJWT.accessTokenSecret, { expiresIn: '20m' });
+                res.json({ accessToken });
+            });
+        } catch (error) {
+            errorManagment('PUT login', res, error)
+        }
     })
 
     // Logout | Delete session
     .delete((req, res) => {
-        const { token } = req.body;
+        try {
+            // Check autenticate token
+            const { token } = req.body;
+            if (!AuthJWT.refreshTokens.includes(token)) return res.sendStatus(403)
 
-        if(!AuthJWT.refreshTokens.includes(token))
-            return res.sendStatus(403); // Fake tokens
-
-        AuthJWT.refreshTokens = AuthJWT.refreshTokens.filter(value => value !== token); //Delete token for logout
-        res.sendStatus(200);  // Ok Logout successful"
+            // Delete token for logout
+            AuthJWT.refreshTokens = AuthJWT.refreshTokens.filter(value => value !== token); 
+            res.sendStatus(200);  // Ok Logout successful"
+        } catch (error) {
+            errorManagment('DELETE login', res, error)
+        }
     })
-    
+
 export default router
