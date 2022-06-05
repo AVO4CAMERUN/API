@@ -1,18 +1,8 @@
-// Generic DB services modules
-import { PrismaClient } from '@prisma/client'
-
-// Default connection
-const pc = new PrismaClient()
-
-// Start DB function
-function startDB() {
-    return new PrismaClient()
-    // { log: ['query']}
-}
+import pc from "./index.services"
 
 // ADD like regex se no sono un pagliaccio 🤡
 // Generic generate GET request
-function createGET(table, selectField, filter, opLogic = '') { // SERVE gestore
+export async function createGET(table, selectField, filter, other) { // SERVE gestore
 
     // Create obj filter query
     let where = {}
@@ -39,24 +29,43 @@ function createGET(table, selectField, filter, opLogic = '') { // SERVE gestore
     // console.log(+value)
     // console.log(!isNaN(+value))
 
+    if(!other) other = {}
     // if all return fields
-    if (selectField[0] === '*') return { qf: pc[table].findMany, where }
+    if (selectField[0] === '*') return await pc[table].findMany({ where })
 
     // else return specific fields
     let select = {};
     for (const iterator of selectField) select[iterator] = true
 
-    return { qf: pc[table].findMany, select, where } // fare la ricerca non containece
+    return await pc[table].findMany({ select, where, ...other })
+}
+
+// Generic post
+export async function createPOST(table, data) {
+    return await pc[table].create({ data })
+}
+
+// Generic update
+export async function createUPDATE(table, data, where) {
+    return await pc[table].create({ data, where })
+}
+
+// Generic Delete
+export async function createDELETE(table, where) {
+    return await pc[table].create({ where })
 }
 
 // Generic count
-async function createCOUNT(table, filter) {
+export async function createCOUNT(table, filter) {
     return await pc[table].aggregate({
         where: { ...filter },
         _count: true
     })
 }
 
-// Export functions
-export { pc, startDB, createGET, createCOUNT }
-export default pc
+export default { 
+    createPOST, 
+    createUPDATE, 
+    createDELETE, 
+    createCOUNT 
+}

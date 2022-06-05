@@ -3,9 +3,9 @@ import * as express from "express"
 import * as bodyParser from "body-parser"
 import * as jwt from "jsonwebtoken"
 import AuthJWT from "../../utils/Auth"
+import { sha256 } from "js-sha256"
 import { errorManagment } from "../../utils/DBErrorManagment"
-import { checkUsernamePassword } from "./login.services"
-import { getUser } from "../account/account.services"
+import { createGET, createCOUNT } from "../../base/services/base.services"
 
 const router = express.Router()
     .use(bodyParser.json())
@@ -15,15 +15,20 @@ router.route('/login')
     // Login | Create session
     .post(async (req, res) => {
         try {
-            const usernameIN:string  = req.body.username
+            // Extract input
+            const usernameIN:string = req.body.username
+            const passwordIN:string =  req.body.password
 
             // Check is registered
-            const isRegistered = await checkUsernamePassword(req.body)
-            if (!isRegistered) return res.sendStatus(403); // Forbiden
+            const isRegistered = await createCOUNT("user", {
+                username: usernameIN,
+                password: sha256(passwordIN)
+            })
+            if (!isRegistered._count) return res.sendStatus(403); // Forbiden
 
             // Fetch user data
-            const [{ email, username, role }] = await getUser({ username: usernameIN })
-
+            const [{ email, username, role }] = await createGET("user", "*", { username: usernameIN }, null)
+            
             // Generate an access token
             const userDataToken = { email, username, role }
             const accessToken = jwt.sign(userDataToken, AuthJWT.accessTokenSecret, { expiresIn: '20m' })

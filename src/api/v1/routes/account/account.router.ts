@@ -9,17 +9,18 @@ import { errorManagment } from "../../utils/DBErrorManagment"
 import user from "./user.interface"
 
 // Routes Services
-import { createCOUNT } from "../../base/index.services"
+import { createPOST, createGET, createDELETE, createCOUNT } from "../../base/services/base.services"
 /*import { getOwnClassesIDS } from "../classes/classes.services.js"*/
-import { updateUserInfo, getUser, delateAccount, createAccount } from "./account.services"
+import { updateUserInfo } from "./account.services"
 
 // Middleware for parse http req
 const router = express.Router()
     .use(bodyParser.json());
 
 // Set for confirm token
-const CHARATERS = process.env.CODE_SET_CHARATERS
 let suspended = [];
+const CHARATERS = process.env.CODE_SET_CHARATERS
+
 // List for suspended: model => {code: value, usermane: vaule, password: value role: value} 
 
 router.route("/account")
@@ -128,11 +129,13 @@ router.route("/account")
         try {
             // Get users data by filters
             const { email } = AuthJWT.parseAuthorization(req.headers.authorization)
-            const users = await getUser({ email })
+            const users = await createGET("user", "*", { email }, null) // getUser
 
             // Convert img in base64
-            for (const user of users)
-                user.img_profile = BlobConvert.blobToBase64(user.img_profile);
+            for (const user of users) {
+                user.img_profile = BlobConvert.blobToBase64(user.img_profile)
+                delete user.password
+            }
 
             // Response 
             res.send(users[0])
@@ -146,7 +149,7 @@ router.route("/account")
         try {
             // Delete account and account relaction
             const { email } = AuthJWT.parseAuthorization(req.headers.authorization)
-            const ack = await delateAccount({ email })
+            const ack = await createDELETE("user", { email })
             res.sendStatus(200)
         } catch (err) {
             errorManagment("DELETE account", res, err)
@@ -166,12 +169,12 @@ router.route("/account/:confirmCode")
             delete suspended[index].code;
 
             // Remove suspended user | Create account
-            // const ack = await createAccount(suspended[index])
+            const ack = await createPOST("user", suspended[index])
             suspended = suspended.filter(value => value !== suspended[index]);
             
             res.sendStatus(200)
         } catch (err) {
-            errorManagment("GET account/confirmCode", res, err)
+            errorManagment("GET account/confirm_code", res, err)
         }
     })
 

@@ -9,23 +9,19 @@ datasource db {
 }
 
 model course {
-  id_course     Int              @id @default(autoincrement())
-  email_creator String           @db.VarChar(255)
-  name          String           @db.VarChar(15)
-  description   String?          @db.VarChar(156)
-  creation_date DateTime?        @db.Date
-  subject       String
-  img_cover     Bytes?           @db.Blob
-  user          user             @relation(fields: [email_creator], references: [email], onDelete: Cascade, onUpdate: Cascade)
-  course_subject course_subject  @relation(fields: [subject], references: [subject])
-  courses_users courses_users[]
-  unit          unit[]
-  @@index([email_creator], map: "email_creator")
-}
+  id_course      Int             @id @default(autoincrement())
+  email_creator  String          @db.VarChar(255)
+  name           String          @db.VarChar(15)
+  description    String?         @db.VarChar(156)
+  creation_date  DateTime?       @db.Date
+  subject        String
+  img_cover      Bytes?          @db.Blob
+  user           user            @relation(fields: [email_creator], references: [email], onDelete: Cascade, onUpdate: Cascade)
+  course_subject COURSESUBJECT
+  courses_users  courses_users[]
+  unit           unit[]
 
-model course_subject {
-  subject String @id
-  course course[]
+  @@index([email_creator], map: "email_creator")
 }
 
 model courses_users {
@@ -33,6 +29,7 @@ model courses_users {
   user      user   @relation(fields: [email], references: [email], onDelete: Cascade)
   id_course Int
   course    course @relation(fields: [id_course], references: [id_course], onDelete: Cascade)
+
   @@id([email, id_course])
   @@index([id_course])
 }
@@ -40,36 +37,39 @@ model courses_users {
 model unit {
   id_unit     Int      @id @default(autoincrement())
   id_course   Int
-  seqNumber   Int    
+  seqNumber   Int
   name        String   @db.VarChar(30)
   description String   @db.Text
   course      course   @relation(fields: [id_course], references: [id_course], onDelete: Cascade, onUpdate: Restrict)
   lesson      lesson[]
+
   @@unique([id_course, name], map: "id_course")
 }
 
 model lesson {
-  id_lesson     Int      @id @default(autoincrement())
+  id_lesson     Int           @id @default(autoincrement())
   id_unit       Int
   seqNumber     Int
-  name          String   @db.VarChar(50)
-  creation_date DateTime? @db.Date
-  link_video    String   @db.VarChar(255)
-  quiz          String   @db.Text
-  unit          unit     @relation(fields: [id_unit], references: [id_unit], onDelete: Cascade)
+  name          String        @db.VarChar(50)
+  creation_date DateTime?     @db.Date
+  link_video    String        @db.VarChar(255)
+  quiz          String        @db.Text
+  unit          unit          @relation(fields: [id_unit], references: [id_unit], onDelete: Cascade)
   quizResult    quiz_result[]
+
   @@unique([id_unit, name], map: "id_unit")
 }
 
 model quiz_result {
-  id            Int       @id @default(autoincrement())
-  id_lesson     Int
-  email         String    @db.VarChar(255)
-  date          DateTime? @db.Date
-  numCorrect    Int
-  numWrong      Int
-  lesson        lesson    @relation(fields: [id_lesson], references: [id_lesson], onDelete: Cascade) 
-  user          user      @relation(fields: [email], references: [email], onDelete: Cascade)
+  id         Int       @id @default(autoincrement())
+  id_lesson  Int
+  email      String    @db.VarChar(255)
+  date       DateTime? @db.Date
+  numCorrect Int
+  numWrong   Int
+  lesson     lesson    @relation(fields: [id_lesson], references: [id_lesson], onDelete: Cascade)
+  user       user      @relation(fields: [email], references: [email], onDelete: Cascade)
+
   @@unique([email, id_lesson, date])
 }
 
@@ -97,16 +97,18 @@ model invitation {
   email      String     @db.VarChar(255)
   user       user       @relation(fields: [email], references: [email], onDelete: Cascade)
   groupclass groupclass @relation(fields: [id_class], references: [id], onDelete: Cascade)
+
   @@unique([id_class, email], map: "id_class")
   @@index([email], map: "email")
 }
 
 model teachers_classes {
-  email      String                @db.VarChar(255)
+  email      String              @db.VarChar(255)
   id_class   Int
   role       TEACHERSCLASSESROLE
-  user       user                  @relation(fields: [email], references: [email], onDelete: Cascade, onUpdate: Restrict)
-  groupclass groupclass            @relation(fields: [id_class], references: [id], onDelete: Cascade)
+  user       user                @relation(fields: [email], references: [email], onDelete: Cascade, onUpdate: Restrict)
+  groupclass groupclass          @relation(fields: [id_class], references: [id], onDelete: Cascade)
+
   @@id([email, id_class])
   @@index([id_class], map: "id_class")
 }
@@ -129,12 +131,21 @@ model user {
 }
 
 enum TEACHERSCLASSESROLE {
-  CREATOR @map("01")
-  NORMAL  @map("02")
+  CREATOR  @map("01")
+  NORMAL   @map("02")
 }
 
 enum USERROLE {
-  STUDENT @map("01")
-  TEACHER @map("02")
-  ADMIN   @map("03")
+  STUDENT  @map("01")
+  TEACHER  @map("02")
+  ADMIN    @map("03")
+}
+
+enum COURSESUBJECT {
+  MATHEMATICS            @map("01")
+  ELECTRICALENGINEERING  @map("02")
+  INFORMATICS            @map("03")
+  ENGLISH                @map("04")
+  STATISTICS             @map("05")
+  CHEMISTRY              @map("06")
 }
