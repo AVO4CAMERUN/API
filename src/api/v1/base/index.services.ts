@@ -11,7 +11,7 @@ function startDB() {
 }
 
 // ADD like regex se no sono un pagliaccio 🤡
-// Generic function generate GET request
+// Generic generate GET request
 function createGET(table, selectField, filter, opLogic = '') { // SERVE gestore
 
     // Create obj filter query
@@ -49,6 +49,14 @@ function createGET(table, selectField, filter, opLogic = '') { // SERVE gestore
     return { qf: pc[table].findMany, select, where } // fare la ricerca non containece
 }
 
+// Generic count
+async function createCOUNT(table, filter) {
+    return await pc[table].aggregate({
+        where: { ...filter },
+        _count: true
+    })
+}
+
 // Export functions
-export { pc, startDB, createGET }
+export { pc, startDB, createGET, createCOUNT }
 export default pc

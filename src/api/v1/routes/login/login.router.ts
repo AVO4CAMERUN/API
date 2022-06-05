@@ -4,35 +4,36 @@ import * as bodyParser from "body-parser"
 import * as jwt from "jsonwebtoken"
 import AuthJWT from "../../utils/Auth"
 import { errorManagment } from "../../utils/DBErrorManagment"
-import { checkUsernamePassword, getUserInfoByUsername } from "./login.services"
+import { checkUsernamePassword } from "./login.services"
+import { getUser } from "../account/account.services"
 
 const router = express.Router()
     .use(bodyParser.json())
 
-// Login
 router.route('/login')
 
     // Login | Create session
     .post(async (req, res) => {
         try {
+            const usernameIN:string  = req.body.username
+
             // Check is registered
             const isRegistered = await checkUsernamePassword(req.body)
             if (!isRegistered) return res.sendStatus(403); // Forbiden
 
             // Fetch user data
-            const user = await getUserInfoByUsername(req.body)
-            const { email, username, role } = user;
+            const [{ email, username, role }] = await getUser({ username: usernameIN })
 
             // Generate an access token
             const userDataToken = { email, username, role }
-            const accessToken = jwt.sign(userDataToken, AuthJWT.accessTokenSecret, { expiresIn: '20m' });
-            const refreshToken = jwt.sign(userDataToken, AuthJWT.refreshTokenSecret);
+            const accessToken = jwt.sign(userDataToken, AuthJWT.accessTokenSecret, { expiresIn: '20m' })
+            const refreshToken = jwt.sign(userDataToken, AuthJWT.refreshTokenSecret)
 
             // Insert in activity account
-            AuthJWT.refreshTokens.push(refreshToken);
+            AuthJWT.refreshTokens.push(refreshToken)
 
             // Send json with tokens
-            res.json({ accessToken, refreshToken });
+            res.json({ accessToken, refreshToken })
         } catch (error) {
             errorManagment('POST login', res, error)
         }
@@ -41,9 +42,8 @@ router.route('/login')
     // Update session 
     .put((req, res) => {
         try {
+            // Check token is, Check autenticate token
             const { token } = req.body;
-
-            // Check token is, Check autenticate token 
             if (!token) return res.sendStatus(401);
             if (!AuthJWT.refreshTokens.includes(token)) return res.sendStatus(403);
 
@@ -51,10 +51,10 @@ router.route('/login')
                 if (err) return res.sendStatus(403);
 
                 // Send token
-                const { username, role } = AuthJWT.jwtToObj(token);
-                const accessToken = jwt.sign({ username, role }, AuthJWT.accessTokenSecret, { expiresIn: '20m' });
+                const { username, role } = AuthJWT.jwtToObj(token)
+                const accessToken = jwt.sign({ username, role }, AuthJWT.accessTokenSecret, { expiresIn: '20m' })
                 res.json({ accessToken });
-            });
+            })
         } catch (error) {
             errorManagment('PUT login', res, error)
         }
@@ -64,12 +64,12 @@ router.route('/login')
     .delete((req, res) => {
         try {
             // Check autenticate token
-            const { token } = req.body;
+            const { token } = req.body
             if (!AuthJWT.refreshTokens.includes(token)) return res.sendStatus(403)
 
-            // Delete token for logout
-            AuthJWT.refreshTokens = AuthJWT.refreshTokens.filter(value => value !== token); 
-            res.sendStatus(200);  // Ok Logout successful"
+            // Delete token for logout ( // Ok Logout successful)
+            AuthJWT.refreshTokens = AuthJWT.refreshTokens.filter(value => value !== token)
+            res.sendStatus(200)
         } catch (error) {
             errorManagment('DELETE login', res, error)
         }

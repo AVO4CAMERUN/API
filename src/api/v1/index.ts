@@ -2,8 +2,8 @@
 import * as express from "express";
 
 import login from "./routes/login/login.router"
-/*import account from "./routes/accounts/account.router.js"
-import classes from "./routes/classes/classes.router.js"
+import account from "./routes/account/account.router"
+/*import classes from "./routes/classes/classes.router.js"
 import invites from "./routes/invites/invites.router.js"
 import courses from "./routes/courses/courses.router.js"
 import subscribe from "./routes/subscribes/subscribe.router.js"
@@ -14,8 +14,8 @@ import lessons from "./routes/lessons/lessons.router.js"*/
 const router = 
     express.Router()
     .use(login)
-    /*.use(account)
-    .use(classes)
+    .use(account)
+    /*.use(classes)
     .use(invites)
     .use(courses)
     .use(subscribe)
