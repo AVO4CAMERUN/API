@@ -7,21 +7,11 @@ import MailSender from "../../utils/MailSender"
 import BlobConvert from "../../utils/BlobConvert"
 import { errorManagment } from "../../utils/DBErrorManagment"
 import user from "./user.interface"
-// Utils servises
-/*
-
-import { errorManagment } from "../../Utils/DBErrorManagment.js"
-import AuthJWT from "../../utils/Auth.js"*/
 
 // Routes Services
 import { createCOUNT } from "../../base/index.services"
 /*import { getOwnClassesIDS } from "../classes/classes.services.js"*/
-import {
-    updateUserInfo,
-    getUser,
-    delateAccount,
-    createAccount
-} from "./account.services"
+import { updateUserInfo, getUser, delateAccount, createAccount } from "./account.services"
 
 // Middleware for parse http req
 const router = express.Router()

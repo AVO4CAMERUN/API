@@ -10,15 +10,6 @@
     "generate:prisma": "npx prisma db push",
     "start:prod": "npm run generate:prisma && node server.js"
   },
-  "tsconfig": {
-    "compilerOptions": {
-      "target": "es5",
-      "outDir": "./built",
-      "allowJs": true,
-      "removeComments": true
-    },
-    "include": ["./src/**/*"]
-  },
   "prisma": {
     "schema": "src/prisma/schema.prisma"
   },
