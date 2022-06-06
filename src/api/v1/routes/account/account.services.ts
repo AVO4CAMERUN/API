@@ -5,15 +5,6 @@ import pc from "../../base/services/index.services"
 import { createGET } from "../../base/services/base.services"
 
 
-// Query for get user data by filter
-export async function getTeachersInClass(id_class) {
-    return await pc.teachers_classes.findMany({
-        where: { id_class },
-        include: {
-            user: true
-        }
-    })
-}
 
 // Query for update user by filter and option
 export async function updateUserInfo(email, newData) {

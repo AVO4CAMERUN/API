@@ -1,36 +1,21 @@
 // Classes mini-router
-
-// Dependences
-import express from 'express'
-
-// Utils Servises
-import BlobConvert from '../../utils/BlobConvert.js'
-import AuthJWT from '../../utils/Auth.js'
-import { errorManagment } from '../../utils/DBErrorManagment.js'
-import Validator from './classes.validator.js'
-
-// Route Services               
+import * as express from "express"
+import * as bodyParser from "body-parser"
+import BlobConvert from "../../utils/BlobConvert"
+import AuthJWT from "../../utils/Auth"
+import { errorManagment } from "../../utils/DBErrorManagment"
+import { USERROLE, TEACHERSCLASSESROLE } from ".prisma/client"
 import {
-    isParameterRole,
-    getUserDataByFilter,
-    getTeachersInClass
-} from '../accounts/account.services.js'
-import { addClassInvite } from '../invites/invites.services.js'
-import {
-    createClass, 
-    addProfsClass, 
-    getClassDataByFilter,
-    getClassDataByID,
-    getOwnClassesIDS,
-    isParameterRoleInClass,
-    updateClass,
-    deleteClass
-} from './classes.services.js'
+    createPOST,
+    createGET,
+    createUPDATE,
+    createDELETE,
+    createCOUNT
+} from "../../base/services/base.services"
 
-// Allocate obj
+// Middleware for parse http req
 const router = express.Router()
-
-
+    .use(bodyParser.json());
 
 // Function for resolve multi query in array on array structure
 const resolve = async (arrays) => {
@@ -74,124 +59,128 @@ const userFormatter = (users) => {
 // Routers for classes
 router.route('/classes')
 
-    // Create new class
-    .post(AuthJWT.authenticateJWT, Validator.postClass, (req, res) => {
-        const user = AuthJWT.parseAuthorization(req.headers.authorization)
-        const {email, role} = user;
-        let {name, img_cover, students, teachers} = req.body;
+    // Create class
+    .post(AuthJWT.authenticateJWT, async (req, res) => {
+        try {
+            const user = AuthJWT.parseAuthorization(req.headers.authorization)
+            const { email, role } = user;
+            let { name, img_cover, students, teachers } = req.body;
 
-        if (role !== 'TEACHER')
-            return res.sendStatus(403);    // You aren't a prof (conviene cosi non si fanno richieste al db)
+            // Check if prof | Cast img | Check input
+            if (role !== USERROLE.TEACHER) return res.sendStatus(403)
+            if (!img_cover) img_cover = BlobConvert.base64ToBlob(img_cover)
+            if (!teachers) teachers = []
+            if (!students) students = []
 
-        if (img_cover !== undefined) 
-            img_cover = BlobConvert.base64ToBlob(img_cover)
-        
-        if (teachers === undefined) teachers = []
-        if (students === undefined) students = []
+            // Create checkers (isParameterRole)
+            let checkQuerys = [];
+            for (const t of teachers) createCOUNT("user", { email: t, role: USERROLE.TEACHER })
+            for (const s of students) createCOUNT("user", { email: s, role: USERROLE.STUDENT })
 
-        // Create query
-        let checkQuerys = [];
-        
-        for (const prof of teachers)
-            checkQuerys.push(isParameterRole(prof, 'TEACHER'))// Check is professor
-        
-        for (const stud of students)
-            checkQuerys.push(isParameterRole(stud, 'STUDENT')) // Check is student
+            // Check is professor | Check is student
+            const result: any[] = await Promise.allSettled(checkQuerys)
+            const sum = result.reduce((p, c) => p.value._count + c.value._count)
+            if (sum !== checkQuerys.length) return res.sendStatus(400)
 
-        // Send dynamic querys
-        Promise.allSettled(checkQuerys)
-            .then((result) => {
-                // Sum for check that only email is register users
-                let sum = 0; result.forEach(r => {sum += r.value._count });
+            // const sum = result.forEach(r => { sum += r.value._count }); // da vedere
 
-                // somma di result
-                if(sum !== checkQuerys.length)
-                    return Promise.reject(400)
+            // Create class and save id
+            const ack = await createPOST("groupclass", { name, img_cover, archived: false })
 
-                return Promise.allSettled([
-                    createClass(name, img_cover) // Create class and save id
-                ])       
-            })
-            .then((result) => {
-                const id = result[0].value.id; // id class
+            // Query array for add profs
+            const queryArray = [];
 
-                // Query array for add profs
-                const queryArray = [addProfsClass(email, id, 'CREATOR')]; // Push tutor
+            // Push creator | Push others prof if there are | Push student invitations if there are
+            queryArray.push(createPOST("teachers_classes", { email, id_class: ack.id, role: TEACHERSCLASSESROLE.CREATOR }))
 
-                // Push others prof if there are
-                for (const prof of teachers)  // controllare se sono prof 
-                    queryArray.push(addProfsClass(prof, id, 'NORMAL'))
+            for (const t of teachers)
+                queryArray.push(createPOST("teachers_classes", { email: t, id_class: ack.id, role: TEACHERSCLASSESROLE.NORMAL }))
+            for (const s of students)
+                queryArray.push(createPOST("invitation", { email: s, id_class: ack.id }))
 
-                // Push student invitations if there are
-                for (const stud of students)
-                    queryArray.push(addClassInvite(stud, id))  
-
-                // Add relation in the class (start up student and profs) if there are
-                return Promise.allSettled(queryArray) // Send dynamic querys               
-            })
-            .then(() => res.sendStatus(200)) // You create a your new class 
-            .catch((err) => errorManagment('POST classes', res, err)) // Server error
+            // Add relation  | Send
+            await Promise.allSettled(queryArray)
+            res.sendStatus(200)
+        } catch (err) {
+            errorManagment('POST classes', res, err)
+        }
     })
 
+    // DA RIVEDERE
     // Get class data by filter (TEACHER)
-    .get(AuthJWT.authenticateJWT, Validator.getClass, (req, res) => {
-        const user = AuthJWT.parseAuthorization(req.headers.authorization)
-        const {email, role} = user;
+    .get(AuthJWT.authenticateJWT, async (req, res) => {
+        try {
+            const { email, role } = AuthJWT.parseAuthorization(req.headers.authorization)
 
-        // Cast data for query
-        if (role !== 'STUDENT')
-            for (const key of Object.keys(req.query)) 
-                req.query[key] = JSON.parse(req.query[key])
+            // Cast data for query
+            if (role === USERROLE.TEACHER)
+                for (const key of Object.keys(req.query))
+                    req.query[key] = JSON.parse(req.query[key].toString())
 
-        // Get classes
-        const classes = []
-        getClassDataByFilter(req.query, email, role)
-            .then((result) => {
-                classes.push(...result)    // save classes
-                const classesInjectedPeopleQuery = []
+            // Find ids
+            let table;
+            if (role === USERROLE.STUDENT) table = "user"
+            if (role === USERROLE.TEACHER) table = "teachers_classes"
 
-                // Convert img in base64 and query student
-                for (const c of classes) {
-                    c['img_cover'] = BlobConvert.blobToBase64(c['img_cover'])
+            // Save ids || Fetch classes by filter
+            const ownclasses = await createGET(table, "*", { email }, null)
+            const ids = ownclasses.map((c) => c.id_class)
+            const classes = await createGET("groupclass", "*", { ...req.query, id: ids }, null)
 
-                    // Save stryctured query
-                    const teachersQuery = getTeachersInClass(c.id)
-                    const studentsQuery = getUserDataByFilter({id_class: c.id, role: 'STUDENT'})
+            // Injected peeple
+            const classesInjectedPeopleQuery = []
 
-                    // [ {teachers: [...]} {students: [...]} ...]
-                    classesInjectedPeopleQuery.push({
-                        teachers: teachersQuery,
-                        students: studentsQuery
-                    })
-                }
-                return resolve(classesInjectedPeopleQuery) // Take the DB answer
-            })
-            .then((result) => {
-                // Insert member in class data
-                classes.forEach((c, i) => {
-                    const teachers = teacherFormatter(result[i].teachers)
-                    const students = userFormatter(result[i].students)
+            // Cast img | Fetch TEACHER | Fetch STUDENT
+            for (const c of classes) {
+                c.img_cover = BlobConvert.blobToBase64(c.img_cover)
 
-                    console.log(students)
+                // Save structured query
+                const teachersQuery = await createGET("teachers_classes", "*", { id_class: c.id }, { include: { user: true } }) // getTeachersInClass
+                const studentsQuery = await createGET("user", "*", { id_class: c.id, role: USERROLE.STUDENT }, null) // getTeachersInClass
 
-                    c.teachers = teachers
-                    c.students = students
+                // [ {teachers: [...]} {students: [...]} ...]
+                classesInjectedPeopleQuery.push({
+                    teachers: teachersQuery,
+                    students: studentsQuery
                 })
+            }
+
+            // Take the DB answer F
+            // POI CABIARE LE QUERY PER NON FARE
+            const r = await resolve(classesInjectedPeopleQuery)
+
+            // Insert member in class data
+            classes.forEach((c, i) => {
+                const teachers = teacherFormatter(r[i].teachers)
+                const students = userFormatter(r[i].students)
+                c.teachers = teachers
+                c.students = students
+
                 res.send(classes)
             })
-            .catch((err) => errorManagment('GET classes', res, err)) // Server error
+        } catch (err) {
+            errorManagment('GET classes', res, err)
+        }
     })
 
 router.route('/classes/:id')
-    
-    // Get by id only own classes (TEACHER AND STUDENT) // forse da togliere
-    .get(AuthJWT.authenticateJWT, (req, res) => {
-        const user = AuthJWT.parseAuthorization(req.headers.authorization)
-        const {email, role} = user;
-        const id = +req.params.id
+
+    // DA RIVEDERE
+    // forse da togliere
+    // Get by id only own classes (TEACHER AND STUDENT) 
+    .get(AuthJWT.authenticateJWT, async (req, res) => {
+        try {
+            const { email, role }  = AuthJWT.parseAuthorization(req.headers.authorization)
+            const id = +req.params.id
+
+
+        } catch (err) {
+            errorManagment('GET classes/id', res, err)
+        }
+
 
         // 
-        let ownclass;
+        /*let ownclass;
         getClassDataByID(id)
             .then((result) => {
                 ownclass = [result]  // save class
@@ -203,7 +192,7 @@ router.route('/classes/:id')
 
                     // Save stryctured query
                     const teachersQuery = getTeachersInClass(c.id)
-                    const studentsQuery = getUserDataByFilter({id_class: c.id, role: 'STUDENT'})
+                    const studentsQuery = getUserDataByFilter({ id_class: c.id, role: 'STUDENT' })
 
                     // [ {teachers: [...]} {students: [...]} ...]
                     classesInjectedPeopleQuery.push({
@@ -218,64 +207,60 @@ router.route('/classes/:id')
                 ownclass.forEach((c, i) => {
                     const teachers = teacherFormatter(result[i].teachers)
                     const students = result[i].students
-                 
+
                     c.teachers = teachers
                     c.students = students
                 })
                 res.send(...ownclass)
             })
-            .catch((err) => errorManagment('GET classes/id', res, err)) // Server error
+            .catch((err) => ) // Server error*/
     })
 
-    // Update class data by id
-    .put(AuthJWT.authenticateJWT, /*Validator.putClass,*/ (req, res) =>{
-        const user = AuthJWT.parseAuthorization(req.headers.authorization)
-        const {email, role} = user;
-        const id = req.params.id;
-        
-        if (role !== 'TEACHER')
-            return res.sendStatus(403);
+    // Update class
+    .put(AuthJWT.authenticateJWT, async (req, res) => {
+        try {
+            const { email, role } = AuthJWT.parseAuthorization(req.headers.authorization)
+            const id = req.params.id;
+            const cover = req.body.img_cover;
 
-        if (req.body?.img_cover !== undefined)
-            req.body.img_cover = BlobConvert.base64ToBlob(req.body.img_cover)
+            // Check prof
+            if (role !== USERROLE.TEACHER) return res.sendStatus(403)
 
-        isParameterRoleInClass(email, +id, 'CREATOR')
-            .then((result) => {
-                // Check if you are the tutur of class
-                if(result['_count'] !== 1)
-                    return Promise.reject(403);    // You aren't the tutor    
+            // Check if this class is own
+            const isTutor = await createCOUNT("teachers_classes", { email, id_class: id, role: TEACHERSCLASSESROLE.CREATOR })
+            if (!isTutor._count) return res.sendStatus(403)
 
-                // if you are a tutor commit query for change class data
-                return updateClass(+id, req.body)
-            })
-            .then((newData) =>  {
-                newData.img_cover = BlobConvert.blobToBase64(newData.img_cover)
-                res.send(newData) // Ok
-            })
-            .catch((err) => errorManagment('PUT classes/id', res, err)) // Server error
+            // Cast img
+            if (!cover) req.body.img_cover = BlobConvert.base64ToBlob(cover)
+
+            // Update class | Cast img | Send new data
+            const newData = await createUPDATE("groupclass", req.body, { id })
+            newData.img_cover = BlobConvert.blobToBase64(newData.img_cover)
+            res.send(newData)
+        } catch (err) {
+            errorManagment('PUT classes/id', res, err)
+        }
     })
 
-    // Delete class by id
-    .delete(AuthJWT.authenticateJWT, (req, res) => {
-        const user = AuthJWT.parseAuthorization(req.headers.authorization)
-        const {email, role} = user;
-        const id = req.params.id;
+    // Delete class
+    .delete(AuthJWT.authenticateJWT, async (req, res) => {
+        try {
+            const { email, role } = AuthJWT.parseAuthorization(req.headers.authorization)
+            const id = req.params.id;
 
-        if (role !== 'TEACHER') 
-            return res.sendStatus(403)
+            // Check prof
+            if (role !== USERROLE.TEACHER) return res.sendStatus(403)
 
-        // Check if this class is own
-        isParameterRoleInClass(email, +id, 'CREATOR')
-            .then((result) => {
-                // Check if you are the tutur of class
-                if(result['_count'] !== 1)
-                    return Promise.reject(403); // Forbidden
-                    
-                // if you are a tutor commit query for delete class
-                return deleteClass(+id)
-            })
-            .then(() =>  res.sendStatus(200))  // You changed a class data
-            .catch((err) => errorManagment('DELETE classes/id', res, err)) // Server error
+            // Check if this class is own
+            const isTutor = await createCOUNT("teachers_classes", { email, id_class: id, role: TEACHERSCLASSESROLE.CREATOR })
+            if (!isTutor._count) return res.sendStatus(403)
+
+            // Delete class
+            const ack = await createDELETE("groupclass", { id })
+            res.sendStatus(200)
+        } catch (err) {
+            errorManagment('DELETE classes/id', res, err)
+        }
     })
 
 export default router

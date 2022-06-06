@@ -77,11 +77,11 @@ router.route('/units/:id')
             // Delete Extra data | Check if course creator 
             delete req.body.id_course;
             const isCreator = await createCOUNT("course", { email_creator: email, id_course })
-            if (!isCreator._count) return Promise.reject(403)
+            if (!isCreator._count) return res.sendStatus(403)
 
             // Check if unit belong in course
             const isBelongCourse = await createCOUNT("unit", { id_course, id_unit })  // unitBelongCourse
-            if (!isBelongCourse._count) return Promise.reject(403)
+            if (!isBelongCourse._count) return res.sendStatus(403)
 
             // Update unit | Send new data
             res.send(await createUPDATE("unit", req.body, { id_unit }))
@@ -104,11 +104,11 @@ router.route('/units/:id')
             // Delete Extra data | Check if course creator 
             delete req.body.id_course;
             const isCreator = await createCOUNT("course", { email_creator: email, id_course })
-            if (!isCreator._count) return Promise.reject(403)
+            if (!isCreator._count) return res.sendStatus(403)
 
             // Check if unit belong in course
             const isBelongCourse = await createCOUNT("unit", { id_course, id_unit })  // unitBelongCourse
-            if (!isBelongCourse._count) return Promise.reject(403)
+            if (!isBelongCourse._count) return res.sendStatus(403)
 
 
             // Fetch all units to sort

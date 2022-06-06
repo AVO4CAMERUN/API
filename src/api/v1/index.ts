@@ -23,9 +23,6 @@ const router =
     .use(unit)
     .use(lessons)
     .use(classgroup)
-/*
-    
-    .use(invites)
-*/
+   // .use(invites)
 
 export default router

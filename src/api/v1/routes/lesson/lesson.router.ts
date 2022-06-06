@@ -29,11 +29,11 @@ router.route('/lessons')
 
             // Delete Extra data | Check if course creator 
             const isCreator = await createCOUNT("course", { email_creator: email, id_course })
-            if (!isCreator._count) return Promise.reject(403)
+            if (!isCreator._count) return res.sendStatus(403)
 
             // Check if unit belong in course
             const isBelongCourse = await createCOUNT("unit", { id_course, id_unit })  // unitBelongCourse
-            if (!isBelongCourse._count) return Promise.reject(403)
+            if (!isBelongCourse._count) return res.sendStatus(403)
 
             // Fetch lesson
             const lessons = await createGET("lesson", "*", { id_unit }, { orderBy: { seqNumber: 'asc' } })
@@ -89,15 +89,15 @@ router.route('/lessons/:id')
 
             // Delete Extra data | Check if course creator 
             const isCreator = await createCOUNT("course", { email_creator: email, id_course })
-            if (!isCreator._count) return Promise.reject(403)
+            if (!isCreator._count) return res.sendStatus(403)
 
             // Check if unit belong in course || Check if lesson elong in unit
             const [isBelongCourse, isBelongLesson] = await Promise.allSettled([
                 createCOUNT("unit", { id_course, id_unit }),    // unitBelongCourse
                 createCOUNT("lesson", { id_lesson, id_unit }),  // lessonBelongUnit
             ])
-            if (!isBelongCourse["_count"]) return Promise.reject(403)
-            if (!isBelongLesson["_count"]) return Promise.reject(403)
+            if (!isBelongCourse["_count"]) return res.sendStatus(403)
+            if (!isBelongLesson["_count"]) return res.sendStatus(403)
 
             // Update lesson | Send new data
             res.send(await createUPDATE("lesson", req.body, { id_lesson }))
@@ -128,15 +128,15 @@ router.route('/lessons/:id')
 
             // Delete Extra data | Check if course creator 
             const isCreator = await createCOUNT("course", { email_creator: email, id_course })
-            if (!isCreator._count) return Promise.reject(403)
+            if (!isCreator._count) return res.sendStatus(403)
 
             // Check if unit belong in course || Check if lesson elong in unit
             const [isBelongCourse, isBelongLesson] = await Promise.allSettled([
                 createCOUNT("unit", { id_course, id_unit }),    // unitBelongCourse
                 createCOUNT("lesson", { id_lesson, id_unit }),  // lessonBelongUnit
             ])
-            if (!isBelongCourse["_count"]) return Promise.reject(403)
-            if (!isBelongLesson["_count"]) return Promise.reject(403)
+            if (!isBelongCourse["_count"]) return res.sendStatus(403)
+            if (!isBelongLesson["_count"]) return res.sendStatus(403)
 
             // Fetch lesson | Find break index || Delete 
             const lessons = await createGET("lesson", "*", { id_unit }, { orderBy: { seqNumber: 'asc' } })

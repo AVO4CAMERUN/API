@@ -84,7 +84,7 @@ router.route("/courses/:id")
 
             // Check if course creator
             const isCreator = await createCOUNT("course", { email_creator: email, id_course: courseID })
-            if (!isCreator._count) return Promise.reject(403);
+            if (!isCreator._count) return res.sendStatus(403);
 
             // Update course | Cast response img
             const newCourse = await createUPDATE("course", req.body, {id_course: courseID})
@@ -107,7 +107,7 @@ router.route("/courses/:id")
 
             // Check if course creator
             const isCreator = await createCOUNT("course", { email_creator: email, id_course })
-            if (!isCreator._count) return Promise.reject(403) 
+            if (!isCreator._count) return res.sendStatus(403) 
 
             // Delete course
             const ack = await createDELETE("course", { id_course })
