@@ -13,9 +13,9 @@ import {
     createCOUNT
 } from "../../base/services/base.services"
 
-// Allocate obj
+// Middleware for parse http req
 const router = express.Router()
-    .use(bodyParser.json())
+    .use(bodyParser.json());
 
 router.route("/courses")
 
