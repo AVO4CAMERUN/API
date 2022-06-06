@@ -5,7 +5,6 @@ import pc from "../../base/services/index.services"
 import { createGET } from "../../base/services/base.services"
 
 
-
 // Query for update user by filter and option
 export async function updateUserInfo(email, newData) {
     // hash password if exist
