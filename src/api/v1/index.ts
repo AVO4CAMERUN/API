@@ -4,14 +4,10 @@ import login from "./routes/login/login.router"
 import account from "./routes/account/account.router"
 import course from "./routes/courses/course.router"
 import unit from "./routes/unit/unit.router"
-import lessons from "./routes/lesson/lesson.router"
+import lesson from "./routes/lesson/lesson.router"
 import subscribe from "./routes/subscribe/subscribe.router"
-import classgroup from "./routes/class/class.router"
-
-/*
-import invites from "./routes/invites/invite.router.js"
-
-*/
+import groupClass from "./routes/class/class.router"
+import invite from "./routes/invite/invite.router"
 
 // Wrap all router on v1 router
 const router = 
@@ -21,8 +17,8 @@ const router =
     .use(subscribe)
     .use(course)
     .use(unit)
-    .use(lessons)
-    .use(classgroup)
-   // .use(invites)
+    .use(lesson)
+    .use(groupClass) // da rivedere get
+    .use(invite)
 
 export default router
