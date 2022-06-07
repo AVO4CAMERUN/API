@@ -46,8 +46,8 @@ router.route("/courses")
     .get(AuthJWT.authenticateJWT, async (req, res) => {
         try {
             // Cast data for query
-            for (const key of Object.keys(req.query))
-                req.query[key] = JSON.parse(req.query[key].toString())
+            for (const key in req.query)
+                req.query[key] = JSON.parse(req.query[key] as string)
 
             // Fetch courses | Check is it 
             const courses = await createGET('course', ['*'], req.query, null)
@@ -122,7 +122,7 @@ router.route("/courses/subject")
     // Get possible subject for courses
     .get((req, res) => {
         // Extract subject
-        const subjects = []
+        const subjects:string[] = []
         for (const subject in COURSESUBJECT) subjects.push(subject)
         res.send(subjects)
     })

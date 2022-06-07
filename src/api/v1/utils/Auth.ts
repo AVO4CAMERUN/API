@@ -2,11 +2,9 @@
 import * as jwt from "jsonwebtoken"
 
 class Auth {
-
-    // Da mettere in auth.js
-    static accessTokenSecret = process.env.JWT_SECRET;
-    static refreshTokenSecret = process.env.JWT_SECRET_REFRESH;
-    static refreshTokens = [];
+    static accessTokenSecret:string = process.env.JWT_SECRET || ''
+    static refreshTokenSecret:string = process.env.JWT_SECRET_REFRESH || ''
+    static refreshTokens: string[] = [];
 
     // Middleware authenticateJWT
     static authenticateJWT(req, res, next) {

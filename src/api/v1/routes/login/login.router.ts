@@ -30,9 +30,9 @@ router.route('/login')
             const [{ email, username, role }] = await createGET("user", "*", { username: usernameIN }, null)
             
             // Generate an access token
-            const userDataToken = { email, username, role }
-            const accessToken = jwt.sign(userDataToken, AuthJWT.accessTokenSecret, { expiresIn: '20m' })
-            const refreshToken = jwt.sign(userDataToken, AuthJWT.refreshTokenSecret)
+            const userDataToken:object = { email, username, role }
+            const accessToken  :string = jwt.sign(userDataToken, AuthJWT.accessTokenSecret, { expiresIn: '20m' })
+            const refreshToken :string = jwt.sign(userDataToken, AuthJWT.refreshTokenSecret)
 
             // Insert in activity account
             AuthJWT.refreshTokens.push(refreshToken)

@@ -1,7 +1,7 @@
 import * as cors from "cors"
 import * as express from "express"
 import v1 from "./api/v1/index"
-// import * as swaggerUI from "swagger-ui-express"
+import * as swaggerUI from "swagger-ui-express"
 // import swaggerDocs from "./api/v1/swagger/v1.swagger.docs"
 
 // Create requets rooter

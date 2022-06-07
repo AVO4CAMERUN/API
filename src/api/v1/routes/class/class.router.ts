@@ -18,8 +18,8 @@ const router = express.Router()
     .use(bodyParser.json());
 
 // Function for resolve multi query in array on array structure
-const resolve = async (arrays) => {
-    let r = []
+const resolve = async (arrays: any[]) => {
+    let r:any[] = []
     // [ {teachers: [...]} {students: [...]} ...]
     for (const objClassPeople of arrays) {
         r.push({
@@ -88,7 +88,7 @@ router.route('/classes')
             const ack = await createPOST("groupclass", { name, img_cover, archived: false })
 
             // Query array for add profs
-            const queryArray = [];
+            const queryArray:any[] = [];
 
             // Push creator | Push others prof if there are | Push student invitations if there are
             queryArray.push(createPOST("teachers_classes", { email, id_class: ack.id, role: TEACHERSCLASSESROLE.CREATOR }))
@@ -114,9 +114,9 @@ router.route('/classes')
 
             // Cast data for query
             if (role === USERROLE.TEACHER)
-                for (const key of Object.keys(req.query))
-                    req.query[key] = JSON.parse(req.query[key].toString())
-
+                for (const key in req.query)
+                    req.query[key] = JSON.parse(req.query[key] as string)
+                
             // Find ids
             let table;
             if (role === USERROLE.STUDENT) table = "user"
@@ -128,7 +128,7 @@ router.route('/classes')
             const classes = await createGET("groupclass", "*", { ...req.query, id: ids }, null)
 
             // Injected peeple
-            const classesInjectedPeopleQuery = []
+            const classesInjectedPeopleQuery:any[] = []
 
             // Cast img | Fetch TEACHER | Fetch STUDENT
             for (const c of classes) {
@@ -147,7 +147,7 @@ router.route('/classes')
 
             // Take the DB answer F
             // POI CABIARE LE QUERY PER NON FARE
-            const r = await resolve(classesInjectedPeopleQuery)
+            const r:any[] = await resolve(classesInjectedPeopleQuery)
 
             // Insert member in class data
             classes.forEach((c, i) => {

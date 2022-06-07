@@ -55,8 +55,8 @@ router.route('/lessons')
     .get(AuthJWT.authenticateJWT, async (req, res) => {
         try {
             // Cast data for query
-            for (const key of Object.keys(req.query))
-                req.query[key] = JSON.parse(req.query[key].toString())
+            for (const key in req.query)
+                req.query[key] = JSON.parse(req.query[key] as string)
 
             // Fetch lessons | Response lessons
             res.send(await createGET("lesson", "*", req.query, null))

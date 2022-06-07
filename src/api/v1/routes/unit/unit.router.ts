@@ -49,9 +49,11 @@ router.route('/units')
     // Get units
     .get(AuthJWT.authenticateJWT, async (req, res) => {
         try {
+            // const input:object = req.query || {}
+            
             // Cast data for query
-            for (const key of Object.keys(req.query))
-                req.query[key] = JSON.parse(req.query[key].toString())
+            for (const key in req.query)
+                req.query[key] = JSON.parse(req.query[key] as string)
 
             // Fetch units
             res.send(await createGET("unit", "*", req.query, { lesson: true }))

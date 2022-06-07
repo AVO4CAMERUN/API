@@ -3,7 +3,9 @@
     "target": "es5",
     "outDir": "./built",
     "allowJs": true,
-    "removeComments": true
+    "removeComments": true,
+    "strictNullChecks": true
   },
   "include": ["./src/*"]
+  // "exclude": ["./src/*.test.ts"]
 }

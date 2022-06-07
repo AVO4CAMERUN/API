@@ -38,12 +38,12 @@ const logger = createLogger({
 function errorManagment(endpoint, res, error) {
     console.log(error);
     // Prisma class error 
-    const errClasses = [
+    /*const errClasses = [
         /*Prisma.PrismaClientKnownRequestError,
         Prisma.PrismaClientUnknownRequestError,
         Prisma.PrismaClientRustPanicError,
         Prisma.PrismaClientInitializationError,
-        Prisma.PrismaClientValidationError*/
+        Prisma.PrismaClientValidationError
     ]
 
     // Add error log
@@ -64,7 +64,7 @@ function errorManagment(endpoint, res, error) {
 
     // Aggiungere timestamp
     if (flag) logger.log({ level: 'error', endpoint, message: 'undefined error' })
-
+    */
     // Error response
     if (error instanceof Error) res.sendStatus(+error.message)
     else res.sendStatus(500)

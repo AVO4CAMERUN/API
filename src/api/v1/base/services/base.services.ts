@@ -2,7 +2,7 @@ import pc from "./index.services"
 
 // ADD like regex se no sono un pagliaccio 🤡
 // Generic generate GET request
-export async function createGET(table, selectField, filter, other) { // SERVE gestore
+export async function createGET(table:string, selectField, filter:object, other:object | null) { // SERVE gestore
 
     // Create obj filter query
     let where = {}
@@ -41,22 +41,22 @@ export async function createGET(table, selectField, filter, other) { // SERVE ge
 }
 
 // Generic post
-export async function createPOST(table, data) {
+export async function createPOST(table:string, data:object) {
     return await pc[table].create({ data })
 }
 
 // Generic update
-export async function createUPDATE(table, data, where) {
+export async function createUPDATE(table:string, data:object, where:object) {
     return await pc[table].create({ data, where })
 }
 
 // Generic Delete
-export async function createDELETE(table, where) {
+export async function createDELETE(table:string, where:object) {
     return await pc[table].create({ where })
 }
 
 // Generic count
-export async function createCOUNT(table, filter) {
+export async function createCOUNT(table:string, filter:object) {
     return await pc[table].aggregate({
         where: { ...filter },
         _count: true

@@ -13,10 +13,10 @@ class BlobConvert {
     }
     
     // Methods for decode Base64 to Blob 
-    static base64ToHex(base64) {
-        if(typeof base64 === 'string')return this.base64ToBlob(base64).toString('hex');// Type check
+    /*static base64ToHex(base64) {
+        if(typeof base64 === 'string') return this.base64ToBlob(base64).toString('hex');// Type check
         return null;
-    }
+    }*/
 }
 
 export default BlobConvert;

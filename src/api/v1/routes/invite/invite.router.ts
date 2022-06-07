@@ -51,7 +51,7 @@ router.route('/invites')
             if (sum !== checks.length) return Promise.reject(400)
 
             // Query array for add profs
-            const queryArray = [];
+            const queryArray:any[]  = [];
 
             // Push student invitations if there are
             for (const s of students) queryArray.push(createPOST("invitation", { email: s, id_class: class_id })) // addClassInvite

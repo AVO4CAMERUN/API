@@ -3,12 +3,12 @@ import { google } from "googleapis"
 import nodemailer from "nodemailer"
 
 // Data
-const SERVICE:string= process.env.MAIL_SERVICE
-const USER          = process.env.MAIL_USER
-const CLIENT_ID     = process.env.CLIENT_ID
-const CLEINT_SECRET = process.env.CLIENT_SECRET
-const REDIRECT_URI  = process.env.REDIRECT_URI
-const REFRESH_TOKEN = process.env.REFRESH_TOKEN
+const SERVICE:string= process.env.MAIL_SERVICE || ''
+const USER:string          = process.env.MAIL_USER || ''
+const CLIENT_ID:string     = process.env.CLIENT_ID || ''
+const CLEINT_SECRET:string = process.env.CLIENT_SECRET || ''
+const REDIRECT_URI:string  = process.env.REDIRECT_URI || ''
+const REFRESH_TOKEN:string = process.env.REFRESH_TOKEN || ''
 
 // Create OAuth2 Client
 const OAuth2 = new google.auth.OAuth2(CLIENT_ID, CLEINT_SECRET, REDIRECT_URI)

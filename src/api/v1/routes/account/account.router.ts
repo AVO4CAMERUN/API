@@ -2,35 +2,37 @@
 import "dotenv/config"
 import * as express from "express"
 import * as bodyParser from "body-parser"
+import { sha256 } from "js-sha256"
 import AuthJWT from "../../utils/Auth"
 import MailSender from "../../utils/MailSender"
 import BlobConvert from "../../utils/BlobConvert"
 import { errorManagment } from "../../utils/DBErrorManagment"
-import user from "./user.interface"
-
-// Routes Services
-import { createPOST, createGET, createDELETE, createCOUNT } from "../../base/services/base.services"
-/*import { getOwnClassesIDS } from "../classes/classes.services.js"*/
-import { updateUserInfo } from "./account.services"
+import { USERROLE } from ".prisma/client"
+import {
+    createPOST,
+    createGET,
+    createDELETE,
+    createCOUNT
+} from "../../base/services/base.services"
 
 // Middleware for parse http req
 const router = express.Router()
     .use(bodyParser.json());
 
 // Set for confirm token
-let suspended = [];
-const CHARATERS = process.env.CODE_SET_CHARATERS
-
+let suspended :any = [];
+const CHARATERS:string = process.env.CODE_SET_CHARATERS || ""
 // List for suspended: model => {code: value, usermane: vaule, password: value role: value} 
 
 router.route("/account")
 
     .post(async (req, res) => {
         try {
-            const input = { ...req.body, role: "STUDENT" };
+            const input = { ...req.body, role: USERROLE.STUDENT };
+            input.password = sha256(input.password)
 
             // Check that there is not already a request
-            let isThere: boolean;
+            let isThere:boolean = false
             suspended.forEach((u) => { input.email === u.email ? isThere = true : isThere = false })
 
             // Check if it has alredy token request 
@@ -84,44 +86,47 @@ router.route("/account")
     // (tramite quesat API non si potra cambiare mai email dividere endpoint)
     // ora il prof puo cambiare tutto, comportamento da discutere
     .put(AuthJWT.authenticateJWT, async (req, res) => {
-        /*const role = AuthJWT.parseAuthorization(req.headers.authorization).role;
-        const emailA = AuthJWT.parseAuthorization(req.headers.authorization).email;
-        const { email } = req.body;
+        try {
+            const role = AuthJWT.parseAuthorization(req.headers.authorization).role;
+            const emailA = AuthJWT.parseAuthorization(req.headers.authorization).email;
+            const { email } = req.body;
+            /*
+            // Check evil request
+            if (req.body?.role) return res.sendStatus(403)
 
-        // Check evil request
-        if (req.body?.role) return res.sendStatus(403)
+            // Check property account
+            if (emailA !== email && role !== "TEACHER") return res.sendStatus(403)
+            if (emailA !== email && role === "TEACHER") {
+                const results = await Promise.allSettled([
+                    getOwnClassesIDS(emailA, role),
+                    getUser({ email })
+                ])
 
-        // Check property account
-        if (emailA !== email && role !== "TEACHER") return res.sendStatus(403)
-        if (emailA !== email && role === "TEACHER") {
-            const results = await Promise.allSettled([
-                getOwnClassesIDS(emailA, role),
-                getUser({ email })
-            ])
+                // Extract data
+                const classList = results[0].value
+                const id_class = results[1].value[0].id_class
 
-            // Extract data
-            const classList = results[0].value
-            const id_class = results[1].value[0].id_class
+                // Check your prof
+                if (!classList.includes(id_class)) return res.sendStatus(403)
+                delete req.body.email   // Clear update data
+            }
 
-            // Check your prof
-            if (!classList.includes(id_class)) return res.sendStatus(403)
-            delete req.body.email   // Clear update data
+            // Update code
+            // Cast img
+            if (req.body?.img_profile !== undefined)
+                req.body.img_profile = BlobConvert.base64ToBlob(req.body.img_profile)
+
+            // Update user info by request body
+            updateUserInfo(email, req.body)
+                .then((newData) => {
+                    delete newData.password // Remove and covert data
+                    newData.img_profile = BlobConvert.blobToBase64(newData.img_profile)
+                    // res.statusCode = 200
+                    res.send(newData) // Ok
+            }) */
+        } catch (err) {
+            errorManagment("PUT account", res, err)
         }
-
-        // Update code
-        // Cast img
-        if (req.body?.img_profile !== undefined)
-            req.body.img_profile = BlobConvert.base64ToBlob(req.body.img_profile)
-
-        // Update user info by request body
-        updateUserInfo(email, req.body)
-            .then((newData) => {
-                delete newData.password // Remove and covert data
-                newData.img_profile = BlobConvert.blobToBase64(newData.img_profile)
-                // res.statusCode = 200
-                res.send(newData) // Ok
-            })
-            .catch((err) => errorManagment("PUT account", res, err)) // Server error*/
     })
 
     // Get user data
@@ -161,17 +166,17 @@ router.route("/account/:confirmCode")
 
     .get(async (req, res) => {
         try {
-            const code:string = req.params.confirmCode
+            const code: string = req.params.confirmCode
 
             // Check id suspended user is | Remove util code
             const index = suspended.findIndex((u) => code === u.code)
-            if (!suspended[index]) return res.sendStatus(401); 
+            if (!suspended[index]) return res.sendStatus(401);
             delete suspended[index].code;
 
             // Remove suspended user | Create account
             const ack = await createPOST("user", suspended[index])
             suspended = suspended.filter(value => value !== suspended[index]);
-            
+
             res.sendStatus(200)
         } catch (err) {
             errorManagment("GET account/confirm_code", res, err)
