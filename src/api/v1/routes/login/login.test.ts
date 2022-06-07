@@ -43,10 +43,11 @@ describe(`POST ${TEST_ENDPOINT}`, () => {
             id_class: null
         }
   
-        // prismaMock.user.create.mockResolvedValue(user)
-
+        console.log(await createGET("user", "*", {}, null));
+        
         await createPOST("user", user)
-
+        
+        console.log(await createGET("user", "*", {}, null));
         const res = await request(app)
             .post(TEST_ENDPOINT)
             .send({ username: "username", password: "password" })
@@ -56,4 +57,13 @@ describe(`POST ${TEST_ENDPOINT}`, () => {
         expect("refreshToken" in body).toBeTruthy();
         expect(res.statusCode).toBe(200);
     })
+
+    it("return 200 if username and password are correct", async () => {
+        console.log("LOGIN---------------------------------------------");
+        
+        console.log(await createGET("user", "*", {}, null));
+        expect(200).toBe(200);
+    })
+    
 })
+

@@ -1,4 +1,5 @@
 // Auth static class
+import "dotenv/config"
 import * as jwt from "jsonwebtoken"
 
 class Auth {

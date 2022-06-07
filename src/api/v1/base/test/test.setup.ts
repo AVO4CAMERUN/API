@@ -9,10 +9,10 @@ async function clearAllTable() {
 
     //
     const acks = tables.map((table) => prisma[table].deleteMany())
-
+    prisma.user.deleteMany()
     // console.log(acks)
     await prisma.$transaction(acks)
-    await prisma.$disconnect()
+    // await prisma.$disconnect()
 }
 
 // Functions to delete all collections on BD
@@ -25,7 +25,9 @@ function setupDB() {
 
     // Cleans up database between each test
     beforeAll(async () => await clearAllTable())
-
+    beforeEach(async () => await clearAllTable())
+    afterEach(async () => await clearAllTable())
+    afterAll(async () => await clearAllTable())
 
 }
 

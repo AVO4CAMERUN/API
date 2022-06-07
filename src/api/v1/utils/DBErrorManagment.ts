@@ -66,8 +66,8 @@ function errorManagment(endpoint, res, error) {
     if (flag) logger.log({ level: 'error', endpoint, message: 'undefined error' })
     */
     // Error response
-    if (error instanceof Error) res.sendStatus(+error.message)
-    else res.sendStatus(500)
+    // if (error instanceof Error) res.sendStatus(+error.message)
+    res.sendStatus(500)
 }
 
 // Export functions 
